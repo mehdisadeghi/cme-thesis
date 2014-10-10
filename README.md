@@ -1,10 +1,10 @@
 CME Master Thesis
 =================
 
-This repository contains my master thesis documentation for Communication and Media Engineering (CME) program in Hochschule Offenburg. I write my thesis documentation using Tex and here I put them.
+This repository contains my master thesis documentation for Communication and Media Engineering (CME) program in [Hochschule Offenburg] (http://hs-offenburg.de/). I write my thesis documentation using Tex and here I put them.
 
 # Introduction
-I am doing my master thesis in the Fraunhofer Institute for Mechanics of Materials IWM in Freiburg Germany (http://www.iwm.fraunhofer.de/). In this institute many compute-intensive scientific experiments are being done hence they utilize High Performance Computing (HPC) solutions.
+I am doing my master thesis in the [Fraunhofer Institute for Mechanics of Materials IWM] (http://www.iwm.fraunhofer.de/) in Freiburg Germany. In this institute many compute-intensive scientific experiments are being done hence they utilize High Performance Computing (HPC) solutions.
 
 
 ## Distributed flow control and intelligent data transfer in high performance computing (HPC) networks
