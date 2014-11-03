@@ -1,30 +1,38 @@
-\documentclass[12pt]{article}
+\documentclass[oneside]{scrbook}
+\usepackage[utf8]{inputenc}
+\pagestyle{plain}
 
 \begin{document}
 
 \nocite{*}
 
 \title{Distributed Flow Control and Intelligent Data Transfer in High Performance Computing (HPC) Networks}
+\subtitle{Masterarbeit}
 \author{Mehdi Sadeghi}
+
+\publishers{University of Applied Sciences Offenburg\\
+Graduate School}
 \date{October 2014}
 
 \maketitle
+\frontmatter
+\tableofcontents
+\listoftables
+\listoffigures
 
-\begin{abstract}
+\addchap*{Abstract}
+
 This is my thesis report. Its purpose is to show what I have done during my thesis semester and what are my results. It contains the proposal,
 information on existing solutions and my solution.
-\end{abstract}
 
 \section{Introduction}
 \subsection{Proposal}
+
 \include{proposal}
+\include{chapter1}
 
-\include{chapter_1}
 
-
-\bibliographystyle{plain}
-
+\appendix
 \bibliography{paper}
-
 \end{document}
 
