@@ -1,0 +1,75 @@
+\chapter{Rough Ideas}
+
+This chapter contains very raw ideas to address main requirements i.e.
+distributed workflow management and intelligent data transfer.
+
+\section{Intelligent Data Transfer: Use Case One}
+By \textit{Intelligent Data Transfer} we mean an approach that
+minimizes required data transfers between application\footnote{To be defined}
+instances.
+
+In the most basic use case\footnote{To be added later and 
+referenced here} we run a script
+\footnote{To be defined and added to
+the terminology, terminology itself has to be defined}
+which consists of two linear operations. Each operation consumes data
+and generates data. A third operation needs both generated data two 
+operate on and generate the third and final data.
+
+The script is data driven. It means that it contains a number
+of steps and for every step it needs appropriate data to run the
+desired operations\footnote{To be defined}. We assume that
+the script will run on \textit{Node 1} and required data 
+\textit{DataSet^1} and \textit{DataSet^2} are 
+located on \textit{Node 2}
+and \textit{Node 3} respectively. Therefor \textit{Node 1} have
+to initiate operations on the other machines.
+
+\subsection{Identical Instances}
+We assume that on each machine of the network the same instance of our
+imaginary program is running which is capable of running all operations
+including A, B and C. The only consideration is the availability of 
+DatSets, they are not available on all machines.
+
+A linear operation (not clear to my self how to write it):
+\ [Operation(A, B) = Operation(A) + Operation(B)]
+
+\ [DataSet^A = OperationA(DataSet^1)]
+\ [DataSet^B = OperationB(DataSet^2)]
+\ [DataSet^C = OperationC(DataSet^A, DataSet^B)
+
+Assuming that operations A and B will run on the machines which
+contain the required data, a number of questions arise here:
+\begin{enumerate}
+\item On which machine operations C should run? A, B or C?
+\item On How to transfer the required data to that machine in an 
+optimized way?
+\end{enumerate}
+
+\subsection{The Idea}
+First of all we assume that we have the information about the DataSets
+available on all of the mamchines i.e. in form of a distributed table
+with entries containing the node address and DataSet id. Based on this
+information the application can decide if it has the required data or
+not. 
+
+Based on this algorithm (to be defined) the initial application
+delegates operations to the other nodes (instances of the same program),
+where the data is available. Our distributed workflow manager (to be 
+defined) will synchronize the information on these running operation and
+will lable the output data and will add it to the distributed data table.
+
+After finishing operations A and B we will run operaion C in either
+of these nodes, because the required data is partially available on these
+nodes. Then we have to transfer the rest of the data to one of these
+nodes to run the operation C which needs both parts simultaniously.
+
+\subparagraph{Using Prior Art}
+At this point we can take advantage of existing Distributed File Systems
+(DFS) to make the data available for operation C. We can then eliminate
+the complexity of data transfer between these two nodes and delegate it
+to existing distributed file systems. The main point is we don't rely on
+DFS for all of our decistion making part but we explicitely make the 
+decition to run operation A and B on specific nodes and then for the 
+last part we use a meta disk or universal disk concept to deliver the
+remaining data for operation C.
