@@ -20,7 +20,7 @@ The script is data driven. It means that it contains a number
 of steps and for every step it needs appropriate data to run the
 desired operations\footnote{To be defined}. We assume that
 the script will run on \textit{Node 1} and required data 
-\textit{DataSet^1} and \textit{DataSet^2} are 
+\textit{DataSet1} and \textit{DataSet2} are 
 located on \textit{Node 2}
 and \textit{Node 3} respectively. Therefor \textit{Node 1} have
 to initiate operations on the other machines.
@@ -34,9 +34,9 @@ DatSets, they are not available on all machines.
 A linear operation (not clear to my self how to write it):
 \ [Operation(A, B) = Operation(A) + Operation(B)]
 
-\ [DataSet^A = OperationA(DataSet^1)]
-\ [DataSet^B = OperationB(DataSet^2)]
-\ [DataSet^C = OperationC(DataSet^A, DataSet^B)
+\ [DataSetA = OperationA(DataSet1)]
+\ [DataSetB = OperationB(DataSet2)]
+\ [DataSetC = OperationC(DataSetA, DataSetB)
 
 Assuming that operations A and B will run on the machines which
 contain the required data, a number of questions arise here:

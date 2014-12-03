@@ -1,0 +1,44 @@
+\documentclass[a4paper, 12pt]{report}
+
+\title{Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks}
+\author{Mehdi Sadeghi}
+%\studyprogram{Communication and Media Engineering}
+%\location{Offenburg}
+\date{13. Feb 2015}
+%\semester{Wintersemester 2014} 
+%\supervisor{Alois B.~Treuer, Päd.\ Phil.}
+%\professor{Prof. Dr. Katharina Mehner-Heindl}
+%\firma{
+%   Fraunhofer IWM Freiburg\\
+%   Pulvertechnologie, Fluiddynamik\\
+%   Wöhlerstraße 11\\
+%   79108 Freiburg
+%}
+%\firmenTel{+49 761 5142-0}
+%\firmenUrl{http://www.iwm.fraunhofer.de/}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+ 
+\usepackage[backend=biber]{biblatex}
+\addbibresource{thesis.bib}
+
+\begin{document}
+\nocite{*} % Everything in bibtex file will appear in bibliography
+
+
+%\frontmatter
+\maketitle
+\tableofcontents{}
+
+
+\include{preface}
+\include{priorart}
+\include{ideas}
+
+%\appendix
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}
