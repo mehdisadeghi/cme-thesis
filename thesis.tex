@@ -19,8 +19,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{hyperref}
 \usepackage{csquotes}
- 
 \usepackage[backend=biber]{biblatex}
 \addbibresource{thesis.bib}
 
@@ -28,16 +28,14 @@
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
 
-%\frontmatter
 \maketitle
-\tableofcontents{}
+\tableofcontents
 
 
 \include{preface}
 \include{priorart}
 \include{ideas}
 
-%\appendix
 
 \printbibliography[heading=bibintoc, title={References}]
 
