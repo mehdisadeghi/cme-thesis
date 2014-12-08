@@ -1,21 +1,4 @@
-\documentclass[a4paper, 12pt]{report}
-
-\title{Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks}
-\author{Mehdi Sadeghi}
-%\studyprogram{Communication and Media Engineering}
-%\location{Offenburg}
-\date{13. Feb 2015}
-%\semester{Wintersemester 2014} 
-%\supervisor{Alois B.~Treuer, Päd.\ Phil.}
-%\professor{Prof. Dr. Katharina Mehner-Heindl}
-%\firma{
-%   Fraunhofer IWM Freiburg\\
-%   Pulvertechnologie, Fluiddynamik\\
-%   Wöhlerstraße 11\\
-%   79108 Freiburg
-%}
-%\firmenTel{+49 761 5142-0}
-%\firmenUrl{http://www.iwm.fraunhofer.de/}
+\documentclass[12pt, a4paper]{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
@@ -23,27 +6,59 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
+    filecolor=magenta,
     urlcolor=cyan,
 }
 \usepackage{csquotes}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{thesis.bib}
 
+\title{
+      {Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks}\\
+      {\large Hochschule Offenburg}
+}
+\author{Mehdi Sadeghi}
+
+\date{13. Feb 2015}
+
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
-
 \maketitle
 
+%\newpage
+%\thispagestyle{plain}
+%\begin{center}
+%\vspace*{\fill}
+%\copyright\ Copyright\ 2015\ Mehdi Sadeghi
+%\end{center}
+%This work is published under the conditions of the
+%\textsl{Creative Commons License Attribution--Non-Commercial--No-Derivatives}
+%(CC BY-NC-ND)---see \url{http://creativecommons.org/licenses/by-nc-nd/3.0/}.
+%\vspace*{\fill}
 
-\begin{abstract}
-This document contains my master's thesis report. It contains the problem definiation,
-an overview of state of the art and my suggestion to the problem.
-\end{abstract}
+%\newpage
 
-%\section*{Acknowledgement}
-%Here will come acknowledgement
+\chapter*{Declaration}
+\noindent
+I hereby declare and confirm that this thesis is entirely the result of my own original work. 
+Where other sources of information have been used, they have been indicated as such and properly acknowledged. 
+I further declare that this or similar work has not been submitted for credit elsewhere.
+\\
+
+Offenburg, February 28, 2015
+
+Mehdi Sadeghi
+
+
+\chapter*{Abstract}
+This document contains my master's thesis report, including the problem definiation,
+an overview of state of the art, discussions and my suggestions.
+
+
+
+\chapter*{Acknowledgement}
+Here will come acknowledgement
 
 \tableofcontents
 
@@ -52,6 +67,7 @@ an overview of state of the art and my suggestion to the problem.
 \include{priorart}
 \include{ideas}
 
+%\appendix % The Proposal
 
 \printbibliography[heading=bibintoc, title={References}]
 
