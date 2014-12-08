@@ -1,4 +1,4 @@
 cme-thesis
 ==========
 
-Contains my master thesis documentation
+Contains my master's thesis documentation
