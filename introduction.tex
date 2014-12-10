@@ -1,18 +1,102 @@
 \chapter{Introduction}
 \label{cha:introduction}
 \section{Objectives}
-We will cover two important characteristics of HPC at this work. First is data transfer between multiple computers which are doing a task collaboratively.
-Second the collaboration itself, i.e. how multiple computers will accomplish a collaborative task. To do this we will discuss distributed workflow management.
-To accomplish these objectives we will first define our requirments clearly regarding the above mentioned topics. We will extract the parameters which we will
-then assess the other solutions using them. Then we will go through the existing solutions 
-which are currently available. Afterwards we will discuss their applicability according to our defined requirements and whether they answer our needs or not.
+We will focus on two important topics in this work. First one is data transfer problems between multiple 
+computers which are doing a task collaboratively. Second one is the collaboration itself, 
+i.e. how multiple computers will accomplish a collaborative task in a distributed and decentralized environment.
+To accomplish these objectives we will discuss our specific distributed workflow management and data transfer
+scenarios. 
+We define our requirments regarding the above mentioned topics and we will extract the parameters 
+which we are going
+to assess other solutions with them. Then we will go through the currently available solutions.
+Afterwards we will discuss their applicability according to our requirements and whether they answer 
+our needs or not.
+The goal of this thesis is to minimize the amount of transferred data in a network of 
+collaborating computers. This data belongs to operations which might be linear or not
+and require multiple steps. The operation can be initiated in any participating
+computer but the required data is not necessarily available on that computer, even though
+the operation result should be delivered back to the initializer computer.
 
-\section{Structure}
-This document is structured in three main conceptual parts.
-\subparagraph{Problem} In this part we will introduce the problem domain, the 
-requirements and the main problem itself.
-\subparagraph{Prior Art} We will discuss prior art in two parts. First is about
-distributed data transfer and data access technologies. The second part is about
-distributed workflow management.
-\subparagraph{Idea} In this part we will focus on our approach to address the
-problems which have been discussed in previous chapters.
+\section{Terminology}
+We will use a number of terms through this report. Here are the meaning for each.
+\subparagraph{Node}
+Each node refers to one computer in the network.
+\subparagraph{Data}
+When we refer to data we mean the output of scientific applications, such as NumPy types.
+\subparagraph{Dataset}
+Same as data with more emphasize on it as collection of e.g. Numpy types.
+\subparagraph{Application}
+Refers to the demo application which has been developed to show case the proposed solution.
+\subparagraph{Instance}
+Refers to an instance of the same application running on a node.
+\subparagraph{Operation}
+Any sort of operation, linear or non-linear which is being provided by the appliction.
+\subparagraph{Task}
+Same as the operation with more emphasize on the output rather than the functionality.
+\subparagraph{Service}
+A scientific operation being provided by the application which could be called remotely.
+\subparagraph{System}
+The combination of nodes, data, application, instances, operations and services as a
+whole.
+\subparagraph{User}
+A scientist, researcher or student who uses the system to run a task.
+
+\section{Problem Context}
+Whole this work is an effort to address issues of a scientific environment. Some particular characteristics
+are running multiple scientific programs on different computers which need to exchange data in order to
+accomplish one operation. Another task which is often done is visualization. Visualizing the operation results
+,depending on the requested visualization, might require heavy computational tasks i.e. avarage or comparision
+on data which might not be available on the same machine or might be residing partially on different computers.
+The produced data often exceeds 1GB in many experiments and it should be moved back and forth every few minutes,
+therefore it is cheaper to transfer the operation rather than the data.
+
+The problem here is not about distributing the stored data rather, data exchange between instances of the application 
+talking together in runtime while doing one global task and keeping this workflow distributed. In this terms each
+application instance takes care of its own data and provides a set of services. Some operations require data from
+another node, therefore we have to transfer the data or run the operation on the node which contains the data. There
+are a number of scenarios which we will discuss.
+
+\section{Assumptions}
+During this work we have a number of assumptions. We have a certain problem which we want to focus
+on rather than reintroducing solutions that already exist. For this reason we discuss regarding our 
+needs.
+
+\subsection{Network}
+We assume there is a network of computers which are availabe to run the tasks, each node is running an instance
+of the application. We will propose our collaboaration and data transfer algorith between them later.
+
+\subsection{Data Transfer}
+We assume a data transfer approach is already in place. This could be any file system which supports 
+network storages. Rather than going into details of how data could be transferred more efficiently, we will
+focus on finding which data to be transferred and from which computer to which destination.
+
+\section{Analysis}
+
+\subsection{Actors}
+There are two types of actors in our problem domain.
+\subparagraph{User}
+A user who launches, control and monitor an operation.
+\subparagraph{Instance}
+Every instance can launch and observe an operation on other instances on other nodes.
+
+\subsection{Scenarios}
+There are a number of possible use cases according to the desired operations. To demonstrate these cases we assume
+we have four nodes, A, B, C and D and four datasets respectively. In the following paragraphs we explain possible
+combinations of operations, nodes and datasets. In every scenario we want to run an operation which could be
+linear or non-linear and we need data for that operation which could be on the same node that runs the operation
+initially or could reside on many other nodes. Moreover there is output dataset which should be stored.
+
+\subsubsection{Scenario 1}
+In this scenario we have a central node and a star topology. We want to run a single operation which only needs 
+\( dataset^A \) on \( node^A \).
+
+
+%\section{Structure}
+%This document is structured in three main conceptual parts.
+%\subparagraph{Problem} In this part we will introduce the problem domain, the 
+%requirements and the main problem itself.
+%\subparagraph{Prior Art} We will discuss prior art in two parts. First is about
+%distributed data transfer and data access technologies. The second part is about
+%distributed workflow management.
+%\subparagraph{Idea} In this part we will focus on our approach to address the
+%problems which have been discussed in previous chapters.
