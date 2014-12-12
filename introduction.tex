@@ -4,18 +4,18 @@
 We will focus on two important topics in this work. First one is data transfer problems between multiple 
 computers which are doing a task collaboratively. Second one is the collaboration itself, 
 i.e. how multiple computers will accomplish a collaborative task in a distributed and decentralized environment.
-To accomplish these objectives we will discuss our specific distributed workflow management and data transfer
+To accomplish these objectives we will discuss our specific distributed work flow management and data transfer
 scenarios. 
-We define our requirments regarding the above mentioned topics and we will extract the parameters 
+We define our requirements regarding the above mentioned topics and we will extract the parameters 
 which we are going
 to assess other solutions with them. Then we will go through the currently available solutions.
-Afterwards we will discuss their applicability according to our requirements and whether they answer 
+Afterward we will discuss their applicability according to our requirements and whether they answer 
 our needs or not.
 The goal of this thesis is to minimize the amount of transferred data in a network of 
 collaborating computers. This data belongs to operations which might be linear or not
 and require multiple steps. The operation can be initiated in any participating
 computer but the required data is not necessarily available on that computer, even though
-the operation result should be delivered back to the initializer computer.
+the operation result should be delivered back to the reinitializing computer.
 
 \section{Terminology}
 We will use a number of terms through this report. Here are the meaning for each.
@@ -24,13 +24,13 @@ Each node refers to one computer in the network.
 \subparagraph{Data}
 When we refer to data we mean the output of scientific applications, such as NumPy types.
 \subparagraph{Dataset}
-Same as data with more emphasize on it as collection of e.g. Numpy types.
+Same as data with more emphasize on it as collection of e.g. NumPy types.
 \subparagraph{Application}
 Refers to the demo application which has been developed to show case the proposed solution.
 \subparagraph{Instance}
 Refers to an instance of the same application running on a node.
 \subparagraph{Operation}
-Any sort of operation, linear or non-linear which is being provided by the appliction.
+Any sort of operation, linear or non-linear which is being provided by the application.
 \subparagraph{Task}
 Same as the operation with more emphasize on the output rather than the functionality.
 \subparagraph{Service}
@@ -45,9 +45,9 @@ A scientist, researcher or student who uses the system to run a task.
 Whole this work is an effort to address issues of a scientific environment. Some particular characteristics
 are running multiple scientific programs on different computers which need to exchange data in order to
 accomplish one operation. Another task which is often done is visualization. Visualizing the operation results
-,depending on the requested visualization, might require heavy computational tasks i.e. avarage or comparision
+,depending on the requested visualization, might require heavy computational tasks i.e. average or comparison
 on data which might not be available on the same machine or might be residing partially on different computers.
-The produced data often exceeds 1GB in many experiments and it should be moved back and forth every few minutes,
+The produced data often exceeds 1 GB in many experiments and it should be moved back and forth every few minutes,
 therefore it is cheaper to transfer the operation rather than the data.
 
 The problem here is not about distributing the stored data rather, data exchange between instances of the application 
@@ -61,34 +61,86 @@ During this work we have a number of assumptions. We have a certain problem whic
 on rather than reintroducing solutions that already exist. For this reason we discuss regarding our 
 needs.
 
-\subsection{Network}
-We assume there is a network of computers which are availabe to run the tasks, each node is running an instance
-of the application. We will propose our collaboaration and data transfer algorith between them later.
+\subsection{Collaborating Network}
+We assume there is a network of computers which are available to run the tasks, each node is running an instance
+of the application. We will propose our collaboration and data transfer algorithm between them later.
+
+\subsection{Data Characteristics}
+We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
+of physical particles such as atoms and molecules. These data is being used to simulate collections of particles called
+models. Although our work is not dependent on these, they help us to understand the the definition of the data that
+we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
+and we can reproduce it. 
+
+\subsection{Workflow}
+In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
+state of our workflow on any arbitrary node which is part of our collaborative network.
 
 \subsection{Data Transfer}
 We assume a data transfer approach is already in place. This could be any file system which supports 
-network storages. Rather than going into details of how data could be transferred more efficiently, we will
+network storage. Rather than going into details of how data could be transferred more efficiently, we will
 focus on finding which data to be transferred and from which computer to which destination.
 
-\section{Analysis}
+% TODO: I think we need to move the following parts into a new chapter called "Problem Analysis" or similar.
+% TODO: Afterwards we can add another chapter called "Proposed Solution" to put the design of the solution along with detailed algorithm about it.
 
-\subsection{Actors}
-There are two types of actors in our problem domain.
-\subparagraph{User}
-A user who launches, control and monitor an operation.
-\subparagraph{Instance}
-Every instance can launch and observe an operation on other instances on other nodes.
+%\section{Analysis}
+%\subsection{Actors}
+%There are two types of actors in our problem domain.
+%\subparagraph{User}
+%A user who launches, control and monitor an operation.
+%\subparagraph{Instance}
+%Every instance can launch and observe an operation on other instances on other nodes.
 
-\subsection{Scenarios}
+\section{Scenarios}
 There are a number of possible use cases according to the desired operations. To demonstrate these cases we assume
-we have four nodes, A, B, C and D and four datasets respectively. In the following paragraphs we explain possible
+we have four nodes, A, B, C and D and four datasets respectively, but not necessarily on the respective nodes.
+In the following paragraphs we explain possible
 combinations of operations, nodes and datasets. In every scenario we want to run an operation which could be
 linear or non-linear and we need data for that operation which could be on the same node that runs the operation
 initially or could reside on many other nodes. Moreover there is output dataset which should be stored.
 
-\subsubsection{Scenario 1}
-In this scenario we have a central node and a star topology. We want to run a single operation which only needs 
-\( dataset^A \) on \( node^A \).
+We start from the simplest scenarios first, it means one linear atomic operation which needs only one dataset
+to operate on it. 
+
+% TODO: I might need to introduce "Decision Tree"
+\subsection{Decision Making}
+The main decision that we need to make at every scenario is whether we should transfer the required data or we
+need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
+answer a number of questions. First we need to know the location of the data and whether we can produce it or not:
+
+\begin{enumerate}
+\item Is the data available locally?
+\item If not, is the data available on another node? -- Here only the physical location of data matters not the instance
+controlling it.
+\item If not, can we generate the data? -- should we take data generation into account at all?
+\item If not, which instance can generate the data?
+\end{enumerate}
+
+% TODO: Introduce "Decistion Metrics"
+
+In case the mentioned data is available on another nodes we have to answer these questions:
+\begin{enumerate}
+\item What is the cost of data transfer? -- We have to invent an algorithm for this calculation
+\item If data is available on more than one remote node, which one has the minimum transfer cost? -- We might
+introduce multiple strategies and use some heuristics for this selection, simplest form would be random selection,
+another could be asking for an availability metric from the instance and mix it with local calculated availability 
+metric to get a final cost value.
+% TODO: We can use "Heartbeat" concept as one of availability metrics
+\item Does the requested operation available on the other node?
+\item In case it is expensive to transfer the date, can we delegate the operation to an instance on the other node?
+\end{enumerate}
+
+\subsubsection{Metrics}
+
+
+\subsection{Scenario 1}
+In this scenario we have received a request for a linear atomic operation, e.g. \(Op^A\) on \(Node^A\) which
+requires \( Dataset^1 \).
+
+\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \).
+\subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
+to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
 
 
 %\section{Structure}
