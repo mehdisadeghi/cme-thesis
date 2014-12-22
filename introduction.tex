@@ -72,14 +72,15 @@ models. Although our work is not dependent on these, they help us to understand 
 we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
 and we can reproduce it. 
 
-\subsection{Workflow}
-In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
-state of our workflow on any arbitrary node which is part of our collaborative network.
-
 \subsection{Data Transfer}
 We assume a data transfer approach is already in place. This could be any file system which supports 
 network storage. Rather than going into details of how data could be transferred more efficiently, we will
 focus on finding which data to be transferred and from which computer to which destination.
+
+\subsection{Workflow}
+In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
+state of our workflow on any arbitrary node which is part of our collaborative network.
+
 
 % TODO: I think we need to move the following parts into a new chapter called "Problem Analysis" or similar.
 % TODO: Afterwards we can add another chapter called "Proposed Solution" to put the design of the solution along with detailed algorithm about it.
@@ -92,55 +93,23 @@ focus on finding which data to be transferred and from which computer to which d
 %\subparagraph{Instance}
 %Every instance can launch and observe an operation on other instances on other nodes.
 
-\section{Scenarios}
-There are a number of possible use cases according to the desired operations. To demonstrate these cases we assume
-we have four nodes, A, B, C and D and four datasets respectively, but not necessarily on the respective nodes.
-In the following paragraphs we explain possible
-combinations of operations, nodes and datasets. In every scenario we want to run an operation which could be
-linear or non-linear and we need data for that operation which could be on the same node that runs the operation
-initially or could reside on many other nodes. Moreover there is output dataset which should be stored.
+\subsubsection{Approaches}
+During this work we consider three different approaches toward preparing required data for operations.
+\subparagraph{Conventional Approach} in this approach we put the required data on a network file system and all
+application instances will access it there. We will utilize an NFS mounted file system.
+\subparagraph{Centralized Approach} in this approach we will have a central instance which will orchestrate operation
+delegation and operation output forwarding to other nodes.
+\subparagraph{Decentralized Approach} in this approach we will eliminate the orchestrator node and the network of
+application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
+task.
 
-We start from the simplest scenarios first, it means one linear atomic operation which needs only one dataset
-to operate on it. 
+For every approach we will run performance tests and we will compare the results.
 
-% TODO: I might need to introduce "Decision Tree"
-\subsection{Decision Making}
-The main decision that we need to make at every scenario is whether we should transfer the required data or we
-need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
-answer a number of questions. First we need to know the location of the data and whether we can produce it or not:
-
-\begin{enumerate}
-\item Is the data available locally?
-\item If not, is the data available on another node? -- Here only the physical location of data matters not the instance
-controlling it.
-\item If not, can we generate the data? -- should we take data generation into account at all?
-\item If not, which instance can generate the data?
-\end{enumerate}
-
-% TODO: Introduce "Decistion Metrics"
-
-In case the mentioned data is available on another nodes we have to answer these questions:
-\begin{enumerate}
-\item What is the cost of data transfer? -- We have to invent an algorithm for this calculation
-\item If data is available on more than one remote node, which one has the minimum transfer cost? -- We might
-introduce multiple strategies and use some heuristics for this selection, simplest form would be random selection,
-another could be asking for an availability metric from the instance and mix it with local calculated availability 
-metric to get a final cost value.
-% TODO: We can use "Heartbeat" concept as one of availability metrics
-\item Does the requested operation available on the other node?
-\item In case it is expensive to transfer the date, can we delegate the operation to an instance on the other node?
-\end{enumerate}
-
-\subsubsection{Metrics}
-
-
-\subsection{Scenario 1}
-In this scenario we have received a request for a linear atomic operation, e.g. \(Op^A\) on \(Node^A\) which
-requires \( Dataset^1 \).
-
-\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \).
-\subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
-to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
+\subsubsection{Method}
+We will discuss scenarios in \ref{cha:scenarios}. For each scenario we will analyze the possible combinations 
+of data and operations and we will discuss how to 
+deliver the input data and where to store output data. We will discuss workflow management in chapter 
+\ref{cha:workflow} and data transfer in \ref{cha:data}.
 
 
 %\section{Structure}
