@@ -108,5 +108,10 @@ sympy-plots-for-*.tex/
 # xindy
 *.xdy
 
+<<<<<<< HEAD
 # buffer files
 *~
+=======
+# kate
+*.kate-swp
+>>>>>>> fdd87178ebe8fa0deace9aadbe912ef6e46a20e9

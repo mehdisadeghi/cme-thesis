@@ -1,0 +1,90 @@
+\chapter{Scenarios}
+\label{cha:scenarios}
+
+There are a number of possible use cases in our problem domain. To demonstrate these cases we assume
+we have a number of nodes and datasets respectively, but they are not necessarily on the same nodes.
+In the following paragraphs we explain possible combinations of operations, nodes and datasets.
+
+\section{Operation}
+In every scenario we want to run an operation which could be linear or non-linear.
+
+\subsection{Linear Operation}
+Being linear means that the operation
+could be broken into its components and then run in parallel or series. Here is algebic notation
+of a linear operation which acts on two datasets:
+
+\[ Operation(A + B) = Operation(A) + Operation(B) \]
+
+Being linear or non-linear only matters when we have to operate on more that one dataset.
+
+\subsection{Non-linear Operation}
+In contrast to linear there is non-linear operation. This means that this kind of operation has dependant parts and
+those parts could not run in parallel:
+
+\[ Operation(A + B) \neq Operation(A) + Operation(B) \]
+
+\section{Datasets}
+For each operation we need one or more datasets which my be available on the same node that wants to run the operation
+initially or could reside on other nodes. 
+
+\subsection{Input}
+Input files are normally not mission critical and could be reproduced.
+
+\subsection{Output}
+Operations create output datasets which normally are small in size, threfore we ignore the transfer cost of operation
+results in our work.
+
+\subsection{Data Locationing}
+We consider three different approaches toward preparing required data for operations.
+\subsubsection{Conventional Approach}
+in this approach we put the required data on a network file system and all
+application instances will access it there. We will utilize an NFS mounted file system.
+\subsubsection{Centralized Approach}
+in this approach we will have a central instance which will orchestrate operation
+delegation and operation output forwarding to other nodes.
+\subsubsection{Decentralized Approach}
+in this approach we will eliminate the orchestrator node and the network of
+application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
+task.
+
+For every approach we will run performance tests and we will compare the results.
+
+\subsubsection{Method}
+We will discuss scenarios in \ref{cha:scenarios}. For each scenario we will analyze the possible combinations 
+of data and operations and we will discuss how to 
+deliver the input data and where to store output data. We will discuss workflow management in chapter 
+\ref{cha:workflow} and data transfer in \ref{cha:data}.
+
+
+% TODO: I might need to introduce "Decision Tree"
+\section{Decision Making}
+The main decision that we need to make at every scenario is whether we should transfer the required data or we
+need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
+answer a number of questions. First we need to know the location of the data:
+
+\begin{enumerate}
+\item Is the data available locally?
+\item If not, is the data available on another node? -- Here only the physical location of data matters not the instance
+controlling it.
+\end{enumerate}
+
+% TODO: Introduce "Decision Metrics"
+
+%In case the mentioned data is available on another nodes we have to answer these questions:
+%\begin{enumerate}
+%\item What is the cost of data transfer? -- We have to invent an algorithm for this calculation
+%\item If data is available on more than one remote node, which one has the minimum transfer cost? -- We might
+%introduce multiple strategies and use some heuristics for this selection, simplest form would be random selection,
+%another could be asking for an availability metric from the instance and mix it with local calculated availability 
+%metric to get a final cost value.
+% TODO: We can use "Heartbeat" concept as one of availability metrics
+%\item In case it is expensive to transfer the data, can we delegate the operation to an instance on the other node?
+%\end{enumerate}
+
+\subsection{Scenario 1}
+In this scenario we have a linear operation, e.g. \(Op^A\) on \(Node^A\) which
+requires \( Dataset^1 \).
+
+\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \).
+\subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
+to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
