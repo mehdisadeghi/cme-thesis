@@ -135,3 +135,16 @@ In a test having one process running on a server in Internet and outside of the 
 Having a network between local and internet processes in the above mentioned method is not reliable. Repeating the tests with only local processes which are bootstrapping to one of them and running the setter/getter methods showed that even in this scenario it is not reliable and one can not guarantee that the desired value will be returned.
 
 
+\section{Network Programming}
+To showcase our desired approach and trying different ones we have used a number of network programming frameworks for python programming language. The main library that we use is called ØMQ or ZeroMQ~\cite{ZeroMQ}. ZeroMQ is an asynchronous messaging library written in C with bindings for many languages including python. This library helps us to easily scale and use different programming paradigms such as publish-subscribe, request-replay and push-pull.
+
+\section{Publish-Subsribe Distribution}
+Because of reliability issues we fallback to using a simpler approach using ZeroMQ. In this stage our aim is to distribute the information about available datasets at each node. To achieve this we let our demo application launch a number of communicators and publish information about it's data. Other nodes in our network have to subscribes on other nodes, hopefully ZeroMQ allows us to subscribe to multiple publishers, therefore each node can subscribe to other nodes.
+
+\subsection{Network Discovery}
+At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
+
+\subsection{Failure Recovery}
+Again this is not of our interest. The point is there are existing solutions for these problems and we want to let our application to be able to demonstrate the main problem which would be deciding about data transfer routes and distributing the information about currently running operations.
+
+
