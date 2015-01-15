@@ -138,8 +138,26 @@ Having a network between local and internet processes in the above mentioned met
 \section{Network Programming}
 To showcase our desired approach and trying different ones we have used a number of network programming frameworks for python programming language. The main library that we use is called ØMQ or ZeroMQ~\cite{ZeroMQ}. ZeroMQ is an asynchronous messaging library written in C with bindings for many languages including python. This library helps us to easily scale and use different programming paradigms such as publish-subscribe, request-replay and push-pull.
 
-\section{Publish-Subsribe Distribution}
-Because of reliability issues we fallback to using a simpler approach using ZeroMQ. In this stage our aim is to distribute the information about available datasets at each node. To achieve this we let our demo application launch a number of communicators and publish information about it's data. Other nodes in our network have to subscribes on other nodes, hopefully ZeroMQ allows us to subscribe to multiple publishers, therefore each node can subscribe to other nodes.
+\section{Publish-Subsribe Method}
+Because of reliability issues we fallback to using a simpler approach using ZeroMQ. In this stage our aim is to distribute the information about available datasets at each node. To achieve this we let our demo application launch a number of communicators and publish information about it's data. Other nodes in our network have to subscribes on other nodes, hopefully ZeroMQ allows us to subscribe to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get \textbf{news} from other nodes, for example availability of certain datasets on a node, then it can use publish-subscribe to get extra information on that particular subject.
+
+\subsection{Architecture}
+For demonstration purposes we create a python console applicaiton using gevent\footnote{\url{http://www.gevent.org/}}, zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} to be able to service multiple requests in a non-blocking fashion.
+
+\subsubsection{Applicaiton Initialization}
+First of all each application instance establish its own zeromq publisher socket. Then it subscribes itself to all other nodes which are listed in config file. At this stage it should be configured manually.
+
+\subsubsection{Gevent and non-blocking}
+HERE WRITE ABOUT GEVENT.
+
+\subsection{Exposing API}
+Since this is going to be a network program we need to use a form of Remote Procedure Call (RPC) to communicate between nodes. Rather than implementing ourselves we used a library based on zeromq called \textit{zerorpc}. Using this library we now expose a set of APIs and let the nodes talk to each other based on this API. There are multiple solutions for exposing services which we do not discuss here.
+
+\subsubsection{Data transfer using zerorpc}
+WHICH DATA TYPES ARE WE ALLOWED TO TRANSFER USING ZERORPCS? IS IT ENOUGH FOR US?
+
+\subsection{Application's State}
+WE HAVE TO DECIDE ON A STATE MANAGER TO MAKE APPLICATION'S BEHAVIOUR RELIABLE.
 
 \subsection{Network Discovery}
 At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
