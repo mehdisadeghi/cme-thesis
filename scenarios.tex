@@ -81,10 +81,93 @@ controlling it.
 %\item In case it is expensive to transfer the data, can we delegate the operation to an instance on the other node?
 %\end{enumerate}
 
+
+
+\section{Concrete Scenarios}
+We begin with a simple scenario and we gradually add details to it and build new scenarios.
+
 \subsection{Scenario 1}
 In this scenario we have a linear operation, e.g. \(Op^A\) on \(Node^A\) which
-requires \( Dataset^1 \).
+requires one single dataset such as \( Dataset^1 \) which is available on one of the other peers.
 
-\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \).
+\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \) and the operation is linear.
 \subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
 to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
+
+\subsection{Use Case Description}
+We have a distributed network of collaborating servers, where in this case, we consider two computers. 
+Each server has its own storage and maintains a number of datasets on it. These servers collaborate 
+together to accomplish issued commands. User in this case wants to perform one operation on a dataset
+that resides only on one of the servers. There are two main assumptions here:
+\begin{enumerate}
+\item \textbf{The user has neighter a prior knowledge where the data is stored}
+\item \textbf{Nor of how many servers are present on the network}
+\end{enumerate}
+
+The user connects to one of the servers, which we call a client. This server is assumed to be part 
+of the network, though it may not have any local data stores on it. The user issues, interactively
+(or non-interactively) a command on a set of data providing some kind of identification. This command
+is broadcasted by the client to all servers in the network. All servers receive this command and check
+whether they have the data locally. The server which has the data performs the operation and the others
+ignore it. The result of the operation in this case, remains on the same server which the original 
+dataset was on. 
+
+\begin{itemize}
+\item Note: it is assumed that at any instance of time, only one server acts as a client.
+\end{itemize}
+
+Moreover we assume the user has already queried the available data in the entire network by 
+issueing something like “list datasets” which outputs dataset names and ids.
+
+The following table shows two servers, each has one dataset. The user is connected to S2.\\
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S1 & DS1 & No \\
+S2 & DS2 & Yes \\
+\end{tabular}\\
+
+Let us assume the data sets are \(10^6\) random numbers.
+Let us assume the operation is to transform the real random numbers to a set of [0 or 1 ] depending on whether the number is even or odd. 
+This operation is assumed here to be a user defined method that operates on the data set.
+
+\begin{itemize}
+\item Note: A dataset can be for example defined as an object that has an id, and a one dimensional array (python list).
+\end{itemize}
+
+The user issues the command like this from a python shell: 
+
+\begin{itemize}
+\item real2bin(DS1) will result in -> Broadcast(real2bin(DS1))
+\item Note: it is assumed that all functions are already defined on all servers, since they execute the same environment.
+\end{itemize}
+
+The client broadcasts this function to all servers. Each server will check if the data set with this id exists, if so will run the command. 
+
+This means that each server, especially the client, has to “know about all data sets existing in all servers.
+It does not need to have the actual data, but needs to know about it. So that when the user issues the command
+above, he/she does not get a “data structure not existent” error from the client, just because the data is not
+there. Hence we need some interface, or some wrapper function that checks the argument for the data type, or to 
+create some proxy interface from all data to all nodes. 
+
+\section{Assessing Suggested Approaches}
+To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application
+called \testbf{Konsensus}. The code is available on Github. %TODO add ref here
+
+\subsection{Testing Problems}
+Writing tests for a distributed application is not as easy as writing unittests for a normal application. 
+Our demo application acts as a server and client at the same time. Moreover we want to launch multiple 
+network peers running on one or multiple machines. Testing scenarios on this network is not possible with
+normal mocking approaches, because we need to test the behaviour of our solution in a network of collaborating
+peers which are not external services, rather the core services of the application.
+
+To overcome testing issues we have to launch the desired number of peers separately and then run our tests 
+over them. To make this operation faster we changed the application to make it possible to launch any number
+of instances on one machine and we automated this process using a number of scripts. %TODO more details
+
+\subsubsection{Mixing Signals in Greenlets}
+We use python Greenlets instead of threads. This means that our demo application runs on only one thread. 
+This causes a problem when launching multiple apps all together with one script and inside one thread, that
+causes the signals for events spread among all greenlets and make trouble. To avoid this we have to run
+each server in a separate processes. Running them inside threads won't help as well because the blinker python
+library is threadsafe so it moves signals between threads as well as greenlets.
