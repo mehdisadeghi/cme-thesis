@@ -76,3 +76,14 @@ DFS for all of our decistion making part but we explicitely make the
 decition to run operation A and B on specific nodes and then for the 
 last part we use a meta disk or universal disk concept to deliver the
 remaining data for operation C.
+
+\section{Sqmpy Integration}
+We can use Sqmpy project as a monitoring tool for konsensus network.
+ Providing one peer address it can query the rest of peers and connect or 
+subscribe to their news channel. Having this we can always see which nodes are
+offline and which ones are online. This also gives us a platform to extend
+monitoring and control features to the web. Currently we have made all the 
+required software platform to achieve this. On Sqmpy side using Flask microframework
+and socket.io we can simply maintain realtime connections to the browsers and since
+our web framework is written in python, with minimum cost we can integrate it
+with konsensus.

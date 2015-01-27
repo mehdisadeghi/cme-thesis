@@ -165,4 +165,17 @@ At this stage there is no network discovery, because it is not our main problem.
 \subsection{Failure Recovery}
 Again this is not of our interest. The point is there are existing solutions for these problems and we want to let our application to be able to demonstrate the main problem which would be deciding about data transfer routes and distributing the information about currently running operations.
 
+\section{Use Case One Problems}
+When we ask for an operation and we want to store the result somewehere on the network we have to think about the result name. 
+We need a consistent way of naming datasets. If we ask users to provide resulting dataset names it will break soon, we need to 
+let user to somehow give some \textbf{tags} but not the real names. We have to let the user know about the result name but also
+let her to look for datasets by providing some tags.
+
+The simplest problems that will hapen if we store datasets with similar names is redandant work in the network. Peers will start 
+to process and override the same dataset.
+
+\subsection{Data Manipulation}
+We will neet to let users to manipulate currently existing datasets, but very fast it comes to mind that not every dataset should be
+writable, we will need to categorize and identify our datasets based on some criteria. These problems are not part of my thesis but
+We mention it as part of problem analysis.
 

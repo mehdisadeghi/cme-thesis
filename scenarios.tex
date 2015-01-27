@@ -94,7 +94,7 @@ requires one single dataset such as \( Dataset^1 \) which is available on one of
 \subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
 to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
 
-\subsection{Use Case Description}
+\subsection{Scenario 1 (UC1)}
 We have a distributed network of collaborating servers, where in this case, we consider two computers. 
 Each server has its own storage and maintains a number of datasets on it. These servers collaborate 
 together to accomplish issued commands. User in this case wants to perform one operation on a dataset
@@ -152,7 +152,7 @@ create some proxy interface from all data to all nodes.
 
 \section{Assessing Suggested Approaches}
 To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application
-called \testbf{Konsensus}. The code is available on Github. %TODO add ref here
+called \textbf{Konsensus}. The code is available on Github. %TODO add ref here
 
 \subsection{Testing Problems}
 Writing tests for a distributed application is not as easy as writing unittests for a normal application. 
@@ -171,3 +171,18 @@ This causes a problem when launching multiple apps all together with one script 
 causes the signals for events spread among all greenlets and make trouble. To avoid this we have to run
 each server in a separate processes. Running them inside threads won't help as well because the blinker python
 library is threadsafe so it moves signals between threads as well as greenlets.
+
+\subsection{Scenario 2 (UC2)}
+This is similar to scenario one, except that the operation requires two datasets to be done. We have a network of peers collaborating
+to finish some linear and non-linear tasks. In this scenario we need at least three peers involved. We assume the first peer has no
+data of our interest therefore it should cooperate with others to accomplish the request. Our operation in this case requires two 
+different datasets which are not available on the first peer and we should access them on other peers. The main points the same:
+
+\begin{enumerate}
+\item \textbf{The user has neighter a prior knowledge where the datasets are stored}
+\item \textbf{Nor of how many servers are present on the network}
+\item \textbf{The operation is linear}
+\end{enumerate}
+
+We assume a network of peers each one containing a number of datasets. In this scenario each of this peers has one
+dataset from the two datasets that we need to operate on them.
