@@ -184,5 +184,132 @@ different datasets which are not available on the first peer and we should acces
 \item \textbf{The operation is linear}
 \end{enumerate}
 
-We assume a network of peers each one containing a number of datasets. In this scenario each of this peers has one
-dataset from the two datasets that we need to operate on them.
+We assume the data distribution is like the following table:
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S0 & --- & Yes \\
+S1 & DS1 & No \\
+S2 & DS2 & No \\
+\end{tabular}\\
+
+\subsubsection{Possible Approach}
+In order to calculate the result we might take a number of approachers, we start with a combination of \textbf{divide and conquer} and
+\textbf{produce-consume-collect} methods.
+
+The S0, in this case, is the peer who receives the command and initiates the request. The two other peers, S1 and S2 respectively, have the required
+datasets. The initiator will find the corresponding datasets and will dispatch commands to run each part on each peer and then will collect
+the resulting datasets. This will be a blocking operation, we will wait untill the other peers finish their parts and return the result
+to us. If the output is a number it will be returned to the user, if it is a dataset it will be stored based on defined storage mechanism, 
+currently we use radnom storage. The peer will break the operation into smaller operations each one calculating result for one of datasets, 
+this \textbf{sub-operations} will be executed like \textbf{scenario 1} and the result will be collected by initiator peer.
+
+We assume that in this case we have two arrays, each consisting of \(10^6\) random numbers. We have to first transform these datasets into
+a set of [0 or 1] based on the number being even or odd (use case 1) and then we make a third dataset which contains the sum of every two
+corresponding numbers in range of [0 to 2].
+
+
+\begin{itemize}
+\item Note: in this case each pear should be able to run the requested linear operation on one or more datasets.
+\end{itemize}
+
+The notation of above mentioned approach will be like this:
+
+\[ Operation(A + B) = Operation(A) + Operation(B) \]
+
+In order to run this operation in a collective way, we need to think of the type of service calls in our system, whether they are blocking or
+non-blocking. Since often the operations in HPC environments are time consuming and long-running, we consider the non-blocking approach. In
+this way the user will provide a dataset name for storing the result. The operation will be \textbf{submitted} to the collaborative network.
+Later on user is able to query for the result using the key that she had provided at the time of submission. This allows us to design our system
+in a more decentralized way, where each peer can inform others (neighbors) about a request in a \textbf{publish-subsribe} manner, where the peer
+will publish a request and finish the operation. Later on the peer who has the dataset will \textbf{react} to the published request and will take
+further actions, all the other peers who do not have the requirents (the dataset for now) will ignore it, however they can store the details of 
+running operations for next steps, when we will come to more complex workflows.
+
+To show more detailed version of this operation we demonstrate the steps for it:
+
+\begin{enumerate}
+\item User issues the command to S0, providing DS1, DS2 \st{and a unique name for the result}
+\item System will check whether the operation is linear
+\item Then it will break the command into sub-commands, each for one of datasets
+\item System will generate unique ids for each sub-command
+\item System will then submit the sub-commands along with dataset name and the unique id for the result dataset
+to \textbf{itself}, which will cause a situation like scenario 1
+\item System will next have to collect the results in a non-blocking manner which we will discuss shortly.
+\end{enumerate}
+
+\begin{itemize}
+\item With the use of operation ids we eliminate the need to get a result dataset name from user but we still can accpte \textbf{tags} from users.
+\end{itemize}
+
+\begin{itemize}
+\item We assume every operation involving more than one dataset is made of other operations which are already defined in the system.
+\end{itemize}
+
+There is an important issue here, we create sub-operatiosn for each operation and we run them in a non-blocking manner, this will
+cause it almost impossible to return the result of operation to the user in one run. One might think that we can block and query
+until the result of sub-operations are ready, but this is something that we want to avoid. Therefore to solve this issue in a 
+distributed manner, we introduce an operation id for each user request. We inform all the peers via sending messages (signals) about
+the new operation and it's id and sub-commands. Each peer will update this operation internally based on further received messages.
+We also return the operation id to the user instead of any results. Then user will query for the result of operation, providing the 
+operation id. We change the above steps like this:
+
+\begin{enumerate}
+\item User issues the command to S0, providing DS1, DS2 and a unique name for the result
+\item \textbf{System will generate a unique id for the operation and will store it along with the parameters}
+\item System will check whether the operation is linear
+\item Then it will break the command into sub-commands, each for one of datasets
+\item System will generate unique ids for each sub-command
+\item \textbf{System will notify other peers about the incoming operation with related parameters}
+\item System will then submit the sub-commands along with dataset name and the unique id for the result dataset
+to \textbf{itself}, which will cause a situation like scenario 1
+\item System will next have to collect the results in a non-blocking manner which we will discuss shortly.
+\item System will return the operation id to the user
+\end{enumerate}
+
+In the other hand the other peers which are the same basically, will react to the new operation signal:
+
+\begin{enumerate}
+\item Receive operation update message
+\item Make a local lookup if the operation should be added or updated
+\item Add or update the operation in the local storage
+\end{enumerate}
+
+Having the operation id and local updating storage for operations we now need to find a way to collect the results.
+First of all we need to decide which peer will collect the results. We take the most straigh forward for now, the 
+initiator peer, which has the knowledge of existing datasets in the network along with their sizes, will pick the 
+peer which contains the largest dataset as the collector peer. We explicitly decide about the collector node in the
+beginning either by size or randomly amount the data container peers.
+
+It is worthy to mention that the collector peer will then store the result based on the configured storage mechanism 
+which is random storage for now, not necesserily storing on the same node.
+
+Now we have enough information in each peer to collect, process and store the results. The peers (including the collector)
+ will react to operation methods like this:
+
+\begin{enumerate}
+\item Receive operation update message
+\item Make a local lookup if the operation should be added or updated
+\item Add or update the operation in the local storage
+\item Am I the collector? If yes do the followings:
+\begin{itemize}
+\item check if the sub-operations are done
+\item If the sub-operations are done, collect their results
+\item Process the results
+\item Based on the storage mechanism store the result
+\item Update the operation with the result dataset id
+\item Change status of operation to "done" (we need a proper state-machine here)
+\item Inform other peers about the update
+\end{itemize}
+\end{enumerate}
+
+Now if user makes a query giving the operation id this would be the result:
+
+\begin{enumerate}
+\item Check operation storage
+\item If the operation is marked done, return the dataset id
+\item If it is not done, return the status.
+\end{enumerate}
+
+\section{Operation Implementation}
+About implementation of operation decorator (aspect?)
