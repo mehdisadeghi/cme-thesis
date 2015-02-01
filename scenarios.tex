@@ -313,3 +313,18 @@ Now if user makes a query giving the operation id this would be the result:
 
 \section{Operation Implementation}
 About implementation of operation decorator (aspect?)
+
+\section{Observed Errors}
+While testing scenario 2 we observed a common error. We this scenario with three different peers as the following table:
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S0 & --- & Yes \\
+S1 & DS1 & No \\
+S2 & DS2 & No \\
+\end{tabular}\\
+
+We also used \textbf{Random Dataset Storage} mechanism, simply to store resulting dataset of one operation on one of the network
+peers. The problem is when two peers decide to store the result of one operation on each other a blocking condition happens. Our
+approach was openning a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
+peer, therefore both block.
