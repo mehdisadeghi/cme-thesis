@@ -328,3 +328,7 @@ We also used \textbf{Random Dataset Storage} mechanism, simply to store resultin
 peers. The problem is when two peers decide to store the result of one operation on each other a blocking condition happens. Our
 approach was openning a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
 peer, therefore both block.
+
+\subsection{Solution}
+To solve the blocking peers problem we used the already running main application API instead of openning temporary PULL/PUSH zeromq 
+sockets. This change is working fine and the peers exchanging datasets with no problem.
