@@ -1,8 +1,8 @@
-\chapter{Literature}
+\chapter{Related Work}
 \label{cha:literature}
 
 In this chapter we will go through a number of existing solutions and we will 
-disscuss their efficiency and deployment complexity. Before that we introduce the
+discuss their efficiency and deployment complexity. Before that we introduce the
 parameters which are important for us. Then we will assess each solution against the
 introduced parameter set.
 
@@ -23,23 +23,23 @@ There are many factors that we need to take into account before introducing our 
 \section{Data Storage Systems}
 \label{sec:datastoragesystems}
 
-SAME POINTS SHOULD BE DISCUSSED FOR EACH APPROUACH (FROM OUR POINT OF VIEW) 
+SAME POINTS SHOULD BE DISCUSSED FOR EACH APPROACH (FROM OUR POINT OF VIEW) 
 e.g. EFFICIENCY, COMPLEXITY, DISTRIBUTED APPLICATION ACCESS, APPLICATION AWARENESS,
-POSSIBLE DATA ACCESS SCENARIOS, SCALIBILITY, DATA TRANSFER, FAULT TOLERANCE, 
+POSSIBLE DATA ACCESS SCENARIOS, SCALABILITY, DATA TRANSFER, FAULT TOLERANCE, 
 ACCESS CONTROL 
 
 
 \section{Distributed File Systems}
 One way to achieve fault tolerant and reliable data storage and access is to use
 distributed file systems (DFS). In this case the data will be replicated over a
-network of storage servers with different magnitutes based on the underlying file
+network of storage servers with different magnitudes based on the underlying file
 system. We will discuss a number of free and open source solutions.
 
 \subsection{Hadoop Distributed File System (HDFS)}
 ``The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on
 commodity hardware.'' \cite[tp.~3]{HDFSDocuments}
 
-``Hadoop1 provides a distributed filesystem and a framework 
+``Hadoop1 provides a distributed file system and a framework 
 for the analysis and transformation of very large data sets 
 using the MapReduce \cite{DG04} paradigm.''\cite{TheHDFS}
 
@@ -53,7 +53,7 @@ src:\url{http://hadoop.apache.org/docs/r0.18.3/quickstart.html}
 needs Java 1.5.x ssh and sshd and rsync. Three basic modes are available:
 Local, Pseudo-Distributed and Fully Distributed mode. XML configuration,
 installation of Local and Pseudo Distributed modes are almost straight
-forward, for fully distributed note extra steps are required (offical
+forward, for fully distributed note extra steps are required (official
 doc link is dead).
 \subparagraph{Efficiency}
 

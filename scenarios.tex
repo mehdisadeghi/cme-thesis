@@ -34,7 +34,7 @@ Input files are normally not mission critical and could be reproduced.
 Operations create output datasets which normally are small in size, threfore we ignore the transfer cost of operation
 results in our work.
 
-\subsection{Data Locationing}
+\subsection{Data Locating}
 We consider three different approaches toward preparing required data for operations.
 \subsubsection{Conventional Approach}
 in this approach we put the required data on a network file system and all
@@ -100,14 +100,14 @@ Each server has its own storage and maintains a number of datasets on it. These 
 together to accomplish issued commands. User in this case wants to perform one operation on a dataset
 that resides only on one of the servers. There are two main assumptions here:
 \begin{enumerate}
-\item \textbf{The user has neighter a prior knowledge where the data is stored}
+\item \textbf{The user has neither a prior knowledge where the data is stored}
 \item \textbf{Nor of how many servers are present on the network}
 \end{enumerate}
 
 The user connects to one of the servers, which we call a client. This server is assumed to be part 
 of the network, though it may not have any local data stores on it. The user issues, interactively
 (or non-interactively) a command on a set of data providing some kind of identification. This command
-is broadcasted by the client to all servers in the network. All servers receive this command and check
+is broadcast by the client to all servers in the network. All servers receive this command and check
 whether they have the data locally. The server which has the data performs the operation and the others
 ignore it. The result of the operation in this case, remains on the same server which the original 
 dataset was on. 
@@ -117,7 +117,7 @@ dataset was on.
 \end{itemize}
 
 Moreover we assume the user has already queried the available data in the entire network by 
-issueing something like “list datasets” which outputs dataset names and ids.
+issuing something like “list datasets” which outputs dataset names and ids.
 
 The following table shows two servers, each has one dataset. The user is connected to S2.\\
 
@@ -155,11 +155,11 @@ To be able to assess the performance of each given solution to the mentioned sce
 called \textbf{Konsensus}. The code is available on Github. %TODO add ref here
 
 \subsection{Testing Problems}
-Writing tests for a distributed application is not as easy as writing unittests for a normal application. 
+Writing tests for a distributed application is not as easy as writing unit-tests for a normal application. 
 Our demo application acts as a server and client at the same time. Moreover we want to launch multiple 
-network peers running on one or multiple machines. Testing scenarios on this network is not possible with
-normal mocking approaches, because we need to test the behaviour of our solution in a network of collaborating
-peers which are not external services, rather the core services of the application.
+network peers running on one or more machines. Testing scenarios on this network is not possible with
+normal mocking approaches, because we need to test the behavior of our solution in a network of collaborating
+peers which are not external, rather the core services of the application.
 
 To overcome testing issues we have to launch the desired number of peers separately and then run our tests 
 over them. To make this operation faster we changed the application to make it possible to launch any number
@@ -170,7 +170,7 @@ We use python Greenlets instead of threads. This means that our demo application
 This causes a problem when launching multiple apps all together with one script and inside one thread, that
 causes the signals for events spread among all greenlets and make trouble. To avoid this we have to run
 each server in a separate processes. Running them inside threads won't help as well because the blinker python
-library is threadsafe so it moves signals between threads as well as greenlets.
+library is thread-safe so it moves signals between threads as well as Greenlets.
 
 \subsection{Scenario 2 (UC2)}
 This is similar to scenario one, except that the operation requires two datasets to be done. We have a network of peers collaborating
@@ -179,7 +179,7 @@ data of our interest therefore it should cooperate with others to accomplish the
 different datasets which are not available on the first peer and we should access them on other peers. The main points the same:
 
 \begin{enumerate}
-\item \textbf{The user has neighter a prior knowledge where the datasets are stored}
+\item \textbf{The user has neither a prior knowledge where the datasets are stored}
 \item \textbf{Nor of how many servers are present on the network}
 \item \textbf{The operation is linear}
 \end{enumerate}
@@ -199,9 +199,9 @@ In order to calculate the result we might take a number of approachers, we start
 
 The S0, in this case, is the peer who receives the command and initiates the request. The two other peers, S1 and S2 respectively, have the required
 datasets. The initiator will find the corresponding datasets and will dispatch commands to run each part on each peer and then will collect
-the resulting datasets. This will be a blocking operation, we will wait untill the other peers finish their parts and return the result
+the resulting datasets. This will be a blocking operation, we will wait until the other peers finish their parts and return the result
 to us. If the output is a number it will be returned to the user, if it is a dataset it will be stored based on defined storage mechanism, 
-currently we use radnom storage. The peer will break the operation into smaller operations each one calculating result for one of datasets, 
+currently we use random storage. The peer will break the operation into smaller operations each one calculating result for one of datasets, 
 this \textbf{sub-operations} will be executed like \textbf{scenario 1} and the result will be collected by initiator peer.
 
 We assume that in this case we have two arrays, each consisting of \(10^6\) random numbers. We have to first transform these datasets into
@@ -221,10 +221,10 @@ In order to run this operation in a collective way, we need to think of the type
 non-blocking. Since often the operations in HPC environments are time consuming and long-running, we consider the non-blocking approach. In
 this way the user will provide a dataset name for storing the result. The operation will be \textbf{submitted} to the collaborative network.
 Later on user is able to query for the result using the key that she had provided at the time of submission. This allows us to design our system
-in a more decentralized way, where each peer can inform others (neighbors) about a request in a \textbf{publish-subsribe} manner, where the peer
+in a more decentralized way, where each peer can inform others (neighbors) about a request in a \textbf{publish-subscribe} manner, where the peer
 will publish a request and finish the operation. Later on the peer who has the dataset will \textbf{react} to the published request and will take
-further actions, all the other peers who do not have the requirents (the dataset for now) will ignore it, however they can store the details of 
-running operations for next steps, when we will come to more complex workflows.
+further actions, all the other peers who do not have the requirements (the dataset for now) will ignore it, however they can store the details of 
+running operations for next steps, when we will come to more complex workflow.
 
 To show more detailed version of this operation we demonstrate the steps for it:
 
@@ -246,7 +246,7 @@ to \textbf{itself}, which will cause a situation like scenario 1
 \item We assume every operation involving more than one dataset is made of other operations which are already defined in the system.
 \end{itemize}
 
-There is an important issue here, we create sub-operatiosn for each operation and we run them in a non-blocking manner, this will
+There is an important issue here, we create sub-operations for each operation and we run them in a non-blocking manner, this will
 cause it almost impossible to return the result of operation to the user in one run. One might think that we can block and query
 until the result of sub-operations are ready, but this is something that we want to avoid. Therefore to solve this issue in a 
 distributed manner, we introduce an operation id for each user request. We inform all the peers via sending messages (signals) about
@@ -282,7 +282,7 @@ peer which contains the largest dataset as the collector peer. We explicitly dec
 beginning either by size or randomly amount the data container peers.
 
 It is worthy to mention that the collector peer will then store the result based on the configured storage mechanism 
-which is random storage for now, not necesserily storing on the same node.
+which is random storage for now, not necessarily storing on the same node.
 
 Now we have enough information in each peer to collect, process and store the results. The peers (including the collector)
  will react to operation methods like this:
@@ -326,9 +326,9 @@ S2 & DS2 & No \\
 
 We also used \textbf{Random Dataset Storage} mechanism, simply to store resulting dataset of one operation on one of the network
 peers. The problem is when two peers decide to store the result of one operation on each other a blocking condition happens. Our
-approach was openning a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
+approach was opening a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
 peer, therefore both block.
 
 \subsection{Solution}
-To solve the blocking peers problem we used the already running main application API instead of openning temporary PULL/PUSH zeromq 
+To solve the blocking peers problem we used the already running main application API instead of opening temporary PULL/PUSH zeromq 
 sockets. This change is working fine and the peers exchanging datasets with no problem.

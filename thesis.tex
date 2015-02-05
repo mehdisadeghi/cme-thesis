@@ -18,8 +18,6 @@
 \usepackage{setspace}
 \usepackage{soul}
 
-
-
 \definecolor{Code}{rgb}{0,0,0}
 \definecolor{Decorators}{rgb}{0.5,0.5,0.5}
 \definecolor{Numbers}{rgb}{0.5,0,0}
@@ -109,26 +107,31 @@ Offenburg, February 28, 2015
 
 Mehdi Sadeghi
 
-
 \chapter*{Abstract}
-This document contains my master's thesis report, including the problem definiation,
+This document contains my master's thesis report, including the problem definition,
 an overview of state of the art, discussions and my suggestions.
+During this work we have made a solution to launch and complete different
+types of tasks in a network of collaborating peers without any central
+controlling point. We have worked on a number of different scenarios which arise from our requirements and we have implemented those scenarios using distributed workflow management and data transfer approaches. We have taken into account two important consideration 
+during this work, first minimizing required data transfer between peers and second, avoiding from central points of failures. During this report
+we first introduce the problem and its context and then we go through
+existing solutions, our workflow and data transfer methods, application architecture and future works.
 
-
-
-\chapter*{Acknowledgement}
-Here will come acknowledgement
+%\chapter*{Acknowledgement}
+%Here will come acknowledgement
 
 \tableofcontents
 
 \include{preface}
 \include{introduction}
-\include{ideas}
-\include{experiments}
 \include{literature}
 \include{scenarios}
 \include{workflow}
 \include{datatransfer}
+\include{applicationarch}
+\include{experiments}
+\include{futurework}
+%\include{ideas}
 
 %\appendix % The Proposal
 

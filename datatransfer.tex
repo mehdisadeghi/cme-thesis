@@ -1,10 +1,10 @@
-\chapter{Data Transfer}
+\chapter{Distributed Datasets}
 \label{cha:data}
 
 \section{Large Array Transfer}
 To transfer large arrays over the network there are a number of considerations. Should the array be stored locally before transfer? What if the array is so big that it does not fit into the machines memory? And how the array should be transferred?
 
-Currenlty we assume the result datasets fit into memory, therefore there is only the question of how to transfer them over the network. To prevent unnecessary copies, we consider streams to send them to other peers. In the demo application this is done with streaming sockets. The other peer will be notified and then it will fetch the desired dataset.
+Currently we assume the result datasets fit into memory, therefore there is only the question of how to transfer them over the network. To prevent unnecessary copies, we consider streams to send them to other peers. In the demo application this is done with streaming sockets. The other peer will be notified and then it will fetch the desired dataset.
 
 \subsection{Sequence Diagram}
 %TODO: I have to show the sequence diagram for push/pull requests, similar to http://learning-0mq-with-pyzmq.readthedocs.org/en/latest/_images/pushpull.png

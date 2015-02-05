@@ -26,10 +26,10 @@ and \textit{Node 3} respectively. Therefor \textit{Node 1} have
 to initiate operations on the other machines.
 
 \subsection{Identical Instances}
-We assume that on each machine of the network the same instance of our
-imaginary program is running which is capable of running all operations
+We assume that on each machine of the network the same instance of our program is running which 
+is capable of all of our operations
 including A, B and C. The only consideration is the availability of 
-DatSets, they are not available on all machines.
+Datasets, they are not available on all machines.
 
 A linear operation (not clear to my self how to write it):
 
@@ -50,9 +50,9 @@ optimized way?
 \end{enumerate}
 
 \subsection{The Idea}
-First of all we assume that we have the information about the DataSets
-available on all of the mamchines i.e. in form of a distributed table
-with entries containing the node address and DataSet id. Based on this
+First of all we assume that we have the information about the Datasets
+available on all of the machines i.e. in form of a distributed table
+with entries containing the node address and Dataset id. Based on this
 information the application can decide if it has the required data or
 not. 
 
@@ -60,21 +60,21 @@ Based on this algorithm (to be defined) the initial application
 delegates operations to the other nodes (instances of the same program),
 where the data is available. Our distributed workflow manager (to be 
 defined) will synchronize the information on these running operation and
-will lable the output data and will add it to the distributed data table.
+will label the output data and will add it to the distributed data table.
 
-After finishing operations A and B we will run operaion C in either
+After finishing operations A and B we will run operation C in either
 of these nodes, because the required data is partially available on these
 nodes. Then we have to transfer the rest of the data to one of these
-nodes to run the operation C which needs both parts simultaniously.
+nodes to run the operation C which needs both parts simultaneously.
 
 \subparagraph{Using Prior Art}
 At this point we can take advantage of existing Distributed File Systems
 (DFS) to make the data available for operation C. We can then eliminate
 the complexity of data transfer between these two nodes and delegate it
 to existing distributed file systems. The main point is we don't rely on
-DFS for all of our decistion making part but we explicitely make the 
-decition to run operation A and B on specific nodes and then for the 
-last part we use a meta disk or universal disk concept to deliver the
+DFS for all of our decision making part but we explicitly make the 
+decision to run operation A and B on specific nodes and then for the 
+last part we use a meta or universal disk concept to deliver the
 remaining data for operation C.
 
 \section{Sqmpy Integration}

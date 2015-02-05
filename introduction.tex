@@ -1,43 +1,40 @@
 \chapter{Introduction}
 \label{cha:introduction}
-\section{Objectives}
+\section{Thesis Objectives}
+The goal of this thesis is to minimize the amount of transferred data in a network of collaborating computers which we call them peers. This data belongs to operations which might be linear or non-linear
+and might involve other operations as well. Each operation can be initiated in any participating
+peer but the required data is not necessarily available on that computer even though
+the operation result might be delivered back to the same peer.
 We will focus on two important topics in this work. First one is data transfer problems between multiple 
 computers which are doing a task collaboratively. Second one is the collaboration itself, 
-i.e. how multiple computers will accomplish a collaborative task in a distributed and decentralized environment.
-To accomplish these objectives we will discuss our specific distributed work flow management and data transfer
-scenarios. 
-We define our requirements regarding the above mentioned topics and we will extract the parameters 
-which we are going
-to assess other solutions with them. Then we will go through the currently available solutions.
-Afterward we will discuss their applicability according to our requirements and whether they answer 
-our needs or not.
-The goal of this thesis is to minimize the amount of transferred data in a network of 
-collaborating computers. This data belongs to operations which might be linear or not
-and require multiple steps. The operation can be initiated in any participating
-computer but the required data is not necessarily available on that computer, even though
-the operation result should be delivered back to the reinitializing computer.
+i.e. how multiple computers will manage to finish the task in a distributed and decentralized environment.
+To accomplish these objectives we will discuss our specific distributed workflow management and data transfer methods. 
+We define our requirements regarding the above mentioned topics and we will extract the parameters which we are going
+to assess other solutions with them. Then we will go through the currently available solutions and we will discuss them shortly to see
+whether they are applicable to our problem domain with regard to our requirements.
 
 \section{Terminology}
 We will use a number of terms through this report. Here are the meaning for each.
 \subparagraph{Node}
-Each node refers to one computer in the network.
+Refers to one computer in the network.
 \subparagraph{Data}
-When we refer to data we mean the output of scientific applications, such as NumPy types.
+When we refer to data we mean the output of scientific applications.
 \subparagraph{Dataset}
-Same as data with more emphasize on it as collection of e.g. NumPy types.
+Same as data with more emphasize on it as collection e.g. NumPy array.
 \subparagraph{Application}
-Refers to the demo application which has been developed to show case the proposed solution.
+The demo software which has been developed to show case the proposed solution.
+\subparagraph{Peer}
+One instance of the network application which is in collaboration with others.
 \subparagraph{Instance}
-Refers to an instance of the same application running on a node.
+An instance of the application running on a node.
 \subparagraph{Operation}
-Any sort of operation, linear or non-linear which is being provided by the application.
+Linear or non-linear functions which users want to run on datasets.
 \subparagraph{Task}
 Same as the operation with more emphasize on the output rather than the functionality.
 \subparagraph{Service}
 A scientific operation being provided by the application which could be called remotely.
 \subparagraph{System}
-The combination of nodes, data, application, instances, operations and services as a
-whole.
+The combination of nodes, data, application, instances, operations and services as a whole.
 \subparagraph{User}
 A scientist, researcher or student who uses the system to run a task.
 
@@ -50,7 +47,7 @@ on data which might not be available on the same machine or might be residing pa
 The produced data often exceeds 1 GB in many experiments and it should be moved back and forth every few minutes,
 therefore it is cheaper to transfer the operation rather than the data.
 
-The problem here is not about distributing the stored data rather, data exchange between instances of the application 
+The problem here is not about distributing the stored data rather exchanging it between instances of the application 
 talking together in runtime while doing one global task and keeping this workflow distributed. In this terms each
 application instance takes care of its own data and provides a set of services. Some operations require data from
 another node, therefore we have to transfer the data or run the operation on the node which contains the data. There
@@ -68,7 +65,7 @@ of the application. We will propose our collaboration and data transfer algorith
 \subsection{Data Characteristics}
 We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
 of physical particles such as atoms and molecules. These data is being used to simulate collections of particles called
-models. Although our work is not dependent on these, they help us to understand the the definition of the data that
+models. Although our work is not dependent on these, they help us to understand the definition of the data that
 we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
 and we can reproduce it. 
 

@@ -1,4 +1,4 @@
-\chapter{Experiments}
+\chapter{Show Cases}
 \label{cha:exp}
 
 In this chapter we will go through a set of experiments to showcase the result of taking different approaches toward file transfer techniques. Meanwhile we will try a number of data distribution methods to see how they fit into our scenarios.
@@ -8,10 +8,10 @@ Distributed Hash Tables (DHT) known best for their application to build torrent 
 
 MORE INFO HERE ON DHT, KAMEDLIA PAPER and IMPLEMENTATIONS
 
-In our case to keep track of the available data on the network of collaborating peers, we can use a DHT table. Everytime an instance wants to find a dataset it should query the network of peers using one of the existing wrappers and implementations.
+In our case to keep track of the available data on the network of collaborating peers, we can use a DHT table. Every time an instance wants to find a dataset it should query the network of peers using one of the existing wrappers and implementations.
 
 \section{Test Results}
-Our tests show that even though DHT is fault-tolerant and reliable for file distribution, it is not adequete for our realtime requirement to find our required data. In one test we ran two peers, one on an Internet host and another one on local host. Here are the client and server codes:
+Our tests show that even though DHT is fault-tolerant and reliable for file distribution, it is not adequate for our realtime requirement to find our required data. In one test we ran two peers, one on an Internet host and another one on local host. Here are the client and server codes:
 
 \begin{python}
 from twisted.application import service, internet
@@ -108,7 +108,7 @@ This simple client will try to connect to the previously opened port and send ge
 Configuring this p2p network is a little tricky. The network should work correctly even if nodes enter and leave the network. During our tests in development environment we observed some problems with initializing the network, but while the network was initialized leaving and entering the network had no effect on the results.
 
 \subsubsection{Reliability}
-Having the number of nodes increased up to 3 the reliability shows up again. When we set a value for a key in one node we can not guarantee that getting the value for that key on other nodes will return the updated one. With a number of tests I can confirm that two nodes which are bootstrapped with the same third node does not provide the accurate result everytime and it is not clear for me why this happens. See figure~\ref{fig:threepeers} on page ~\pageref{fig:threepeers}.
+Having the number of nodes increased up to 3 the reliability shows up again. When we set a value for a key in one node we can not guarantee that getting the value for that key on other nodes will return the updated one. With a number of tests I can confirm that two nodes which are bootstrapped with the same third node does not provide the accurate result every time and it is not clear for me why this happens. See figure~\ref{fig:threepeers} on page ~\pageref{fig:threepeers}.
 
 After running more tests, we figured out that the possible source of the above mentioned problems was the confusion in using \textit{binary} and \textit{string} in python, so it was an error in our side.
 
@@ -129,22 +129,22 @@ After running more tests, we figured out that the possible source of the above m
 
 
 \subsubsection{Firewall Problems}
-In a test having one process running on a server in Internet and outside of the local network and having two different processes running on one laptop but on different ports it is observed that the changes (sets) in the internet does not replicate to the local processes but the changes from local processes are being replicated to the other process.
+In a test having one process running on a server in Internet and outside of the local network and having two different processes running on one laptop but on different ports it is observed that the changes (sets) in the Internet does not replicate to the local processes but the changes from local processes are being replicated to the other process.
 
 \subsection{conclusion}
-Having a network between local and internet processes in the above mentioned method is not reliable. Repeating the tests with only local processes which are bootstrapping to one of them and running the setter/getter methods showed that even in this scenario it is not reliable and one can not guarantee that the desired value will be returned.
+Having a network between local and Internet processes in the above mentioned method is not reliable. Repeating the tests with only local processes which are bootstrapping to one of them and running the setter/getter methods showed that even in this scenario it is not reliable and one can not guarantee that the desired value will be returned.
 
 
 \section{Network Programming}
 To showcase our desired approach and trying different ones we have used a number of network programming frameworks for python programming language. The main library that we use is called ØMQ or ZeroMQ~\cite{ZeroMQ}. ZeroMQ is an asynchronous messaging library written in C with bindings for many languages including python. This library helps us to easily scale and use different programming paradigms such as publish-subscribe, request-replay and push-pull.
 
 \section{Publish-Subsribe Method}
-Because of reliability issues we fallback to using a simpler approach using ZeroMQ. In this stage our aim is to distribute the information about available datasets at each node. To achieve this we let our demo application launch a number of communicators and publish information about it's data. Other nodes in our network have to subscribes on other nodes, hopefully ZeroMQ allows us to subscribe to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get \textbf{news} from other nodes, for example availability of certain datasets on a node, then it can use publish-subscribe to get extra information on that particular subject.
+Because of reliability issues we fall back to use a simpler approach using ZeroMQ. In this stage our aim is to distribute the information about available datasets at each node. To achieve this we let our demo application launch a number of communicators and publish information about it's data. Other nodes in our network have to subscribes on other nodes, hopefully ZeroMQ allows us to subscribe to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get \textbf{news} from other nodes, for example availability of certain datasets on a node, then it can use publish-subscribe to get extra information on that particular subject.
 
 \subsection{Architecture}
-For demonstration purposes we create a python console applicaiton using gevent\footnote{\url{http://www.gevent.org/}}, zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} to be able to service multiple requests in a non-blocking fashion.
+For demonstration purposes we create a python console application using Gevent\footnote{\url{http://www.gevent.org/}}, zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} to be able to service multiple requests in a non-blocking fashion.
 
-\subsubsection{Applicaiton Initialization}
+\subsubsection{Application Initialization}
 First of all each application instance establish its own zeromq publisher socket. Then it subscribes itself to all other nodes which are listed in config file. At this stage it should be configured manually.
 
 \subsubsection{Gevent and non-blocking}
@@ -157,7 +157,7 @@ Since this is going to be a network program we need to use a form of Remote Proc
 WHICH DATA TYPES ARE WE ALLOWED TO TRANSFER USING ZERORPCS? IS IT ENOUGH FOR US?
 
 \subsection{Application's State}
-WE HAVE TO DECIDE ON A STATE MANAGER TO MAKE APPLICATION'S BEHAVIOUR RELIABLE.
+WE HAVE TO DECIDE ON A STATE MANAGER TO MAKE APPLICATION'S BEHAVIOR RELIABLE.
 
 \subsection{Network Discovery}
 At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
@@ -166,12 +166,12 @@ At this stage there is no network discovery, because it is not our main problem.
 Again this is not of our interest. The point is there are existing solutions for these problems and we want to let our application to be able to demonstrate the main problem which would be deciding about data transfer routes and distributing the information about currently running operations.
 
 \section{Use Case One Problems}
-When we ask for an operation and we want to store the result somewehere on the network we have to think about the result name. 
+When we ask for an operation and we want to store the result somewhere on the network we have to think about the result name. 
 We need a consistent way of naming datasets. If we ask users to provide resulting dataset names it will break soon, we need to 
 let user to somehow give some \textbf{tags} but not the real names. We have to let the user know about the result name but also
 let her to look for datasets by providing some tags.
 
-The simplest problems that will hapen if we store datasets with similar names is redandant work in the network. Peers will start 
+The simplest problems that will happen if we store datasets with similar names is redundant work in the network. Peers will start 
 to process and override the same dataset.
 
 \subsection{Data Manipulation}
