@@ -33,9 +33,14 @@
   Hochschule für Technik, Wirtschaft und Medien Offenburg\\[0.25\baselineskip]
   Fakultät Medien und Informationswesen\\[0.25\baselineskip]
   %Arbeitsbereich: Wissensbasierte Systeme\\[0.25\baselineskip]
-  Professorin: Prof. Dr. Katharina Mehner-Heindl\\[0.25\baselineskip]
+  Professorin: Dr. Katharina Mehner-Heindl\\[0.25\baselineskip]
   Betreuer: Dr. Adham Hashibon
 }
+%\institute{
+%Fraunhofer Institute for Mechanics of Materials IWM\\[0.25\baselineskip]
+%Wöhlerstraße 11\\[0.25\baselineskip]
+%79108 Freiburg \\[0.25\baselineskip]
+%Betreuer: Dr. Adham Hashibon}
 \titlegraphic{\includegraphics[height=52mm]{iwm}}
 \date[\today]{\today}
 \subject{epilog}
@@ -97,12 +102,39 @@
     % ---------------------------------------------------------%
     % Set up a column
     \begin{column}{.45\textwidth}
-      \begin{block}{Block 1}
-        \lipsum[1-3]
-      \end{block}
+      \begin{block}{Introduction}
+European scientific communities launch many scientific experiments daily, resulting in huge amounts
+of data. Specifically in molecular dynamics and material science fields there are many different
+simulation software which are being used to accomplish multiscale modelling tasks. These tasks
+often involve running multiple simulation programs over the existing data or the data which is
+produced by other simulation software. Depending on the amount of the data and the desired type of simulation
+these tasks could take many days to finish. The runtime order of these softwares and 
+their input data are normally defined in scripts written by researchers which is the simplest
+form of workflow management.
 
-      \begin{block}{Block 2}
-        \lipsum[3-4]
+%In the above mentioned context it's common that programs start processing some existing data models e.g. human genome
+%or physical models data and often simulation programs should be coupled together to produce the final result.
+%Moreover the required data to launch an operation might not be available locally and should be fetched from the network.
+%Then these coupled programs will need to exchange data at runtime.
+
+Such experiments are the source of many high performance computing (HPC) problems, specially data transfer
+and workflow management. This thesis is an effort to know the main data transfer scenarios in HPC experiments 
+and try to address them in a distributed manner with a collective but decentralized approach toward workflow management
+and dataset storage and query.
+
+      \end{block}
+      
+      \begin{block}{Requirements}
+      The main requirments as exported during the meetins are these:
+        \begin{itemize}
+        \item User has no idea where the required data is located.
+        \item User should have same experience regardless of the peer to which she connects.
+        \item System should have no central brokers.
+        \item Required data are distributed on the network.
+        \item Runtime control over task execution.
+        \item The solution should be distributed.
+        \item Easily deployable.
+        \end{itemize}
       \end{block}
     \end{column}
     % ---------------------------------------------------------%
@@ -111,17 +143,27 @@
     % ---------------------------------------------------------%
     % Set up a column 
     \begin{column}{.45\textwidth}
-      \begin{block}{Yet another block}
-        \lipsum[5-7]
+      \begin{block}{Related Work}
+        Many scientific groups have produced tools to faciliate workflow management, job scheduling,
+        service discovery, resource management and etc. Some of these are very localized and some are
+        too heavy for an agile group to launch and maintain it. The job schedulers and queue management
+        systems such as Sun Grid Engine (SGE) are tailored toward job management and they do not give
+        control over task executions in runtime.
       \end{block}
 
-      \begin{block}{Some math block}
+      \begin{block}{Network Design}
+        \begin{equation}
+          a^2+b^2=c^2
+        \end{equation}
+      \end{block}
+      
+      \begin{block}{Proposed Solution}
         \begin{equation}
           a^2+b^2=c^2
         \end{equation}
       \end{block}
 
-      \begin{block}{Some citations}
+      \begin{block}{The Prototype}
         \alert{Watch out for } \cite{ff2010}
       \end{block}
 
