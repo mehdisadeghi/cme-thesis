@@ -21,7 +21,7 @@
 %\title[Computational Intelligence]{Interactive Computer Generated Architecture}
 % if you have a long title looking squeezed on the poster, just force
 % some distance:
-\title[Communication and Media Engineering]{Distributed workflow and intelligent datatransfer in high performance networks}
+\title[Communication and Media Engineering]{Distributed Flow Control and Intelligent Data Transfer in High Performance Networks}
 % if you have a long title looking squeezed on the poster, just force
 % some distance:
 % \title[Computational Intelligence]{%
@@ -103,19 +103,14 @@
     % Set up a column
     \begin{column}{.45\textwidth}
       \begin{block}{Introduction}
-European scientific communities launch many scientific experiments daily, resulting in huge amounts
+European scientific communities launch many experiments every day, resulting in huge amounts
 of data. Specifically in molecular dynamics and material science fields there are many different
-simulation software which are being used to accomplish multiscale modelling tasks. These tasks
+simulation software which are being used to accomplish multi scale modeling tasks. These tasks
 often involve running multiple simulation programs over the existing data or the data which is
 produced by other simulation software. Depending on the amount of the data and the desired type of simulation
 these tasks could take many days to finish. The runtime order of these softwares and 
 their input data are normally defined in scripts written by researchers which is the simplest
 form of workflow management.
-
-%In the above mentioned context it's common that programs start processing some existing data models e.g. human genome
-%or physical models data and often simulation programs should be coupled together to produce the final result.
-%Moreover the required data to launch an operation might not be available locally and should be fetched from the network.
-%Then these coupled programs will need to exchange data at runtime.
 
 Such experiments are the source of many high performance computing (HPC) problems, specially data transfer
 and workflow management. This thesis is an effort to know the main data transfer scenarios in HPC experiments 
@@ -125,7 +120,7 @@ and dataset storage and query.
       \end{block}
       
       \begin{block}{Requirements}
-      The main requirments as exported during the meetins are these:
+      The main ones as exported during the meetings are these:
         \begin{itemize}
         \item User has no idea where the required data is located.
         \item User should have same experience regardless of the peer to which she connects.
@@ -134,6 +129,8 @@ and dataset storage and query.
         \item Runtime control over task execution.
         \item The solution should be distributed.
         \item Easily deployable.
+        \item User space solution
+        \item Light weight
         \end{itemize}
       \end{block}
     \end{column}
@@ -144,11 +141,37 @@ and dataset storage and query.
     % Set up a column 
     \begin{column}{.45\textwidth}
       \begin{block}{Related Work}
-        Many scientific groups have produced tools to faciliate workflow management, job scheduling,
+        Many scientific groups have produced tools to facilitate workflow management, job scheduling,
         service discovery, resource management and etc. Some of these are very localized and some are
         too heavy for an agile group to launch and maintain it. The job schedulers and queue management
         systems such as Sun Grid Engine (SGE) are tailored toward job management and they do not give
         control over task executions in runtime.
+        Here are a number of similar works:
+        \begin{itemize}
+        \item UNICORE: is a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.\cite{unicore}
+        \item Distributed File Systems, centralized or decentralized
+        \item Porto: The Porto platform will provide a lightweight and flexible system for data and workflow management.\cite{porto}
+        \end{itemize}
+      \end{block}
+      
+      \begin{block}{Proposed Solution}
+      We propose to make a peer-to-peer collaborative application which will run on every resource (computer) in our network, this computer (which we call it peer) will then become one part of the network. In the beginning there is one peer network but this network can be extended to contain multiple other peers. Here are main characteristics:
+      \begin{itemize}
+      \item The solution is peer-to-peer
+      \item Based on publish-subscribe pattern
+      \item Operations are asynchronous
+      \item API calls return an operation unique ID
+      \item Distribute operation store will be synchronized with peers
+      \item Peer subscribe to each other
+      \item Every pear publishes news on every \textbf{state changes}
+      \item Peer can launch operations recursively on itself
+      \item Peers can launch operations on others
+      \end{itemize}
+      
+      In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic solutions.
+        \begin{equation}
+          a^2+b^2=c^2
+        \end{equation}
       \end{block}
 
       \begin{block}{Network Design}
@@ -156,32 +179,38 @@ and dataset storage and query.
           a^2+b^2=c^2
         \end{equation}
       \end{block}
-      
-      \begin{block}{Proposed Solution}
-        \begin{equation}
-          a^2+b^2=c^2
-        \end{equation}
-      \end{block}
 
       \begin{block}{The Prototype}
-        \alert{Watch out for } \cite{ff2010}
+        %\alert{Watch out for } \cite{ff2010}
       \end{block}
-
+	  \begin{block}{Conclusion}
+	  Even though there are many solutions designed for HPC problems, still there are requirements for agile groups which are not satisfied, such as user friendly \textit{smart} applications which hide the complexity
+	  of the data query and storage from end users, less deploy and maintenance cost and more flexibility and control over the application.
+	  During this work we tried to address these needs and create a light weight
+	  solution based on open technologies which run in user space and allows running simple and complicated scenarios over the data. Our approach is very flexible to be extended and it is easy to build new services on top
+	  of the existing framework which provides the distributed operation and storage mechanisms to applications.
+	  \end{block}
       \begin{block}{References}
         % this is just an example, use BibTeX!
         \begin{thebibliography}{999}
-          
-        \bibitem[Foo~and~Fu, 2010]{ff2010}
-          Foo, B.; and Fu, B.
-          2010.
-          \newblock {On logical representations of hackerisms}.
-          {\em J.~Log.~Hack.} 1:1--2.
-          
-        \bibitem[Crock~et~al., 2010]{ck2010}
-          Crock, A; Cruft, B.; and Kludge, C.
-          2010.
-          \newblock {Decomposing junk code}.
-          Manuscript.
+        \bibitem[UNICORE]{unicore}
+        UNICORE atrcile on Wikipedia
+        \url{http://en.wikipedia.org/wiki/UNICORE}
+        
+        \bibitem[Porto]{porto}
+        The Porto platform
+        \url{https://github.com/NanoSim/Porto}
+%        \bibitem[Foo~and~Fu, 2010]{ff2010}
+%          Foo, B.; and Fu, B.
+%          2010.
+%          \newblock {On logical representations of hackerisms}.
+%          {\em J.~Log.~Hack.} 1:1--2.
+%          
+%        \bibitem[Crock~et~al., 2010]{ck2010}
+%          Crock, A; Cruft, B.; and Kludge, C.
+%          2010.
+%          \newblock {Decomposing junk code}.
+%          Manuscript.
           
         \end{thebibliography}
       \end{block}
@@ -190,13 +219,13 @@ and dataset storage and query.
     % end the column
   \end{columns}
 
-  \begin{tikzpicture}[remember picture,overlay]
-    \node[inner sep=0pt,xshift=-30cm,yshift=23cm] at (current page.east) {%
-      \begin{postit}%
-        Post-It time!%
-      \end{postit}%
-    }; 
-  \end{tikzpicture}
+%  \begin{tikzpicture}[remember picture,overlay]
+%    \node[inner sep=0pt,xshift=-30cm,yshift=23cm] at (current page.east) {%
+%      \begin{postit}%
+%        Post-It time!%
+%      \end{postit}%
+%    }; 
+%  \end{tikzpicture}
   
 \end{frame}
 
