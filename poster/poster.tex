@@ -1,0 +1,212 @@
+% $Id: INF_Poster_example.tex 7714 2011-08-31 17:34:46Z tkren $
+%
+% TU Wien - Faculty of Informatics
+% poster template
+%
+% This template is using the beamer document class and beamerposter package, see
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamer/>
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamerposter/>
+% <http://www-i6.informatik.rwth-aachen.de/~dreuw/latexbeamerposter.php>
+%
+% For questions and comments send an email to
+% Thomas Krennwallner <tkren@kr.tuwien.ac.at>
+%
+
+\documentclass[final,hyperref={pdfpagelabels=true}]{beamer}
+
+\usepackage{TUINFPST}
+
+\usepackage{lipsum}
+ 
+%\title[Computational Intelligence]{Interactive Computer Generated Architecture}
+% if you have a long title looking squeezed on the poster, just force
+% some distance:
+\title[Communication and Media Engineering]{Distributed workflow and intelligent datatransfer in high performance networks}
+% if you have a long title looking squeezed on the poster, just force
+% some distance:
+% \title[Computational Intelligence]{%
+%   Integration of Conjunctive Queries over \\[0.2\baselineskip]%
+%   Description Logics into HEX-Programs %\\[0.2\baselineskip]%
+% }
+\author[msadeghi@stud.hs-offenburg.de]{Mehdi Sadeghi}
+\institute[]{%
+  Hochschule für Technik, Wirtschaft und Medien Offenburg\\[0.25\baselineskip]
+  Fakultät Medien und Informationswesen\\[0.25\baselineskip]
+  %Arbeitsbereich: Wissensbasierte Systeme\\[0.25\baselineskip]
+  Professorin: Dr. Katharina Mehner-Heindl\\[0.25\baselineskip]
+  Betreuer: Dr. Adham Hashibon
+}
+%\institute{
+%Fraunhofer Institute for Mechanics of Materials IWM\\[0.25\baselineskip]
+%Wöhlerstraße 11\\[0.25\baselineskip]
+%79108 Freiburg \\[0.25\baselineskip]
+%Betreuer: Dr. Adham Hashibon}
+\titlegraphic{\includegraphics[height=52mm]{iwm}}
+\date[\today]{\today}
+\subject{epilog}
+\keywords{my kwd1, my kwd2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Display a grid to help align images 
+%\beamertemplategridbackground[12.7mm]
+
+% play around with the background colors
+% \setbeamercolor{background canvas}{bg=yellow}
+
+% use a background picture
+% \usebackgroundtemplate{%
+%   \includegraphics[width=\paperwidth]{logo_KBS_2_CMYK}
+% }
+
+% play around with block colors
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block title}{fg=TuWienBlue,bg=white}
+
+\setbeamertemplate{block begin}{
+  \begin{beamercolorbox}{block title}%
+    \begin{tikzpicture}%
+      \node[draw,rectangle,line width=3pt,rounded corners=0pt,inner sep=0pt]{%
+        \begin{minipage}[c][2cm]{\linewidth}
+          \centering\textbf{\insertblocktitle}
+        \end{minipage}
+      };
+    \end{tikzpicture}%
+  \end{beamercolorbox}
+  \vspace*{1cm}
+  \begin{beamercolorbox}{block body}%
+}
+
+\setbeamertemplate{block end}{
+  \end{beamercolorbox}
+  \vspace{2cm}
+}
+
+% setup postit
+\setbeamercolor{postit}{fg=black,bg=yellow} 
+\newenvironment{postit}
+{\begin{beamercolorbox}[sep=1em,wd=7cm]{postit}}
+{\end{beamercolorbox}}
+
+
+% for crop marks, uncomment the following line
+\usepackage[cross,width=88truecm,height=123truecm,center]{crop}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% We have a single poster frame.
+\begin{frame}
+  \begin{columns}[t]
+    % ---------------------------------------------------------%
+    % Set up a column
+    \begin{column}{.45\textwidth}
+      \begin{block}{Introduction}
+European scientific communities launch many scientific experiments daily, resulting in huge amounts
+of data. Specifically in molecular dynamics and material science fields there are many different
+simulation software which are being used to accomplish multiscale modelling tasks. These tasks
+often involve running multiple simulation programs over the existing data or the data which is
+produced by other simulation software. Depending on the amount of the data and the desired type of simulation
+these tasks could take many days to finish. The runtime order of these softwares and 
+their input data are normally defined in scripts written by researchers which is the simplest
+form of workflow management.
+
+%In the above mentioned context it's common that programs start processing some existing data models e.g. human genome
+%or physical models data and often simulation programs should be coupled together to produce the final result.
+%Moreover the required data to launch an operation might not be available locally and should be fetched from the network.
+%Then these coupled programs will need to exchange data at runtime.
+
+Such experiments are the source of many high performance computing (HPC) problems, specially data transfer
+and workflow management. This thesis is an effort to know the main data transfer scenarios in HPC experiments 
+and try to address them in a distributed manner with a collective but decentralized approach toward workflow management
+and dataset storage and query.
+
+      \end{block}
+      
+      \begin{block}{Requirements}
+      The main requirments as exported during the meetins are these:
+        \begin{itemize}
+        \item User has no idea where the required data is located.
+        \item User should have same experience regardless of the peer to which she connects.
+        \item System should have no central brokers.
+        \item Required data are distributed on the network.
+        \item Runtime control over task execution.
+        \item The solution should be distributed.
+        \item Easily deployable.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+
+    % ---------------------------------------------------------%
+    % Set up a column 
+    \begin{column}{.45\textwidth}
+      \begin{block}{Related Work}
+        Many scientific groups have produced tools to faciliate workflow management, job scheduling,
+        service discovery, resource management and etc. Some of these are very localized and some are
+        too heavy for an agile group to launch and maintain it. The job schedulers and queue management
+        systems such as Sun Grid Engine (SGE) are tailored toward job management and they do not give
+        control over task executions in runtime.
+      \end{block}
+
+      \begin{block}{Network Design}
+        \begin{equation}
+          a^2+b^2=c^2
+        \end{equation}
+      \end{block}
+      
+      \begin{block}{Proposed Solution}
+        \begin{equation}
+          a^2+b^2=c^2
+        \end{equation}
+      \end{block}
+
+      \begin{block}{The Prototype}
+        \alert{Watch out for } \cite{ff2010}
+      \end{block}
+
+      \begin{block}{References}
+        % this is just an example, use BibTeX!
+        \begin{thebibliography}{999}
+          
+        \bibitem[Foo~and~Fu, 2010]{ff2010}
+          Foo, B.; and Fu, B.
+          2010.
+          \newblock {On logical representations of hackerisms}.
+          {\em J.~Log.~Hack.} 1:1--2.
+          
+        \bibitem[Crock~et~al., 2010]{ck2010}
+          Crock, A; Cruft, B.; and Kludge, C.
+          2010.
+          \newblock {Decomposing junk code}.
+          Manuscript.
+          
+        \end{thebibliography}
+      \end{block}
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+  \end{columns}
+
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[inner sep=0pt,xshift=-30cm,yshift=23cm] at (current page.east) {%
+      \begin{postit}%
+        Post-It time!%
+      \end{postit}%
+    }; 
+  \end{tikzpicture}
+  
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% TeX-PDF-mode: t
+%%% TeX-debug-bad-boxes: t
+%%% TeX-master: t
+%%% TeX-parse-self: t
+%%% TeX-auto-save: t
+%%% reftex-plug-into-AUCTeX: t
+%%% End:
