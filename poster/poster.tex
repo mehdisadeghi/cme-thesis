@@ -122,24 +122,18 @@ and dataset storage and query.
       \begin{block}{Requirements}
       The main ones as exported during the meetings are these:
         \begin{itemize}
-        \item User has no idea where the required data is located.
+        \item \textbf{Data location is unknow} to users
         \item User should have same experience regardless of the peer to which she connects.
         \item System should have \textbf{no central brokers}.
         \item Required data are distributed on the network.
-        \item Runtime control over task execution.
-        \item The solution should be distributed.
+        \item \textbf{Runtime control} over task execution.
+        \item The solution should be \textbf{distributed}.
         \item Easily deployable.
-        \item User space solution
+        \item \textbf{User space} solution
         \item Light weight
         \end{itemize}
       \end{block}
-    \end{column}
-    % ---------------------------------------------------------%
-    % end the column
 
-    % ---------------------------------------------------------%
-    % Set up a column 
-    \begin{column}{.45\textwidth}
       \begin{block}{Related Work}
         Many scientific groups have produced tools to facilitate workflow management, job scheduling,
         service discovery, resource management and etc. Some of these are very localized and some are
@@ -153,47 +147,62 @@ and dataset storage and query.
         \item Porto: The Porto platform will provide a lightweight and flexible system for data and workflow management.\cite{porto}
         \end{itemize}
       \end{block}
-      
+
+
+
       \begin{block}{Main Scenarios}
       We categorize every possible operation into two main groups:
       \begin{enumerate}
-      \item Sequential operations (or linear). The algebraic notation of this operation would be:
+      \item \textbf{Linear} operations. These operations could be run in parallel. The algebraic notation of this operation would be:
       \[ Operation(A + B) = Operation(A) + Operation(B) \]
-      \item Parallel operations (or non-linear). This operation is not equal to previous one:
+      \item \textbf{Non-linear} operations. These operations are not equal to previous one, they can't be run in parallel:
       \[ Operation(A + B) \neq Operation(A) + Operation(B) \]
       \end{enumerate}
       \end{block}
-      
+
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+
+    % ---------------------------------------------------------%
+    % Set up a column 
+    \begin{column}{.45\textwidth}
+
       \begin{block}{Proposed Solution}
+      \textbf{We need only to solve two problems}:
+      \begin{enumerate}
+      \item How to solve an operation on one dataset?
+      \item How to solve a non-linear operation on two datasets?
+      \end{enumerate}
+      \textbf{We break down all others into combinations of these two scenarios.}
+      
       We propose to make a peer-to-peer collaborative application which will run on every resource (computer) in our network, this computer (which we call it peer) will then become one part of the network. In the beginning there is one peer network but this network can be extended to contain multiple other peers. Here are main characteristics:
       \begin{itemize}
-      \item The solution is peer-to-peer
+      \item The solution is \textbf{peer-to-peer}
+      \item \textbf{Not a client/server} notion
       \item Based on publish-subscribe pattern
       \item Operations are \textbf{asynchronous}
       \item API calls return an \textbf{operation unique ID}
       \item Distribute operation store will be synchronized with peers
       \item \textbf{Peers subscribe to each other}
       \item Every \textbf{pear publishes news} on every \textbf{state changes}
-      \item Peer can launch operations \textbf{recursively} on itself
-      \item Peers can launch operations on others
+      \item Peer can launch operations \textbf{recursively} on itself or others
+%      \item Peers can launch operations on others
       \item Peers keep state for \textbf{Operations}, \textbf{Datasets} and other \textbf{peer list}
       \item Peers and application components are \textbf{loosely coupled}
       \end{itemize}
       
       In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic solutions.
       
-        \begin{equation}
-          a^2+b^2=c^2
-        \end{equation}
       \end{block}
 
-      \begin{block}{Network Design}
-        \begin{equation}
-          a^2+b^2=c^2
-        \end{equation}
-      \end{block}
-
-      \begin{block}{The Prototype}
+      \begin{block}{A Sample Scenario}
+      \begin{enumerate}
+      \item User sends \(Op(A + B) \) to a \textbf{random} peer and gets an ID
+      \item The peer stores this operation in a \textbf{distributed store}
+      \item System breaks this to \(Op(A) + Op(B) \) and \textbf{self-launches} them \textbf{asynchronously}.
+      \item Upon completion of sub-operations a random peer will store the result on the network and notify others
+      \end{enumerate}
         %\alert{Watch out for } \cite{ff2010}
       \end{block}
 	  \begin{block}{Conclusion}
