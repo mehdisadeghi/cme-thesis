@@ -104,16 +104,16 @@
     \begin{column}{.45\textwidth}
       \begin{block}{Introduction}
 European scientific communities launch many experiments every day, resulting in huge amounts
-of data. Specifically in molecular dynamics and material science fields there are many different
-simulation software which are being used to accomplish multi scale modeling tasks. These tasks
-often involve running multiple simulation programs over the existing data or the data which is
+of data. Specifically in \textbf{molecular dynamics} and material science fields there are many different
+simulation software which are being used to accomplish \textbf{multi scale modeling} tasks. These tasks
+often involve running \textbf{multiple simulation programs} over the existing data or the data which is
 produced by other simulation software. Depending on the amount of the data and the desired type of simulation
 these tasks could take many days to finish. The runtime order of these softwares and 
-their input data are normally defined in scripts written by researchers which is the simplest
+their input data are normally defined in \textbf{scripts written by users} which is the simplest
 form of workflow management.
 
 Such experiments are the source of many high performance computing (HPC) problems, specially data transfer
-and workflow management. This thesis is an effort to know the main data transfer scenarios in HPC experiments 
+and workflow management. This thesis is an effort to know the \textbf{main data transfer scenarios} in HPC experiments 
 and try to address them in a distributed manner with a collective but decentralized approach toward workflow management
 and dataset storage and query.
 
@@ -124,7 +124,7 @@ and dataset storage and query.
         \begin{itemize}
         \item User has no idea where the required data is located.
         \item User should have same experience regardless of the peer to which she connects.
-        \item System should have no central brokers.
+        \item System should have \textbf{no central brokers}.
         \item Required data are distributed on the network.
         \item Runtime control over task execution.
         \item The solution should be distributed.
@@ -154,21 +154,34 @@ and dataset storage and query.
         \end{itemize}
       \end{block}
       
+      \begin{block}{Main Scenarios}
+      We categorize every possible operation into two main groups:
+      \begin{enumerate}
+      \item Sequential operations (or linear). The algebraic notation of this operation would be:
+      \[ Operation(A + B) = Operation(A) + Operation(B) \]
+      \item Parallel operations (or non-linear). This operation is not equal to previous one:
+      \[ Operation(A + B) \neq Operation(A) + Operation(B) \]
+      \end{enumerate}
+      \end{block}
+      
       \begin{block}{Proposed Solution}
       We propose to make a peer-to-peer collaborative application which will run on every resource (computer) in our network, this computer (which we call it peer) will then become one part of the network. In the beginning there is one peer network but this network can be extended to contain multiple other peers. Here are main characteristics:
       \begin{itemize}
       \item The solution is peer-to-peer
       \item Based on publish-subscribe pattern
-      \item Operations are asynchronous
-      \item API calls return an operation unique ID
+      \item Operations are \textbf{asynchronous}
+      \item API calls return an \textbf{operation unique ID}
       \item Distribute operation store will be synchronized with peers
-      \item Peer subscribe to each other
-      \item Every pear publishes news on every \textbf{state changes}
-      \item Peer can launch operations recursively on itself
+      \item \textbf{Peers subscribe to each other}
+      \item Every \textbf{pear publishes news} on every \textbf{state changes}
+      \item Peer can launch operations \textbf{recursively} on itself
       \item Peers can launch operations on others
+      \item Peers keep state for \textbf{Operations}, \textbf{Datasets} and other \textbf{peer list}
+      \item Peers and application components are \textbf{loosely coupled}
       \end{itemize}
       
       In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic solutions.
+      
         \begin{equation}
           a^2+b^2=c^2
         \end{equation}
