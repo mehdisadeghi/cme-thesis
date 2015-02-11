@@ -17,7 +17,10 @@
 \usepackage{TUINFPST}
 
 \usepackage{lipsum}
- 
+
+\usepackage{graphicx}
+\graphicspath{ {figures/} }
+
 %\title[Computational Intelligence]{Interactive Computer Generated Architecture}
 % if you have a long title looking squeezed on the poster, just force
 % some distance:
@@ -98,7 +101,7 @@
 
 % We have a single poster frame.
 \begin{frame}
-\fontsize{27pt}{28}\selectfont
+\fontsize{28pt}{29}\selectfont
   \begin{columns}[t]
     % ---------------------------------------------------------%
     % Set up a column
@@ -142,7 +145,7 @@ some highlights:
       \end{block}
 
       \begin{block}{Related Work}
-        There are solutions, some very localized and some too big for small groups to handle. These are number of similar works:
+        There are simliar solutions, some very localized and some too big for small groups to handle:
         \begin{itemize}
         \item UNICORE: a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.\cite{unicore}
         \item Distributed File Systems, centralized or decentralized
@@ -161,6 +164,12 @@ some highlights:
       \end{enumerate}
       \end{block}
 
+      \begin{block}{Internal Components}
+      This figures demonstrates the main components which form the internals of each peer:\\
+      
+      \includegraphics[width=\textwidth]{sys2}
+      \end{block}
+      
     \end{column}
     % ---------------------------------------------------------%
     % end the column
