@@ -98,24 +98,31 @@
 
 % We have a single poster frame.
 \begin{frame}
+\fontsize{27pt}{28}\selectfont
   \begin{columns}[t]
     % ---------------------------------------------------------%
     % Set up a column
     \begin{column}{.45\textwidth}
       \begin{block}{Introduction}
-European scientific communities launch many experiments every day, resulting in huge amounts
-of data. Specifically in \textbf{molecular dynamics} and material science fields there are many different
-simulation software which are being used to accomplish \textbf{multi scale modeling} tasks. These tasks
-often involve running \textbf{multiple simulation programs} over the existing data or the data which is
-produced by other simulation software. Depending on the amount of the data and the desired type of simulation
-these tasks could take many days to finish. The runtime order of these softwares and 
-their input data are normally defined in \textbf{scripts written by users} which is the simplest
-form of workflow management.
+Scientific experiments are the source of many high performance computing (HPC) problems. Here are
+some highlights:
 
-Such experiments are the source of many high performance computing (HPC) problems, specially data transfer
-and workflow management. This thesis is an effort to know the \textbf{main data transfer scenarios} in HPC experiments 
-and try to address them in a distributed manner with a collective but decentralized approach toward workflow management
-and dataset storage and query.
+\begin{itemize}
+\item Multiple simulation programs run during one operation
+\item Huge data is being used by these programs
+\item Data is being produced and used on the fly
+\item Simplest form of workflow management is wrting scripts
+\item Users have to manage input/output files manually
+\item Job schedulers have control over execution process
+\end{itemize}
+
+      This thesis is an effort to:% bring \textbf{control} and \textbf{ease of use} in above context:
+      \begin{itemize}
+      \item Accomplish operations on a distributed network collectively
+      \item Make users neglectful of data location
+      \item Propose a decentralized approach toward workflow management
+      \item Avoid unnecessary data transfer
+      \end{itemize}
 
       \end{block}
       
@@ -135,27 +142,21 @@ and dataset storage and query.
       \end{block}
 
       \begin{block}{Related Work}
-        Many scientific groups have produced tools to facilitate workflow management, job scheduling,
-        service discovery, resource management and etc. Some of these are very localized and some are
-        too heavy for an agile group to launch and maintain it. The job schedulers and queue management
-        systems such as Sun Grid Engine (SGE) are tailored toward job management and they do not give
-        control over task executions in runtime.
-        Here are a number of similar works:
+        There are solutions, some very localized and some too big for small groups to handle. These are number of similar works:
         \begin{itemize}
-        \item UNICORE: is a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.\cite{unicore}
+        \item UNICORE: a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.\cite{unicore}
         \item Distributed File Systems, centralized or decentralized
         \item Porto: The Porto platform will provide a lightweight and flexible system for data and workflow management.\cite{porto}
         \end{itemize}
       \end{block}
 
 
-
       \begin{block}{Main Scenarios}
       We categorize every possible operation into two main groups:
       \begin{enumerate}
-      \item \textbf{Linear} operations. These operations could be run in parallel. The algebraic notation of this operation would be:
+      \item \textbf{Linear}. These operations could be run in parallel. The algebraic notation would be:
       \[ Operation(A + B) = Operation(A) + Operation(B) \]
-      \item \textbf{Non-linear} operations. These operations are not equal to previous one, they can't be run in parallel:
+      \item \textbf{Non-linear}. These operations are different, they can't be run in parallel:
       \[ Operation(A + B) \neq Operation(A) + Operation(B) \]
       \end{enumerate}
       \end{block}
@@ -176,14 +177,17 @@ and dataset storage and query.
       \end{enumerate}
       \textbf{We break down all others into combinations of these two scenarios.}
       
-      We propose to make a peer-to-peer collaborative application which will run on every resource (computer) in our network, this computer (which we call it peer) will then become one part of the network. In the beginning there is one peer network but this network can be extended to contain multiple other peers. Here are main characteristics:
+      We propose to make a peer-to-peer collaborative application which will run on every resource 
+      (computer) in our network, this computer (which we call it peer) will then become one part of 
+      the network. In the beginning there is one peer network but this network can be extended to contain
+      multiple other peers. Here are main characteristics:
       \begin{itemize}
       \item The solution is \textbf{peer-to-peer}
       \item \textbf{Not a client/server} notion
-      \item Based on publish-subscribe pattern
+      \item Based on \textbf{publish-subscribe} pattern
       \item Operations are \textbf{asynchronous}
-      \item API calls return an \textbf{operation unique ID}
-      \item Distribute operation store will be synchronized with peers
+      \item API calls return a \textbf{unique operation ID}
+      \item Distributed operation store will be synchronized with peers
       \item \textbf{Peers subscribe to each other}
       \item Every \textbf{pear publishes news} on every \textbf{state changes}
       \item Peer can launch operations \textbf{recursively} on itself or others
@@ -192,7 +196,7 @@ and dataset storage and query.
       \item Peers and application components are \textbf{loosely coupled}
       \end{itemize}
       
-      In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic solutions.
+      In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic ones.
       
       \end{block}
 
@@ -206,13 +210,32 @@ and dataset storage and query.
         %\alert{Watch out for } \cite{ff2010}
       \end{block}
 	  \begin{block}{Conclusion}
-	  Even though there are many solutions designed for HPC problems, still there are requirements for agile groups which are not satisfied, such as user friendly \textit{smart} applications which hide the complexity
-	  of the data query and storage from end users, less deploy and maintenance cost and more flexibility and control over the application.
-	  During this work we tried to address these needs and create a light weight
-	  solution based on open technologies which run in user space and allows running simple and complicated scenarios over the data. Our approach is very flexible to be extended and it is easy to build new services on top
-	  of the existing framework which provides the distributed operation and storage mechanisms to applications.
+	  Even though there are many solutions designed for HPC problems, still there are requirements for smaller groups which are not satisfied, such as:
+	  \begin{itemize}
+	  \item Making scientific applications user friendly 
+	  \item Providing \textit{smarter} solutions which get out of users way, i.e. hiding the systems complexity from ordinary users
+	  \item Let system manages data endpoints, not users
+	  \item Less deploy and maintenance cost
+	  \item More flexibility to control application at runtime
+	  \end{itemize}
+	  During this work we addressed some of these needs:
+	  \begin{itemize}
+	  \item The problem was defined and requirements where defined
+	  \item We went through the state of the art
+	  \item A solution approach were propsed
+	  \item A prototype developed
+	  \begin{itemize}
+	  \fontsize{27pt}{28}\selectfont
+	  \item Based on open technologies
+	  \item Runs in user space
+	  \item Open source and freely available on Github\cite{konsensus}
+	  \end{itemize}
+	  \end{itemize}
+	  Our approach is very flexible to be extended and it is easy to build new services on top of the existing framework 
+	  which provides the distributed operation and storage mechanisms to applications.
 	  \end{block}
       \begin{block}{References}
+      \fontsize{17pt}{18}\selectfont
         % this is just an example, use BibTeX!
         \begin{thebibliography}{999}
         \bibitem[UNICORE]{unicore}
@@ -222,6 +245,9 @@ and dataset storage and query.
         \bibitem[Porto]{porto}
         The Porto platform
         \url{https://github.com/NanoSim/Porto}
+        
+        \bibitem[konsensus]{konsensus}
+        The Konsensus project \url{https://github.com/mehdisadeghi/konsensus}
 %        \bibitem[Foo~and~Fu, 2010]{ff2010}
 %          Foo, B.; and Fu, B.
 %          2010.
