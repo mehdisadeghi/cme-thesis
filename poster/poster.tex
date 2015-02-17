@@ -101,7 +101,7 @@
 
 % We have a single poster frame.
 \begin{frame}
-\fontsize{28pt}{29}\selectfont
+\fontsize{30pt}{31}\selectfont
   \begin{columns}[t]
     % ---------------------------------------------------------%
     % Set up a column
@@ -114,7 +114,7 @@ some highlights:
 \item Multiple simulation programs run during one operation
 \item Huge data is being used by these programs
 \item Data is being produced and used on the fly
-\item Simplest form of workflow management is wrting scripts
+\item Simplest form of workflow management is writing scripts
 \item Users have to manage input/output files manually
 \item Job schedulers have control over execution process
 \end{itemize}
@@ -130,9 +130,9 @@ some highlights:
       \end{block}
       
       \begin{block}{Requirements}
-      The main ones as exported during the meetings are these:
+      The main points according to our context are these:
         \begin{itemize}
-        \item \textbf{Data location is unknow} to users
+        \item \textbf{Data location is unknown} to users
         \item User should have same experience regardless of the peer to which she connects.
         \item System should have \textbf{no central brokers}.
         \item Required data are distributed on the network.
@@ -145,11 +145,11 @@ some highlights:
       \end{block}
 
       \begin{block}{Related Work}
-        There are simliar solutions, some very localized and some too big for small groups to handle:
+        There are similar solutions, some very localized and some too big for small groups to handle:
         \begin{itemize}
-        \item UNICORE: a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.\cite{unicore}
+        \item UNICORE: a grid computing technology for resources such as supercomputers or cluster systems and information stored in databases.
         \item Distributed File Systems, centralized or decentralized
-        \item Porto: The Porto platform will provide a lightweight and flexible system for data and workflow management.\cite{porto}
+        \item Porto: The Porto platform will provide a lightweight and flexible system for data and workflow management.
         \end{itemize}
       \end{block}
 
@@ -164,20 +164,6 @@ some highlights:
       \end{enumerate}
       \end{block}
 
-      \begin{block}{Internal Components}
-      This figures demonstrates the main components which form the internals of each peer:\\
-      
-      \includegraphics[width=\textwidth]{sys2}
-      \end{block}
-      
-    \end{column}
-    % ---------------------------------------------------------%
-    % end the column
-
-    % ---------------------------------------------------------%
-    % Set up a column 
-    \begin{column}{.45\textwidth}
-
       \begin{block}{Proposed Solution}
       \textbf{We need only to solve two problems}:
       \begin{enumerate}
@@ -188,8 +174,10 @@ some highlights:
       
       We propose to make a peer-to-peer collaborative application which will run on every resource 
       (computer) in our network, this computer (which we call it peer) will then become one part of 
-      the network. In the beginning there is one peer network but this network can be extended to contain
-      multiple other peers. Here are main characteristics:
+      the network. In the beginning there is a network with any given number of peers,
+      new ones can join and current ones can leave the network.
+      
+       Here are the main characteristics:
       \begin{itemize}
       \item The solution is \textbf{peer-to-peer}
       \item \textbf{Not a client/server} notion
@@ -208,6 +196,14 @@ some highlights:
       In our design the simplest operation is not dependent on any other operation, and we know how to handle it. Other operations are made from these atomic ones.
       
       \end{block}
+      
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+
+    % ---------------------------------------------------------%
+    % Set up a column 
+    \begin{column}{.45\textwidth}
 
       \begin{block}{A Sample Scenario}
       \begin{enumerate}
@@ -217,27 +213,52 @@ some highlights:
       \item Upon completion of sub-operations a random peer will store the result on the network and notify others
       \end{enumerate}
         %\alert{Watch out for } \cite{ff2010}
+        Here is a demonstration of the interactions in sender and receiver peers:
+ 
+               \includegraphics[]{kseq}             \includegraphics[]{kseq2}
       \end{block}
+      
+      \begin{block}{Internal Components}
+      This figure demonstrates the main parts which form the internals of the application (and consequently each peer):\\
+      
+      \includegraphics[width=\textwidth]{sys2}
+      
+      The above illustration shows:
+      \begin{itemize}
+      \item A network with three peers, labeled left to right as A, B and C respectively
+      \item Publish/subscribe links between the peer in the left with the other two
+      \item Local data store of each peer
+      \item State objects of the peers including
+      \begin{itemize}
+      \item DistributedDataStore
+      \item DistributedOperationStore
+      \item Peers list
+      \end{itemize}
+      \item A basic submission scenario
+      \item API, Publisher and Subscriber components
+      \end{itemize}
+      \end{block}
+      
 	  \begin{block}{Conclusion}
 	  Even though there are many solutions designed for HPC problems, still there are requirements for smaller groups which are not satisfied, such as:
 	  \begin{itemize}
 	  \item Making scientific applications user friendly 
 	  \item Providing \textit{smarter} solutions which get out of users way, i.e. hiding the systems complexity from ordinary users
-	  \item Let system manages data endpoints, not users
-	  \item Less deploy and maintenance cost
+	  \item The system manages data endpoints, not users
+	  \item Less deployment and maintenance cost
 	  \item More flexibility to control application at runtime
 	  \end{itemize}
 	  During this work we addressed some of these needs:
 	  \begin{itemize}
 	  \item The problem was defined and requirements where defined
 	  \item We went through the state of the art
-	  \item A solution approach were propsed
-	  \item A prototype developed
+	  \item A solution approach was proposed
+	  \item A prototype was developed
 	  \begin{itemize}
-	  \fontsize{27pt}{28}\selectfont
+	  \fontsize{30pt}{31}\selectfont
 	  \item Based on open technologies
 	  \item Runs in user space
-	  \item Open source and freely available on Github\cite{konsensus}
+	  \item Open source and freely available on Github
 	  \end{itemize}
 	  \end{itemize}
 	  Our approach is very flexible to be extended and it is easy to build new services on top of the existing framework 
@@ -248,7 +269,7 @@ some highlights:
         % this is just an example, use BibTeX!
         \begin{thebibliography}{999}
         \bibitem[UNICORE]{unicore}
-        UNICORE atrcile on Wikipedia
+        UNICORE article on Wikipedia
         \url{http://en.wikipedia.org/wiki/UNICORE}
         
         \bibitem[Porto]{porto}
