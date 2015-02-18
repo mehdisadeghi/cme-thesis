@@ -5,31 +5,25 @@ European scientific communities launch many experiments everyday, resulting in h
 of data. Specifically in molecular dynamics and material science fields there are many different
 simulation softwares which are being used to accomplish multi-scale modeling tasks. These tasks
 often involve running multiple simulation programs over the existing datasets or the data which is
-produced by other simulation software. These programs often are coupled
-together to produce the final result. Depending on the amount of the data and the desired type of simulation
-these tasks could take many days to finish. The order to run simulation software and 
-providing the input data are normally defined in scripts written by users which is the simplest form of workflow management.
+produced by other simulation software. It's common to run multiple programs on existing datasets
+during one operation to produce the desired results. The order to run simulation software is normally 
+defined within scripts written by users. 
 
-While small experiments could be handled with simple scripts and normal computers, larger scale experiments
-require different solutions. These type of tasks demand huge computing power which are made available by
-computer clusters and super computers. An important characteristic of larger experiments is
-the amount of produced data. This data, which needs to be transferred many times back and forth
-between computers, grow by an order of magnitude, resulting in terabytes of data.
+Moreovers users have to provide the required data manually and copy all required files to a working
+directory to submit their job, and they might have to login to different machines to prepare files,
+submit the script, monitor the status of the job and finally collect the output files. 
+This type of work routine is a common form of workflow management in above mentioned communities.
 
-Large scientific experiments are the source of many high performance computing (HPC) problems, specially data transfer
-and workflow management. Moreover HPC resources are expensive and should be used efficiently, therefore making data transfer
-more efficient is important.
+While simpler and smaller experiments could be handled this way, larger and more complicated experiments
+require different solutions. 
 
-This thesis is an effort to know the main data transfer scenarios in the context of molecular dynamic use cases and try to address them in
-a distributed manner with a collective but decentralized approach toward workflow management.
+Such experiments are the source of many high performance computing (HPC) problems, specially workflow management and data transfer.
+This thesis is an effort accomplish such operations in a distributed manner with a 
+collective but decentralized approach toward workflow management and to minimized data transfer during such operations.
 
-%The source files of the document are available online at this address:
+During this thesis an open source prototype application has been developed which is available online\footnote{https://github.com/mehdisadeghi/konsensus}. The source files
+of the current document are also available\footnote{https://github.com/mehdisadeghi/cme-thesis}.
 
-%
-%\begin{quote}
-%\url{https://github.com/mehdisadeghi/cme-thesis}
-%\end{quote}
-%
 
 If there are any comments and improvements regarding this document, the author
 appreciates an email to the following address:
