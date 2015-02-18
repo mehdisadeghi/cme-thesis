@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{report}
+\documentclass[12pt, a4paper, oneside]{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
@@ -71,30 +71,65 @@ emphstyle={\color{self}\slshape},
 
 
 \title{
-      {Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks}\\
-      {\large Hochschule Offenburg}
+      \textbf{Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks}
+      %\vskip 40mm%
+      %{\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}
+      %\vskip 4mm%
+      %{\large\sc{Communication \& Media Engineering}}\\[5cm]
+      \vfill
 }
-\author{Mehdi Sadeghi}
+\author{\large\sc{Mehdi Sadeghi}}
 
 \date{13. Feb 2015}
 
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
-\maketitle
+\setlength{\unitlength}{1cm}
+%\maketitle
 
-%\newpage
-%\thispagestyle{plain}
-%\begin{center}
-%\vspace*{\fill}
-%\copyright\ Copyright\ 2015\ Mehdi Sadeghi
-%\end{center}
-%This work is published under the conditions of the
-%\textsl{Creative Commons License Attribution--Non-Commercial--No-Derivatives}
-%(CC BY-NC-ND)---see \url{http://creativecommons.org/licenses/by-nc-nd/3.0/}.
-%\vspace*{\fill}
 
-%\newpage
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+%\includegraphics[width=0.15\textwidth]{./logo}~\\[1cm]
+
+\textsc{\LARGE University of Applied Sciences Offenburg}\\[1.5cm]
+
+\textsc{\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}\\[0.5cm]
+
+% Title
+%\HRule \\[0.4cm]
+{ \huge \bfseries Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks \\[0.4cm] }
+
+%\HRule \\[1.5cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Mehdi \textsc{Sadeghi}
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisors:} \\
+Dr.~Katharina\textsc{Mehner-Heindl}
+Dr.~Adham\textsc{Hashibon}
+\end{flushright}
+\end{minipage}
+
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
 
 \chapter*{Declaration of Authorship}
 \noindent
@@ -102,10 +137,10 @@ I declare in lieu of an oath that the Master Thesis submitted has been produced 
 from other persons. I state that all passages which have been taken out of publications of all means or un-published
 material either whole or in part, in words or ideas, have been marked as quotations in the relevant passage. 
 I also confirm that the quotes included show the extend of the original quotes and are marked
-as such. I know that a false declaration will have legal consequences. 
+as such. I know that a false declaration will have legal consequences. \\
 
 
-February 28, 2015
+February 28, 2015 \\
 
 Mehdi Sadeghi
 
