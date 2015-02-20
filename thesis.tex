@@ -18,6 +18,12 @@
 \usepackage{setspace}
 \usepackage{soul}
 
+% According to the University's guide lines
+\usepackage{geometry}
+\geometry{margin=3cm}
+%\linespread{1.5}
+
+
 \definecolor{Code}{rgb}{0,0,0}
 \definecolor{Decorators}{rgb}{0.5,0.5,0.5}
 \definecolor{Numbers}{rgb}{0.5,0,0}
@@ -76,7 +82,7 @@ emphstyle={\color{self}\slshape},
       %{\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}
       %\vskip 4mm%
       %{\large\sc{Communication \& Media Engineering}}\\[5cm]
-      \vfill
+      %\vfill
 }
 \author{\large\sc{Mehdi Sadeghi}}
 
@@ -89,46 +95,39 @@ emphstyle={\color{self}\slshape},
 %\maketitle
 
 
-\begin{titlepage}
-\begin{center}
-
-% Upper part of the page. The '~' is needed because \\
-% only works if a paragraph has started.
-%\includegraphics[width=0.15\textwidth]{./logo}~\\[1cm]
-
-\textsc{\LARGE University of Applied Sciences Offenburg}\\[1.5cm]
-
-\textsc{\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}\\[0.5cm]
-
-% Title
-%\HRule \\[0.4cm]
-{ \huge \bfseries Distributed Flow Control and Intelligent Data Transfer in High Performance Computing Networks \\[0.4cm] }
-
-%\HRule \\[1.5cm]
-
-% Author and supervisor
-\noindent
-\begin{minipage}{0.4\textwidth}
-\begin{flushleft} \large
-\emph{Author:}\\
-Mehdi \textsc{Sadeghi}
-\end{flushleft}
-\end{minipage}%
-\begin{minipage}{0.4\textwidth}
-\begin{flushright} \large
-\emph{Supervisors:} \\
-Dr.~Katharina\textsc{Mehner-Heindl}
-Dr.~Adham\textsc{Hashibon}
-\end{flushright}
-\end{minipage}
-
-\vfill
-
-% Bottom of the page
-{\large \today}
-
-\end{center}
-\end{titlepage}
+\makeatletter
+\begin{titlepage}%
+\rule{0mm}{1mm}
+\vspace*{20mm}
+%\noindent Left side \hfill right side\\
+\begin{center}%
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(12,4)
+  %\thinlines\put(0,0){\framebox(12,4){}}
+  \put(0,1.8){\parbox{12cm}{\centering\LARGE\bf%
+    \setlength{\baselineskip}{20pt}%
+    \@title}}
+  \end{picture}
+    \vskip 10mm%
+    {\large\sc\@author}
+    \vskip 10mm%
+    {Supervisors:}\\
+    Prof. Dr. Katharina \sc{Mehner-Heindl}\\
+    Dr. Adham \sc{Hashibon}
+    \vskip 30mm%
+    {\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}
+    \vskip 20mm%
+    {\large On} \vskip 1mm {Master's Degree Program}%
+    \vskip 4mm%
+    {\large\sc{Communication and Media Engineering}}%
+    \vskip 4mm%
+    {\large in {Offenburg}}%
+    \vskip 16mm%
+    {\large March 2015}%
+\end{center}\par
+  \vfil\null
+\end{titlepage}%
+\makeatother
 
 
 \chapter*{Declaration of Authorship}
