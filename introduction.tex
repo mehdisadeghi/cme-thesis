@@ -1,7 +1,25 @@
 \chapter{Introduction}
 \label{cha:introduction}
+\section{Thesis Context}
+This thesis is an indirect research and development effort in the field of high performance computing (HPC) and scientific simulations.
+This has not been an implementation task nor a purely theoratical work. 
+It means that I was not supposed to create an application or develop a software from ground up (even though eventually I did), instead
+I have been responsible to study about and define the problem of my client and assist them either with 
+finding a suitable solution and helping them to integrate it into their development process or propose a new approach to address their 
+needs. 
+
+My activities include but not limited to analysing the problem, collecting requirements,
+studying state of the art software frameworks and related products,
+analysing them against the defined requirments, proposing a solution and developing a prototype.
+
 \section{Thesis Objectives}
-The goal of this thesis is to minimize the amount of transferred data in a network of collaborating computers which we call them peers. This data belongs to operations which might be linear or non-linear
+There are two main objectives in these thesis as the title suggests. First is to distribute the workflow and eliminate central brokers.
+Second is minimizing the amount of transferred data in the network. 
+
+Both of these objectives are tailored toward the context that this work is done. There are existing workflow management tools
+and data transfer solutions out there but this work is 
+
+This data belongs to operations which might be linear or non-linear
 and might involve other operations as well. Each operation can be initiated in any participating
 peer but the required data is not necessarily available on that computer even though
 the operation result might be delivered back to the same peer.
