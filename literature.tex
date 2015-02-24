@@ -1,41 +1,39 @@
 \chapter{Related Work}
 \label{cha:literature}
 
-In this chapter we will go through a number of existing solutions and we will 
-discuss their efficiency and deployment complexity. Before that we introduce the
-parameters which are important for us. Then we will assess each solution against the
-introduced parameter set.
+In this chapter we will go through a number of existing solutions. First we introduce the parameters which are important for us and we are interested in them.
+% and we will discuss their efficiency and deployment complexity. 
+%Before that we introduce the parameters which are important for us. Then we will assess each solution against the introduced parameter set.
 
 \section{Parameters}
-There are many factors that we need to take into account before introducing our parameters. To name a few:
+According to our requirements there are a number of parameters which are important to use. We asses existing products
+against our set or requirements and we leave out other factors. Here is a list of main factors:
 
 \begin{itemize}
-\item Data transfer cost
-\item Data reproduction cost
-\item Type of operation on data, linear or non-linear
-\item Replication
+\item Centralization
+\item Data abstraction
+\item Runtime control
 \item Deployment complexity
-\item Fault tolerance
-\item Portability
-\item Performance according to number of distributed nodes and size of files
+\item Possiblity to run in user space
+\item Integrating into other programs
 \end{itemize}
 
-\section{Data Storage Systems}
-\label{sec:datastoragesystems}
+\section{Grid Computing Solutions}
+First of all we go through a number of projects which are widely being used.
+\subsection{UNICORE}
+UNICORE is one of the prducts of European Middleware Inititative(EMI) \cite{EMI}.
+\subsection{Globus Toolkit}
+%\subsection{Taverna}
+%\subsection{PETSc}
 
-SAME POINTS SHOULD BE DISCUSSED FOR EACH APPROACH (FROM OUR POINT OF VIEW) 
-e.g. EFFICIENCY, COMPLEXITY, DISTRIBUTED APPLICATION ACCESS, APPLICATION AWARENESS,
-POSSIBLE DATA ACCESS SCENARIOS, SCALABILITY, DATA TRANSFER, FAULT TOLERANCE, 
-ACCESS CONTROL 
-
-
-\section{Distributed File Systems}
+\section{Distributing Data}
+\subsection{Distributed File Systems}
 One way to achieve fault tolerant and reliable data storage and access is to use
 distributed file systems (DFS). In this case the data will be replicated over a
 network of storage servers with different magnitudes based on the underlying file
 system. We will discuss a number of free and open source solutions.
 
-\subsection{Hadoop Distributed File System (HDFS)}
+\subsubsection{Hadoop Distributed File System (HDFS)}
 ``The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on
 commodity hardware.'' \cite[tp.~3]{HDFSDocuments}
 
@@ -55,7 +53,6 @@ Local, Pseudo-Distributed and Fully Distributed mode. XML configuration,
 installation of Local and Pseudo Distributed modes are almost straight
 forward, for fully distributed note extra steps are required (official
 doc link is dead).
-\subparagraph{Efficiency}
 
 
 \subparagraph{Fault Tolerance}
@@ -65,13 +62,12 @@ doc link is dead).
 such as RAID to make the data durable. Instead, like GFS, 
 the file content is replicated on multiple DataNodes for reliability.''
 \cite{TheHDFS}
-\subparagraph{Portability}
-
 
 ``HDFS has been designed to be easily portable from one platform to another.''
-\subparagraph{Robustness}
 
-``The primary objective of HDFS is to store data reliably even in the presence of failures.''
+%\subparagraph{Robustness}
+%``The primary objective of HDFS is to store data reliably even in the presence of failures.''
+
 \subparagraph{Accessibility}
 \begin{enumerate}
 \item FS Shell
@@ -92,13 +88,8 @@ take advantage of distributed computing features in Hadoop MapReduce
 and HDFS. Cites? Hadoop website?
 \url{https://infosys.uni-saarland.de/publications/BigDataTutorial.pdf}
 
-\subsection{XTREEMFS}
-
-\section{Distributed Objects}
+\section{Distributing State}
 In this section we go through a number of existing methods to distributed an object or in another terms to distribute the state.
-
-\subsection{Concoord}
-Describe why it is not suitable for us. It allows single object sharing.
 
 \subsection{Distributed Hash Tables (DHT)}
 DHTs are known to be a distributed key/value storage.
@@ -106,5 +97,10 @@ DHTs are known to be a distributed key/value storage.
 \subsubsection{Kademlia}
 Kademlia is a p2p DHT algorithm introduced in 2002.
 
+\subsection{Concoord}
+Describe why it is not suitable for us. It allows single object sharing.
+
 \section{Distributed Workflows}
 In this section we introduce a number of existing scientific workflow systems.
+\subsection{COSMOS}\cite{Gafni30062014}
+\subsection{Weaver}\cite{Bui_weaver:integrating}

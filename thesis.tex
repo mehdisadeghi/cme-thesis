@@ -139,13 +139,13 @@ February 28, 2015 \\
 Mehdi Sadeghi
 
 \chapter*{Abstract}
-This document contains my master's thesis report, including the problem definition,
-an overview of state of the art, discussions and proposed solution.
-During this work we have proposed a solution to run various types of operations in a network collaboratively without any permanent broker or orchestrator. 
+This document contains my master's thesis report including the problem definition, requirements, problem analysis,
+an overview of state of the art, proposed solution, designed prototype discussions and conclusion.
+During this work we have proposed a solution to collaboratively run various types of operations in a network without any broker or orchestrator. 
 We have defined and analysed a number of scenarios according to our requirements 
-and we have implemented the solution to address those scenarios using a distributed workflow management and data transfer approach. 
-During this report we first introduce the problem and its context and then we go through existing solutions,
-our workflow and data transfer methods, application architecture and discussing different aspects of our approach.
+and we have implemented the solution to address those scenarios using a distributed workflow management approach. We explain how
+we break a comlicated operation into simple parts and how we will calculate the final result without any central broker. We will show how
+we asynchronously launch operations on the network and how we store and collect results on our network of collaborating peers.
 
 %\chapter*{Acknowledgement}
 %Here will come acknowledgement
@@ -155,11 +155,12 @@ our workflow and data transfer methods, application architecture and discussing 
 \include{preface}
 \include{introduction} % objectives, the problem, the context
 \include{requirements} % in detail
-\include{literature} % Making readers familiar with state of the art, where to asses?
-\include{prototype} % problem analysis
+\include{literature} % making readers familiar with state of the art, where to asses?
+\include{analysis} % problem analysis
 \include{proposal} % explaining the proposed design/algorithm
-\include{prototype} % introduce the designed prototype
+\include{prototype} % about the implementation details and techniques
 \include{discussions} % discussing possible issues and future works
+\include{conclusion} % thesis conclusion and future work
 
 
 \printbibliography[heading=bibintoc, title={References}]
