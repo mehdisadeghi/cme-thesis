@@ -37,32 +37,50 @@ research on finding ways to embed distributed solutions into other projects.
 In the following sections we talk shortly about the topics which we have
 not covered but this work can be extended to include them as well.
 
-\section{Non-linear Operations}
+\subsection{Non-linear Operations}
 The main part which have not been covered yet is non-linear operations.
 
 
-\section{Network Discovery}
+\subsection{Network Discovery}
 Currently the peers are configured in the beginning and there is no dynamic peer recognition. This might be done in a number of ways
 such as sending broadcasts or using third party projects such as Zyre \cite{Zyre}.
 
-\section{Bootstrapping}
+At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
+
+\subsection{Bootstrapping}
 With having address of only one peer we would be able to configure and a new peer and join the network. There should be a mechanism among
 peers to identify joining and leaving peers. But our context is different than a peer-to-peer applications which peers join and leave 
 frequently. In our case most of peers run a long time and bootstrapping is more a way to get the state of currently running workflows and
 let others know about the new peer.
 
-\section{Data Popularity}
+\subsection{Data Popularity}
 There are algorithms developed to calculate data popularity over time and then replicate them over peers for easier access. If we want to 
 move toward any type of data replication we would need to use this algorithms.
 
-\section{Security}
+\subsection{Security}
 There is no user management and secure communication in our initial requirements however this would be required if we want to manage user
 rights or introduce limitations or simply to keep a history of activities for each user. Moreover to secure inter-peer communications 
 we might use X.509 certificates. Further more since we've used ZeroMQ\cite{ZeroMQ} as underlying transport channel we can use its more advanced
 security features such as Elliptic curve cryptography\cite{Curve} based on Curve25519\cite{Curve25519} to add perfect forward secrecy, 
 arbitrary authentication backends and so on.
 
-\section{Fault Tolerance}
+\subsection{Fault Tolerance}
 In current work there is no failure recovery mechanism, since it was not part of the requirements. In case of a failure or exception in any 
 collaborating peer not only the failed instance should be able to recover itself into a correct state, moreover the other peers should maintain
 a valid state for on-going distributed workflows and keep their internal state up-to-date.
+
+Like other topics in this section this one is not of our interest too.
+The point is there are existing solutions for these problems 
+and we want to let our application to be able to demonstrate the main problem which would be 
+deciding about data transfer routes and distributing the information about currently running operations.
+
+\subsection{Web Monitoring}
+Before starting my thesis I have developed a job submission and monitoring web application in order to get to know 
+job scheduling backends and the workflow and user requirements. We called this tool Sqmpy and it is also open source and
+available on Github \cite{sqmpy}. We can use Sqmpy project as a monitoring tool for konsensus network.
+Providing one peer address it can query the rest of peers and connect or 
+subscribe to their news channel. Having this we can always see which nodes are
+offline and which ones are online. This also gives us a platform to extend
+monitoring and control features to the web. Currently we have made the 
+required software platform to achieve this. In the Sqmpy project we can simply maintain realtime connections to the browsers and since
+our web framework is written in python, with minimum cost we can integrate it with konsensus which is written with Python as well.

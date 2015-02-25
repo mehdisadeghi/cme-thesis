@@ -1,2 +1,16 @@
 \chapter{Requirements}
 \label{cha:requirements}
+
+\section{Identical Instances}
+We assume that on each machine of the network the same instance of our program is running which 
+is capable of all of our operations
+including A, B and C. The only consideration is the availability of 
+Datasets, they are not available on all machines.
+
+Assuming that operations A and B will run on the machines which
+contain the required data, a number of questions arise here:
+\begin{enumerate}
+\item On which machine operations C should run? A, B or C?
+\item On How to transfer the required data to that machine in an 
+optimized way?
+\end{enumerate}

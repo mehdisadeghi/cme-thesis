@@ -83,12 +83,15 @@ emphstyle={\color{self}\slshape},
 
 \date{13. Feb 2015}
 
+
+\pagenumbering{roman}
+
+
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
 \setlength{\unitlength}{1cm}
 %\maketitle
-
 
 \makeatletter
 \begin{titlepage}%
@@ -124,6 +127,7 @@ emphstyle={\color{self}\slshape},
 \end{titlepage}%
 \makeatother
 
+%\clearpage\mbox{}\clearpage
 
 \chapter*{Declaration of Authorship}
 \noindent
@@ -151,9 +155,12 @@ we asynchronously launch operations on the network and how we store and collect 
 %Here will come acknowledgement
 
 \tableofcontents
+\newpage
 
+\pagenumbering{arabic}
 \include{preface}
 \include{introduction} % objectives, the problem, the context
+%\setcounter{page}{1}
 \include{requirements} % in detail
 \include{literature} % making readers familiar with state of the art, where to asses?
 \include{analysis} % problem analysis

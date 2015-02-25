@@ -2,6 +2,22 @@
 \label{cha:proposal}
 
 \section{Basic Idea}
+We assume that we have the information about the Datasets
+available on all of the machines i.e. in form of a distributed table
+with entries containing the node address and Dataset id. Based on this
+information the application can decide if it has the required data or
+not. 
+
+Based on this algorithm the initial application delegates operations to the other 
+nodes (instances of the same program), where the data is available. 
+Our distributed workflow manager will synchronize the information on these running operation and
+will label the output data and will add it to the distributed data table.
+
+After finishing operations A and B we will run operation C in either
+of these nodes, because the required data is partially available on these
+nodes. Then we have to transfer the rest of the data to one of these
+nodes to run the operation C which needs both parts simultaneously.
+
 \subsection{Break and Conquer}
 \subsection{Recursive Call}
 \subsection{Collectors}
@@ -13,3 +29,13 @@
 \subsection{Simple Operation}
 \subsection{Mixed Operation}
 
+\section{Using Prior Art}
+\subsection{Data Transfer}
+We can take advantage of existing Distributed File Systems
+(DFS) to make the data available for operations. We can then eliminate
+the complexity of data transfer between these two nodes and delegate it
+to existing distributed file systems. The main point is we don't rely on
+DFS for all of our decision making part but we explicitly make the 
+decision which operations to run on specific nodes and then for the 
+data transfer part we can use a meta or universal disk concept to deliver the
+remaining data.

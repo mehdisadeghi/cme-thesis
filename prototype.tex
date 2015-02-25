@@ -9,19 +9,38 @@
 \subsection{Coupling}
 \subsection{State}
 
+\section{Technology}
+We have created a python application using Gevent\footnote{\url{http://www.gevent.org/}},
+zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} 
+to be able to service multiple requests in a non-blocking way. 
+
+\subsection{ØMQ}
+The main library that powers our prototype is called ØMQ or ZeroMQ~\cite{ZeroMQ}.
+ZeroMQ is an asynchronous messaging library written in C with 
+bindings for many languages including python. This library helps us to easily scale and use 
+different programming paradigms such as publish-subscribe, request-replay and push-pull.
 
 \section{Compoenents}
 \subsection{Distributed Storages}
+Our aim is to distribute the information about available datasets and operations at each node. To achieve this
+we let our application to launch a number of communicators and publish information about it's data.
+Other nodes in our network have to subscribes on other nodes, ZeroMQ allows us to subscribe
+to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get
+\textbf{news} from other nodes, for example availability of certain datasets on a node, then it
+can use publish-subscribe to get extra information on that particular subject.
 \subsubsection{Operation Store}
 \subsubsection{Dataset Store}
 \subsection{Message Handlers}
 \subsection{Decorators}
 \subsection{Application}
 
-
 \section{Layers}
 \subsection{Network}
 \subsubsection{API}
+Since this is going to be a network program we need to use a form of Remote Procedure Call (RPC) 
+to communicate between nodes. Rather than implementing ourselves we used a library based on zeromq 
+called \textit{zerorpc}. Using this library we now expose a set of APIs and let the nodes talk to 
+each other based on this API. There are multiple solutions for exposing services which we do not discuss here.
 \subsubsection{Publisher}
 \subsubsection{Listener}
 \subsection{Pre-processing}
@@ -33,6 +52,8 @@
 \subsubsection{Database}
 
 \section{Initialization}
+First of all each application instance establish its own zeromq publisher socket. Then it subscribes
+itself to all other nodes which are listed in config file.
 \subsection{Local Database}
 \subsection{Stores}
 \subsection{Network}
@@ -45,3 +66,42 @@
 
 
 \section{Test Results}
+To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application
+called \textbf{Konsensus} which its code is available on Github. \cite{konsensus}
+
+\subsection{Testing Problems}
+Writing tests for a distributed application is not as easy as writing unit-tests for a normal application. 
+Our demo application acts as a server and client at the same time. Moreover we want to launch multiple 
+network peers running on one or more machines. Testing scenarios on this network is not possible with
+normal mocking approaches, because we need to test the behavior of our solution in a network of collaborating
+peers which are not external, rather the core services of the application.
+
+To overcome testing issues we have to launch the desired number of peers separately and then run our tests 
+over them. To make this operation faster we changed the application to make it possible to launch any number
+of instances on one machine and we automated this process using a number of scripts. %TODO more details
+
+\subsubsection{Mixing Signals in Greenlets}
+We use python Greenlets instead of threads. This means that our demo application runs on only one thread. 
+This causes a problem when launching multiple apps all together with one script and inside one thread, that
+causes the signals for events spread among all greenlets and make trouble. To avoid this we have to run
+each server in a separate processes. Running them inside threads won't help as well because the blinker python
+library is thread-safe so it moves signals between threads as well as Greenlets.
+
+\subsubsection{Scnenario 2 Errors}
+While testing scenario 2 we observed a common error. We this scenario with three different peers as the following table:
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S0 & --- & Yes \\
+S1 & DS1 & No \\
+S2 & DS2 & No \\
+\end{tabular}\\
+
+We also used \textbf{Random Dataset Storage} mechanism, simply to store resulting dataset of one operation on one of the network
+peers. The problem is when two peers decide to store the result of one operation on each other a blocking condition happens. Our
+approach was opening a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
+peer, therefore both block.
+
+\subparagraph{Solution}
+To solve the blocking peers problem we used the already running main application API instead of opening temporary PULL/PUSH zeromq 
+sockets. This change is working fine and the peers exchanging datasets with no problem.
