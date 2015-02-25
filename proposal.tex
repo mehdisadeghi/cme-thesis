@@ -1,6 +1,18 @@
 \chapter{Proposed Solution}
 \label{cha:proposal}
 
+\section{Possible Approaches}
+During this work we consider three different approaches toward preparing required data for operations.
+\begin{description}
+\item{Conventional Approach} in this approach we put the required data on a network file system and all
+application instances will access it there utilizing NFS mounted file system or other distributed file systems.
+\item{Centralized Approach} in this approach we have a central instance which will orchestrate operation
+delegation and operation output forwarding to other peers.
+\item{Decentralized Approach} in this approach we eliminate the orchestrator peer and the network of
+application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
+task.
+\end{description}
+
 \section{Basic Idea}
 We assume that we have the information about the Datasets
 available on all of the machines i.e. in form of a distributed table
