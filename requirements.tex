@@ -14,3 +14,28 @@ contain the required data, a number of questions arise here:
 \item On How to transfer the required data to that machine in an 
 optimized way?
 \end{enumerate}
+
+\section{Assumptions}
+During this work we have a number of assumptions. We have a certain problem which we want to focus
+on rather than reintroducing solutions that already exist. For this reason we discuss regarding our 
+needs.
+
+\subsection{Collaborating Network}
+We assume there is a network of computers which are available to run the tasks, each node is running an instance
+of the application. We will propose our collaboration and data transfer algorithm between them later.
+
+\subsection{Data Characteristics}
+We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
+of physical particles such as atoms and molecules. These data is being used to simulate collections of particles called
+models. Although our work is not dependent on these, they help us to understand the definition of the data that
+we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
+and we can reproduce it. 
+
+\subsection{Data Transfer}
+We assume a data transfer approach is already in place. This could be any file system which supports 
+network storage. Rather than going into details of how data could be transferred more efficiently, we will
+focus on finding which data to be transferred and from which computer to which destination.
+
+\subsection{Workflow}
+In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
+state of our workflow on any arbitrary node which is part of our collaborative network.

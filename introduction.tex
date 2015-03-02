@@ -1,15 +1,5 @@
 \chapter{Introduction}
 \label{cha:introduction}
-This thesis is an indirect research and development effort in the field of high performance computing (HPC) and scientific simulations.
-This has not been an implementation task nor a purely theoratical work. 
-It means that I was not supposed to create an application or develop a software from ground up (even though eventually I did), instead
-I have been responsible to study about and define the problem of my client and assist them either with 
-finding a suitable solution and helping them to integrate it into their development process or propose a new approach to address their 
-needs. 
-
-My activities include but not limited to analysing the problem, collecting requirements,
-studying state of the art software frameworks and related products,
-analysing them against the defined requirments, proposing a solution and developing a prototype.
 
 \section{Thesis Objectives}
 There are two main objectives in these thesis as the title suggests. First is to distribute the workflow and eliminate central brokers.
@@ -68,27 +58,5 @@ application instance takes care of its own data and provides a set of services. 
 another node, therefore we have to transfer the data or run the operation on the node which contains the data. There
 are a number of scenarios which we will discuss.
 
-\section{Assumptions}
-During this work we have a number of assumptions. We have a certain problem which we want to focus
-on rather than reintroducing solutions that already exist. For this reason we discuss regarding our 
-needs.
-
-\subsection{Collaborating Network}
-We assume there is a network of computers which are available to run the tasks, each node is running an instance
-of the application. We will propose our collaboration and data transfer algorithm between them later.
-
-\subsection{Data Characteristics}
-We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
-of physical particles such as atoms and molecules. These data is being used to simulate collections of particles called
-models. Although our work is not dependent on these, they help us to understand the definition of the data that
-we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
-and we can reproduce it. 
-
-\subsection{Data Transfer}
-We assume a data transfer approach is already in place. This could be any file system which supports 
-network storage. Rather than going into details of how data could be transferred more efficiently, we will
-focus on finding which data to be transferred and from which computer to which destination.
-
-\subsection{Workflow}
-In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
-state of our workflow on any arbitrary node which is part of our collaborative network.
+\section{Document Structure}
+This document is organized into \arabic{chapter_count} chapters. 

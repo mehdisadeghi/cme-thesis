@@ -233,7 +233,7 @@ There is an important issue here, we create sub-operations for each operation an
 cause it almost impossible to return the result of operation to the user in one run. One might think that we can block and query
 until the result of sub-operations are ready, but this is something that we want to avoid. Therefore to solve this issue in a 
 distributed manner, we introduce an operation id for each user request. We inform all the peers via sending messages (signals) about
-the new operation and it's id and sub-commands. Each peer will update this operation internally based on further received messages.
+the new operation and it is id and sub-commands. Each peer will update this operation internally based on further received messages.
 We also return the operation id to the user instead of any results. Then user will query for the result of operation, providing the 
 operation id. We change the above steps like this:
 

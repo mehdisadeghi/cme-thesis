@@ -87,6 +87,11 @@ emphstyle={\color{self}\slshape},
 \pagenumbering{roman}
 
 
+% Defining a chapter counter
+\newcounter{chapter_count}
+\setcounter{chapter_count}{8}
+
+
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
@@ -113,9 +118,9 @@ emphstyle={\color{self}\slshape},
     Prof. Dr. Katharina \sc{Mehner-Heindl}\\
     Dr. Adham \sc{Hashibon}
     \vskip 30mm%
-    {\Large M\,A\,S\,T\,E\,R\,'\,S\, T\,H\,E\,S\,I\,S}
+    {\Large M\,A\,S\,T\,E\,R\, T\,H\,E\,S\,I\,S}
     \vskip 20mm%
-    {\large On} \vskip 1mm {Master's Degree Program}%
+    {\large On} \vskip 1mm {Master Degree Program}%
     \vskip 4mm%
     {\large\sc{Communication and Media Engineering}}%
     \vskip 4mm%
@@ -134,7 +139,7 @@ emphstyle={\color{self}\slshape},
 I declare in lieu of an oath that the Master Thesis submitted has been produced by me without illegal help
 from other persons. I state that all passages which have been taken out of publications of all means or un-published
 material either whole or in part, in words or ideas, have been marked as quotations in the relevant passage. 
-I also confirm that the quotes included show the extend of the original quotes and are marked
+I also confirm that the quotes included show the extent of the original quotes and are marked
 as such. I know that a false declaration will have legal consequences. \\
 
 
@@ -143,7 +148,7 @@ February 28, 2015 \\
 Mehdi Sadeghi
 
 \chapter*{Abstract}
-This document contains my master's thesis report including the problem definition, requirements, problem analysis,
+This document contains my master thesis report including the problem definition, requirements, problem analysis,
 an overview of state of the art, proposed solution, designed prototype discussions and conclusion.
 During this work we have proposed a solution to collaboratively run various types of operations in a network without any broker or orchestrator. 
 We have defined and analysed a number of scenarios according to our requirements 
@@ -160,7 +165,6 @@ we asynchronously launch operations on the network and how we store and collect 
 \pagenumbering{arabic}
 \include{preface}
 \include{introduction} % objectives, the problem, the context
-%\setcounter{page}{1}
 \include{requirements} % in detail
 \include{literature} % making readers familiar with state of the art, where to asses?
 \include{analysis} % problem analysis

@@ -29,7 +29,7 @@ different programming paradigms such as publish-subscribe, request-replay and pu
 \section{Compoenents}
 \subsection{Distributed Storages}
 Our aim is to distribute the information about available datasets and operations at each node. To achieve this
-we let our application to launch a number of communicators and publish information about it's data.
+we let our application to launch a number of communicators and publish information about it is data.
 Other nodes in our network have to subscribes on other nodes, ZeroMQ allows us to subscribe
 to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get
 \textbf{news} from other nodes, for example availability of certain datasets on a node, then it
@@ -75,8 +75,8 @@ itself to all other nodes which are listed in config file.
 To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application
 called \textbf{Konsensus} which its code is available on Github. \cite{konsensus}
 
-\subsection{Testing Problems}
-Writing tests for a distributed application is not as easy as writing unit-tests for a normal application. 
+\subsection{Integration Tests}
+Writing integration tests for a distributed application is not as straightforward as writing unit-tests for a normal application. 
 Our demo application acts as a server and client at the same time. Moreover we want to launch multiple 
 network peers running on one or more machines. Testing scenarios on this network is not possible with
 normal mocking approaches, because we need to test the behavior of our solution in a network of collaborating
