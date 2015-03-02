@@ -2,7 +2,15 @@
 \label{cha:prototype}
 
 \section{Architecture}
+In a traditional approach toward application layering we would have three tiers, i.e. client layer (GUI),
+business layer (logic) and database layer. These tiers correspond to a one dimentional application architecture,
+where there are only two \textit{sides} assumed to exist around application logic, client and database. However
+this is not the case when we have a multi-dimentional architecture, where there are multiples input/output channels
+around our business logic. In the latter case we have to use a so called hexagonal architecture. \cite{alistair}
+In such an architecture applications receive signals from multiple communication means at the same time. This 
+signals will trigger the appropriate internal business logic, therefore they can't be layered in one dimention.
 \subsection{Overview}
+
 \subsection{Actors}
 There are two types of actors in our problem domain.
 \subparagraph{User}
