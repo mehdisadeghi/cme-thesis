@@ -2,13 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,
-    urlcolor=cyan,
-}
+
+
 \usepackage{csquotes}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{thesis.bib}
@@ -84,12 +79,18 @@ emphstyle={\color{self}\slshape},
 \date{13. Feb 2015}
 
 
-\pagenumbering{roman}
+%\pagenumbering{roman}
 
 
 % Defining a chapter counter
 \newcounter{chapter_count}
 \setcounter{chapter_count}{8}
+
+% Moved here to change the order of package loading to prevent footnotes to bring up title page
+\usepackage[colorlinks=true,
+	    linkcolor=blue,
+	    filecolor=magenta,
+	    urlcolor=cyan,]{hyperref}
 
 
 \begin{document}

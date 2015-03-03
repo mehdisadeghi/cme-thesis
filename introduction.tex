@@ -8,12 +8,17 @@ There are two main objectives in these thesis as the title suggests.
 \item minimizing the amount of transferred data during an operation
 \end{itemize}
 
-First of all we focus on the collaboration in a distributed application, 
-This is how multiple computers will manage to finish the task collectively in a distributed environment.
-We also want to avoid unnecessary data transfer during an operation.
+First of all we want to focus on collaboration in a distributed application.
+This is how multiple computers will manage to finish an operation collectively in a distributed environment.
+We want to find a way to keep the state of the running operation distributed amount all the participants.
 
-Both of these objectives are tailored toward the context that this work is done. There are existing workflow management tools
-and data transfer solutions but those tools does not meet the requirements that we have. This will be discussed in chapter \ref{cha:requirements}.
+Next we want to avoid unnecessary data transfer during an operation as much as possible.
+We prefer to have the operation be transferred rather than data. However this is not possible all the time,
+hence minimizing and smart transfer are mentioned.
+
+Both of these objectives are tailored toward the context that this work is done. This means that even thought 
+there are existing workflow management tools and data transfer solutions 
+but those tools does not meet our requirements. This will be discussed in more detail in chapter \ref{cha:requirements}.
 
 %To accomplish these objectives we will discuss our specific distributed workflow management and data transfer methods. 
 %We define our requirements regarding the above mentioned topics and we will extract the parameters which we are going
@@ -50,19 +55,46 @@ The combination of nodes, datasets, application, instances, operations and servi
 A scientist, researcher or student who uses the system.
 
 \section{Problem Context}
-Whole this work is an effort to address issues of a scientific environment. Some particular characteristics
-are running multiple scientific programs on different computers which need to exchange data in order to
-accomplish one operation. Another task which is often done is visualization. Visualizing the operation results
-,depending on the requested visualization, might require heavy computational tasks i.e. average or comparison
-on data which might not be available on the same machine or might be residing partially on different computers.
-The produced data often exceeds 1 GB in many experiments and it should be moved back and forth every few minutes,
-therefore it is cheaper to transfer the operation rather than the data.
+European scientific communities launch many experiments everyday, resulting in huge amounts
+of data. Specifically in molecular dynamics and material science fields there are many different
+simulation softwares which are being used to accomplish multi-scale modeling tasks. 
 
-The problem here is not about distributing the stored data rather exchanging it between instances of the application 
-talking together in runtime while doing one global task and keeping this workflow distributed. In this terms each
-application instance takes care of its own data and provides a set of services. Some operations require data from
-another node, therefore we have to transfer the data or run the operation on the node which contains the data. There
-are a number of scenarios which we will discuss.
+These tasks often involve running multiple simulation programs over the existing datasets or the data which is
+produced by other simulation softwares. It's common to run multiple programs on existing datasets
+during one operation to produce the desired results. The order to run simulation softwares is normally 
+defined within scripts written by users. 
+
+Moreover users have to provide the required data manually and copy all required files to a working
+directory to submit their job, and they might have to login to different machines to prepare files,
+submit the script, monitor the status of the job and finally collect the output files. 
+This type of work routine is a common form of workflow management in above mentioned communities.
+
+While simpler and smaller experiments could be handled this way, larger and more complicated experiments
+require different solutions. 
+Such experiments are the source of many high performance computing (HPC) problems, specially workflow management and data transfer.
+%In this thesis we work on these issues.
+
+\subsection{Typical Environment}
+While working in an institute, often there are many computers which users connect to them remotely. In a typical
+scientific and research environment users have their own windows or linux machine and meanwhile they can SSH to other
+linux machines on the same network with their user credenticals. In such environments it is common to have computer clusters
+which users access using SSH. Normally there is a job scheduling software such as Sun Grid Engine (SGE) installed on the clusters
+and users have to submit their jobs using the tools provided by corresponding cluster software.
+Moreover such job scheduelers enforce some policies to job submissions.
+
+There are more common characteristics about these environments which we name a few:
+\begin{itemize}
+\item Users do not have admin rights and root access to the machines
+\item Using network shared storage is very common
+\item Institutes often use LDAP\footnote{\url{https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol}} 
+and users can login to any machine with their credentials
+\end{itemize}
+
+While running multiple scientific programs, they often need to exchange data back and forth in order to accomplish one operation.
+Some operations such as comparision require multiple datasets at the same time which also called All-Pairs problem. \cite{moretti08}. 
+Such operations involve more computation and are more complicated to address. Because those required datasets 
+might not be available on the same machine, hence should be transferred. 
+Having these said, it is cheaper to transfer the operation rather than the data whenever possible. 
 
 \section{Overview}
 This document is organized into \arabic{chapter_count} chapters. Here is a short overview of them:
