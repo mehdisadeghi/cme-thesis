@@ -11,7 +11,7 @@ In every scenario we want to run an operation which could be linear or non-linea
 
 \subsubsection{Linear Operation}
 Being linear means that the operation
-could be broken into its components and then run in parallel or series. Here is algebic notation
+could be broken into its components and then run in parallel or series. Here is algebraic notation
 of a linear operation which acts on two datasets:
 
 \[ Operation(A + B) = Operation(A) + Operation(B) \]
@@ -19,7 +19,7 @@ of a linear operation which acts on two datasets:
 Being linear or non-linear only matters when we have to operate on more that one dataset.
 
 \subsubsection{Non-linear Operation}
-In contrast to linear there is non-linear operation. This means that this kind of operation has dependant parts and
+In contrast to linear there is non-linear operation. This means that this kind of operation has dependent parts and
 those parts could not run in parallel:
 
 \[ Operation(A + B) \neq Operation(A) + Operation(B) \]
@@ -32,7 +32,7 @@ initially or could reside on other nodes.
 Input files are normally not mission critical and could be reproduced.
 
 \subsubsection{Output}
-Operations create output datasets which normally are small in size, threfore we ignore the transfer cost of operation
+Operations create output datasets which normally are small in size, therefore we ignore the transfer cost of operation
 results in our work.
 
 \subsubsection{Locating}
@@ -48,7 +48,7 @@ The simplest problems that will happen if we store datasets with similar names i
 to process and override the same dataset.
 
 \subsection{Data Manipulation}
-We will neet to let users to manipulate currently existing datasets, but very fast it comes to mind that not every dataset should be
+We will need to let users to manipulate currently existing datasets, but very fast it comes to mind that not every dataset should be
 writable, we will need to categorize and identify our datasets based on some criteria. These problems are not part of my thesis but
 We mention it as part of problem analysis.
 
@@ -259,7 +259,7 @@ In the other hand the other peers which are the same basically, will react to th
 \end{enumerate}
 
 Having the operation id and local updating storage for operations we now need to find a way to collect the results.
-First of all we need to decide which peer will collect the results. We take the most straigh forward for now, the 
+First of all we need to decide which peer will collect the results. We take the most straight forward for now, the 
 initiator peer, which has the knowledge of existing datasets in the network along with their sizes, will pick the 
 peer which contains the largest dataset as the collector peer. We explicitly decide about the collector node in the
 beginning either by size or randomly amount the data container peers.

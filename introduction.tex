@@ -76,31 +76,31 @@ Such experiments are the source of many high performance computing (HPC) problem
 
 \subsection{Typical Environment}
 While working in an institute, often there are many computers which users connect to them remotely. In a typical
-scientific and research environment users have their own windows or linux machine and meanwhile they can SSH to other
-linux machines on the same network with their user credenticals. In such environments it is common to have computer clusters
+scientific and research environment users have their own windows or Linux machine and meanwhile they can SSH to other
+Linux machines on the same network with their user credentials. In such environments it is common to have computer clusters
 which users access using SSH. Normally there is a job scheduling software such as Sun Grid Engine (SGE) installed on the clusters
 and users have to submit their jobs using the tools provided by corresponding cluster software.
-Moreover such job scheduelers enforce some policies to job submissions.
+Moreover such job schedulers enforce some policies to job submissions.
 
 There are more common characteristics about these environments which we name a few:
 \begin{itemize}
-\item Users do not have admin rights and root access to the machines
+\item Users do not have administrator rights and root access to the machines
 \item Using network shared storage is very common
 \item Institutes often use LDAP\footnote{\url{https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol}} 
 and users can login to any machine with their credentials
 \end{itemize}
 
 While running multiple scientific programs, they often need to exchange data back and forth in order to accomplish one operation.
-Some operations such as comparision require multiple datasets at the same time which also called All-Pairs problem. \cite{moretti08}. 
+Some operations such as comparison require multiple datasets at the same time which also called All-Pairs problem. \cite{moretti08}. 
 Such operations involve more computation and are more complicated to address. Because those required datasets 
 might not be available on the same machine, hence should be transferred. 
 Having these said, it is cheaper to transfer the operation rather than the data whenever possible. 
 
 \section{Overview}
 This document is organized into \arabic{chapter_count} chapters. Here is a short overview of them:
-\subparagraph{Introducation} The openning chapter.
+\subparagraph{Introduction} The opening chapter.
 \subparagraph{Requirements} The problems that we are supposed to answer.
-\subparagraph{Literature} Intoducing the related work.
+\subparagraph{Literature} Introducing the related work.
 \subparagraph{Analysis} Different aspects of the problem will be discussed.
 \subparagraph{Proposal} We will explain the proposed solution.
 \subparagraph{Prototype} Implementation of the proposal.
