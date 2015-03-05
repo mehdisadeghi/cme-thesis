@@ -1,11 +1,51 @@
 \chapter{Requirements}
 \label{cha:requirements}
 
-\section{Identical Instances}
-We assume that on each machine of the network the same instance of our program is running which 
-is capable of all of our operations
-including A, B and C. The only consideration is the availability of 
-Datasets, they are not available on all machines.
+Every group has its own needs. That is the reason that we have many different solutions in the market.
+In this chapter we explain the requirements according to our context.
+
+\section{Data Location Abstraction}
+We need to abstract the absolute path of required data from users. To run every operation
+we provide certain data files as input. This is part of the manual step of running an operation and
+it makes it fragile. Currently users have to take care of storing input files in correct folders before
+running their scripts, or they have to copy the input files from the shared network file system to the
+appropriate runtime folder. This is something that we want to disappear. We want the system to 
+manage the input data and its absolute location.
+
+\section{Server Agnostic}
+We want to have the same user experience regardless of the machine that we connect to. It is very common
+that a user moves from one workstation to another one or connects to different machines using SSH. We 
+want to be able to provide the requested information to the user, no matter to which machine she connects.
+
+We could have any number of active computers in our network which are running an instance of our program
+and we want to let the users to talk to each of them and be able to launch same operations and get the same result.
+
+It also means that if one users initiates an operation in first computer and then goes to the next one and asks
+for the status of the operation, she should be able to do that as if she is working with the first computer.
+
+\section{Distributed}
+We need a distributed solution which eliminates the need to have central orchestrator.
+We want to decrease the dependency between running programs therefore we want to have 
+some sort of distributed application which distributes the operations to all other computers.
+
+\section{Distributing Data}
+We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
+
+\section{Runtime Control}
+While an operation is running we want to have full control over every step. In traditional approaches using job
+scheduling systems this is not possible. Except basic control such as stop, resume or similar operations, users
+can not control the runtime behavior of their program. In contrast we want to control all aspects of an operation.
+
+\section{Easy Deployment}
+We look for a solution that is easy to deploy onto new machines. A fully automated installation process
+is required.
+
+We need a distributed solution.
+Easily deployable.
+User space solution
+Light weight
+
+
 
 \section{Assumptions}
 During this work we have a number of assumptions. We have a certain problem which we want to focus
