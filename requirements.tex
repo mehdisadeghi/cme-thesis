@@ -23,12 +23,12 @@ and we want to let the users to talk to each of them and be able to launch same 
 It also means that if one users initiates an operation in first computer and then goes to the next one and asks
 for the status of the operation, she should be able to do that as if she is working with the first computer.
 
-\section{Distributed}
+\section{Distributed Solution}
 We need a distributed solution which eliminates the need to have central orchestrator.
 We want to decrease the dependency between running programs therefore we want to have 
 some sort of distributed application which distributes the operations to all other computers.
 
-\section{Distributing Data}
+\section{Distributed Data}
 We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
 This comes from the nature of our workflows. Normally we have huge datasets which represent certain models i.e.
 particles of a fluid or gas inside a container and we want to run multiple operations on those datasets. These
@@ -60,18 +60,17 @@ two machines, one for office tasks with Windows OS and the other for running sim
 is the favorite machine to run the software but it could be possible to run it on Windows as well.
 
 \section{Light Weight}
-Light weight
-
+We look for a light weight solution which could be run on both laptops and stronger machines, with minimum dependencies
+and launch time.
 
 
 \section{Assumptions}
 During this work we have a number of assumptions. We have a certain problem which we want to focus
-on rather than reintroducing solutions that already exist. For this reason we discuss regarding our 
-needs.
+on rather than reintroducing solutions that already exist. Here are the assumptions that we have
+considered during this work:
 
-\subsection{Collaborating Network}
-We assume there is a network of computers which are available to run the tasks, each node is running an instance
-of the application. We will propose our collaboration and data transfer algorithm between them later.
+%\subsection{Collaborating Network}
+%We assume there is a network of computers which are available to run the tasks, each node is running an instance of the application. We will propose our collaboration and data transfer algorithm between them later.
 
 \subsection{Data Characteristics}
 We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
@@ -85,6 +84,5 @@ We assume a data transfer approach is already in place. This could be any file s
 network storage. Rather than going into details of how data could be transferred more efficiently, we will
 focus on finding which data to be transferred and from which computer to which destination.
 
-\subsection{Workflow}
-In contrast to data we are interested in workflow. We want to find a reliable approach to access and update 
-state of our workflow on any arbitrary node which is part of our collaborative network.
+%\subsection{Workflow}
+%In contrast to data we are interested in workflow. We want to find a reliable approach to access and update state of our workflow on any arbitrary node which is part of our collaborative network.
