@@ -26,7 +26,40 @@ Every instance can launch and observe an operation on other instances on other n
 \section{Technology}
 We have created a python application using Gevent\footnote{\url{http://www.gevent.org/}},
 zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} 
-to be able to service multiple requests in a non-blocking way. 
+to be able to service multiple requests in a non-blocking way.
+
+\subsection{Programming Language}
+We select Python as the main programming language to implement this project. There are a number of 
+justifications to do so. Here are the main ones:
+
+\subparagraph{Multi-Platform} Python is a multi-platform language. It runs on different operating systems
+seamlessly, hence easier deployment.
+\subparagraph{High Availability} Python along with its rich standard library is available by default on almost all Linux machines. This
+is a great advantage for use, because we do not need to take further steps to install a runtime in highly conservative institutes.
+\subparagraph{Familiarity} Python is already being used as main scripting languages in many scientific environments. This would be an advantage
+for us in further steps when users want to contribute to the project or maintain it.
+\subparagraph{Based on C} Python is well known to be very close to C programming languages. Even though Python is slow in arithmatic operations
+it is possible to write speed critical parts in C and execute it directly within Python code. However in our current solution we do not have
+arithmatic operations.
+\subparagraph{Faster Development} Since Python does not need special tools to build and deploy its scripts it is much cheaper and faster
+to start, build and test programs.
+\subparagraph{Aspect Oriented Support} With Python it is very easy to wrap methods and apply pre-process and post-process conditions to them. We have
+used this aspect of the language to create operation ids, delegate service calls, distribute messages and etc before and after service calls.
+
+\subsection{Dependency Management} Using \textit{pip}\footnote{\url{https://pypi.python.org/pypi/pip}}
+it is very trivial to manage and install multiple
+dependencies of a project. It is capable of installing dependencies from remote git repositories or from 
+the Python Package Index (PyPI)\footnote{\url{https://pypi.python.org/pypi}}. Moreover \textit{pip} itself is
+a Python package. It gives us huge benefits with abstracting away the complexity of dependency management. It can
+bundle a package with compiled dependencies, install from Python wheel\footnote{A built-package format for Python}, uninstall,
+upgrade and query available PyPI packages.\footnote{\url{https://pip.pypa.io/en/latest/user_guide.html#create-an-installation-bundle-with-compiled-dependencies}}
+
+\subsection{Virtual Environment}
+As described in the previous section, Python is the chosen programming language for this project. Along with Python, 
+comes \textit{virtualenv} package\footnote{virtualenv is a tool to create isolated Python environments}. This is a great way of installing
+project dependencies into a single directory (which serves as the virtual root file system) and avoid touching operating system managed files and
+directories which normal users do not have access to them. While working inside a \textit{virtaulenv}, all the changes is written to a single directory
+and all binary files, downloaded Python packages goes into that directory. Therefore this is the best way to deploy a Python project in user space.
 
 \subsection{ØMQ}
 The main library that powers our prototype is called ØMQ or ZeroMQ~\cite{ZeroMQ}.
@@ -78,6 +111,8 @@ itself to all other nodes which are listed in config file.
 \subsection{Incoming Message Flow}
 \subsubsection{Possible Reactions}
 
+\section{Deployment}
+The software is easily installable in a Python Virtual Environment.
 
 \section{Test Results}
 To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application

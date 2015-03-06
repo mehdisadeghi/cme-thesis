@@ -30,6 +30,10 @@ some sort of distributed application which distributes the operations to all oth
 
 \section{Distributing Data}
 We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
+This comes from the nature of our workflows. Normally we have huge datasets which represent certain models i.e.
+particles of a fluid or gas inside a container and we want to run multiple operations on those datasets. These
+are normally available on different computerse of an instititue, and if there are multiple institutes cooperating
+on a topic then we have to fetch data from remote computers. Therefore we need to consider distributed data management.
 
 \section{Runtime Control}
 While an operation is running we want to have full control over every step. In traditional approaches using job
@@ -38,11 +42,24 @@ can not control the runtime behavior of their program. In contrast we want to co
 
 \section{Easy Deployment}
 We look for a solution that is easy to deploy onto new machines. A fully automated installation process
-is required.
+is required. Unnecessary dependencies should be avoided. Users in science field are not professionals in the field
+of computer and therefore installing complex software requires system administrators to come in. Such installations
+costs money because user herself is not able to finish it without help from others. Moreover it makes it non-feasable
+for single users or small groups to try the software.
 
-We need a distributed solution.
-Easily deployable.
-User space solution
+\section{User Space Solution}
+We need a user space solution. It means that it should be possible to deploy, install and run the software without
+having full control over the machine which is supposed to run it. Any software which needs administrator or root access
+rights is not of our concern. Therefore the software itself along all of its dependencies should be installed and should
+be able to work correctly in user space, under a normal Windows or Linux user account with no special rights except the
+default ones.
+
+\section{OS Agnostic}
+We want to be able to run the solution on both Linux machines and Windows machines. It is common that users have
+two machines, one for office tasks with Windows OS and the other for running simulations with Linux. However Linux
+is the favorite machine to run the software but it could be possible to run it on Windows as well.
+
+\section{Light Weight}
 Light weight
 
 
