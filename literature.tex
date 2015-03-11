@@ -1,27 +1,115 @@
 \chapter{Related Work}
 \label{cha:literature}
 
-In this chapter we will go through a number of existing solutions. First we introduce the parameters which are important for us and we are interested in them.
-% and we will discuss their efficiency and deployment complexity. 
-%Before that we introduce the parameters which are important for us. Then we will assess each solution against the introduced parameter set.
+In this chapter we will go through a number of existing solutions. 
+First we introduce the parameters which are important for us and we are interested in them.
+It is important to say that we have only considered free and open source projects. Projects
+which need royalty fees to be used or do not allow free usage and their code is not available
+publicly have not been considered. 
+
+This decision has a very strong background. To offer a 
+sustainable solution for small groups with limited budgets and members it is crucial to avoid
+any royalty costs in relation with using products and standards of third parties.
+The main threat is using a closed source program which neigther us
+nor others do not have any chance to improve it according to our needs. The other case which is
+even more critical is implementing standards or protocls which might require paying royalty fees.
+Therefore we decide to avoid such products, standards or protocols.
 
 \section{Parameters}
-According to our requirements there are a number of parameters which are important to use. We asses existing products
-against our set or requirements and we leave out other factors. Here is a list of main factors:
+We asses existing solutions against our set of requirements and we leave out other factors. 
+It is of crucial importance to notice that we asses these products against 
+very requirements of small and agile
+scientific groups which often only have access to limited resources.
+Moreover we look for an application
+level solution and not a sole product.
+Here are the extracted parameters according to the discussed requirements:
 
 \begin{itemize}
-\item Centralization
-\item Data abstraction
-\item Runtime control
 \item Deployment complexity
-\item Possiblity to run in user space
-\item Integrating into other programs
+\item Data provision methods
+\item State preservation
+\item Centralization
+\item Required user rights
+\item Runtime control
+\item Applicability
 \end{itemize}
 
+%\subsubsection {Deployment complexity}
+%\subsubsection{Data provision methods}
+%\subsubsection {State preservation}
+%\subsubsection {Centralization}
+%\subsubsection {Required user rights}
+%\subsubsection {Runtime control}
+%\subsubsection {Applicability}
+
+
 \section{Grid Computing Solutions}
-First of all we go through a number of projects which are widely being used.
+Here go through a number of projects which are widely being used.
 \subsection{UNICORE}
-UNICORE is one of the prducts of European Middleware Inititative(EMI) \cite{EMI}.
+UNICORE is one of the main providers of European Middleware Inititative(EMI) \cite{EMI}. 
+It is an open source software under BSD license\footnote{\url{https://www.unicore.eu/unicore/}}.
+It follows a client/server architecture and is implemented in Java programming
+language.
+In consists of three main layers, user, server and target system layer. 
+Jobs will be executed from the client machine and the resulting output files will be downloaded
+to the same machine as well. It provides job execution and monitoring on grids.\cite{unicore_wp}
+
+It has a graphical client based on Eclipse IDE. There
+is also a command line interface available. GUI provides workflow design and execution means and 
+allows users to design complex workflows and combine multiple applications while selecting
+the desired amount of RAM and number of CPUs on target resources. It introduces a concept 
+called GridBeans that allows users to extend the GUI to take advantage of software available on
+the grids and visulaizing output data.
+
+The service layer of UNICORE is composed of Gateway and number of other components. Gateway, as
+its name says, is the entry point to a UNICORE site. It is like the middle-man between inside
+and outside world in UNICORE. Client makes job specification in Job Service Description Language
+ (JSDL)\footnote{\url{http://en.wikipedia.org/wiki/Job_Submission_Description_Language}}.
+ This layor exposes resources via Web Services Resource Framework (WSRF) compliant web 
+ services\footnote{\url{http://en.wikipedia.org/wiki/Web_Services_Resource_Framework}}
+ for file transfer, job submission and management. There are also a wide range of file transfer
+ protocols supported for site-to-site and 
+ client-to-site\footnote{\url{https://www.unicore.eu/unicore/architecture/service-layer.php}}.
+
+It has been used in supercomputing domain to allow exposing and mangaing of available 
+computing resources.\cite{unicore_arch}
+
+\subsubsection {Deployment complexity}
+Deployment requires Java Runtime Environment in place, which if not available would require 
+further assistance from IT administrators to be installed. It is also intented to be installed
+on a cluster site not normal workstations. To access web features a browser plugin should be
+installed\footnote{
+\url{https://www.unicore.eu/documentation/manuals/unicore/files/client_intro.pdf}}.
+The server is composed of multiple components that user 
+has to download and install each of them separately.
+\subsubsection {Required user rights}
+To install the server components admin rights on Windows or root access on Unix-like operating
+systems are necessary. Even though running the client does not need any special permissions.
+\subsubsection{Data provision methods}
+Output files are produced on remote resource (service layer) and can be downloaded to client
+machine on demand. Input files should be transfered to the UNICORE storage using the client.
+There are also command line tools such as \textit{uftp} to transfer files to remote 
+storages\footnote{
+\url{https://www.unicore.eu/documentation/manuals/unicore/files/uftpclient/uftpclient-manual.pdf}}.
+UNICORE relies on standard file system as storage mechanism. However there are efforts to 
+extend it to support Hadoop Distributed File System as a storage mean.\cite{wasim2009}
+\subsubsection {State preservation}
+The UNICORE service layer contains the state of the application and running jobs. 
+Upon connecting to a UNICORE site users can utilize the GUI to explore 
+the site and access the running jobs for control and monitoring purposes.
+The details of possible operations are covered in UNICORE user manuals.
+
+\subsubsection {Centralization}
+UNICORE follows a standard client-server architecture therefore it is centralized. It sits on 
+top of a cluster and will let clients to connect to it via defined services. There is no means
+of inter-site and inter-unicore information exchange. UNICORE is a grid middleware and
+infrastructure and therefore it is not intended for inter-site state distribution.
+\subsubsection {Runtime control}
+It is possible to use UNICORE's web services from third party applications, however this does 
+not give control over the run-time internals of the application, instead it is merely a way 
+to write extensions for the program.
+\subsubsection {Applicability}
+
 \subsection{Globus Toolkit}
 %\subsection{Taverna}
 %\subsection{PETSc}

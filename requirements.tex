@@ -4,13 +4,29 @@
 Every group has its own needs. That is the reason that we have many different solutions in the market.
 In this chapter we explain the requirements according to our context.
 
-\section{Data Location Abstraction}
+\section{Data Endpoint Abstraction}
 We need to abstract the absolute path of required data from users. To run every operation
 we provide certain data files as input. This is part of the manual step of running an operation and
 it makes it fragile. Currently users have to take care of storing input files in correct folders before
 running their scripts, or they have to copy the input files from the shared network file system to the
 appropriate runtime folder. This is something that we want to disappear. We want the system to 
 manage the input data and its absolute location.
+
+\section{Distributed State}
+We need a distributed solution which eliminates the need to have central orchestration.
+We want to decrease the dependency between running programs therefore we want to have 
+some sort of distributed application which distributes the operations to all other computers.
+The main requirement here is distributing the state of application between all or a number of nodes, 
+in such a way that we could bootstrap a new application to a certain state. To make it more clear
+we need to look at the network of peers as a one whole whick has knowledge of currently running
+operations along with available datasets and preserves this state among all the nodes.
+
+\section{Distributed Data}
+We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
+This comes from the nature of our workflows. Normally we have huge datasets which represent certain models i.e.
+particles of a fluid or gas inside a container and we want to run multiple operations on those datasets. These
+are normally available on different computers of an institute, and if there are multiple institutes cooperating
+on a topic then we have to fetch data from remote computers. Therefore we need to consider distributed data management.
 
 \section{Server Agnostic}
 We want to have the same user experience regardless of the machine that we connect to. It is very common
@@ -22,18 +38,6 @@ and we want to let the users to talk to each of them and be able to launch same 
 
 It also means that if one users initiates an operation in first computer and then goes to the next one and asks
 for the status of the operation, she should be able to do that as if she is working with the first computer.
-
-\section{Distributed Solution}
-We need a distributed solution which eliminates the need to have central orchestration.
-We want to decrease the dependency between running programs therefore we want to have 
-some sort of distributed application which distributes the operations to all other computers.
-
-\section{Distributed Data}
-We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
-This comes from the nature of our workflows. Normally we have huge datasets which represent certain models i.e.
-particles of a fluid or gas inside a container and we want to run multiple operations on those datasets. These
-are normally available on different computers of an institute, and if there are multiple institutes cooperating
-on a topic then we have to fetch data from remote computers. Therefore we need to consider distributed data management.
 
 \section{Runtime Control}
 While an operation is running we want to have full control over every step. In traditional approaches using job
