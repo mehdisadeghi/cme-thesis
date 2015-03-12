@@ -96,6 +96,12 @@ Such operations involve more computation and are more complicated to address. Be
 might not be available on the same machine, hence should be transferred. 
 Having these said, it is cheaper to transfer the operation rather than the data whenever possible. 
 
+In another words the programs that we need to run over existing datasets are distributed among multiple
+computers, clusters or HPC sites. The nature of our experiments, makes it necessary to launch
+multiple such programs in one run to achieve the desired outcome. This is one reason that we look
+for distributed solutions which not only have to distribute state of the program amoung these machines,
+but have to provide smarter ways to move data between these machines during operation executions.
+
 \section{Document Overview}
 This document is organized into \arabic{chapter_count} chapters. Here is a short overview of them:
 \subparagraph{Introduction} The opening chapter.

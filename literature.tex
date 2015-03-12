@@ -109,6 +109,26 @@ It is possible to use UNICORE's web services from third party applications, howe
 not give control over the run-time internals of the application, instead it is merely a way 
 to write extensions for the program.
 \subsubsection {Applicability}
+There are a number of considerations that prevent us from taking UNICORE as a solution. However
+it is a well stablished and mature product on its own.
+
+UNICORE is supposed to be a site manager software. A group have to install it on a cluster and
+then users will be able to access the resources. Only a well-informed and skilled group can 
+install and maintain such a product, which contradicts with our initial requirement that is 
+aimed toward small groups. Moreover we look for a user space solution which is not the case
+about UNICORE.
+
+Then next point is distribution of data and state. Even though the product which is installed
+on a site will preserve state of jobs and will alow accessing remote file systems, still it is
+not a good fit for our case. We need to have automatic inter-site interoperability, both for
+data distribution and state of the system, i.e. running jobs, which is not fulfilled by this
+product.
+
+Runtime control over a job execution is another limitation that we face with this solution.
+We need to be able to deliberately interfere in every step of execution of a job and define 
+arbitrary policies for them. To fulfill this, we more need a framework rather than an application.
+Applications such as UNICORE represent computing backends and job schedulers rather than a 
+platfrom to build new solutions on top of them.
 
 \subsection{Globus Toolkit}
 %\subsection{Taverna}
