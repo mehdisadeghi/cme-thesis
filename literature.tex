@@ -131,6 +131,47 @@ Applications such as UNICORE represent computing backends and job schedulers rat
 platfrom to build new solutions on top of them.
 
 \subsection{Globus Toolkit}
+Globus Toolkit (GT) is the widely developed application for resource management and grid computing today.\cite{eickermann2005steering}
+It lets people share resources, such as computational power, databases, etc online while preserving the
+provider's local autonomy. It consists of various modules and allows futher sevices
+to use GT libraries to build new services.\cite{foster2005network}
+
+Unlike UNICORE which is heavily dependant on its Eclipse based client, 
+GT does not provide an interactive user interface. However it offers its services in form of multiple command 
+line tools that makes them suitable to be used in 
+scripting\footnote{\url{http://toolkit.globus.org/toolkit/docs/4.0/data/key/}}.
+
+\subsubsection {Deployment complexity}
+GT has various components that the user might not need all of them and should install whatever she is
+interested in. Services only install on Unix-like operating systems. Providing a Unix-like environment
+such as \textit{cygwin} one can install it under Windows as well. It is also possible to install it directly
+from pre-compiled binaries or install from source, since GT is free software and is available mainly
+under Globus Toolkit Public License (GTPL)\footnote{\url{http://toolkit.globus.org/toolkit/docs/6.0/licenses/}}.
+
+\subsubsection{Data provision methods}
+GT implements GridFTP protocl\footnote{\url{https://www.ogf.org/documents/GFD.20.pdf}} as defined by Open Grid Forum (OGF).
+Users have to use command line tool as well as some GUIs provided by GT to move files between local and remote 
+machiens before and after executing jobs.
+\subsubsection {State preservation}
+GT has a component called Grid Resource Allocation and Management (GRAM) which provides job submission, management
+and monitoring. GRAM is not a Local Resource Manager (LRM)\footnote{Local job managers control a resource
+directly and let the jobs to be executed on them, e.g. Sun Grid Engine (SGE), Condor, etc.}, instead it utilizes
+them to execute jobs on remote sites. 
+GT supports WSRF specification, therefore it has statefull web services, however there is no notion of inter-side workflow
+and state preservation.
+\subsubsection {Centralization}
+GT could be installed on multiple machines to allow users to run GT services on them. These machines will communicate
+based on X.509 security standard. Having multiple machines, Globus Gatekeeper will dispatch services on them allowing
+GRAM to submit jobs onto whatever LRM available.
+\subsubsection {Required user rights}
+User should have admin rights to install and configure Globus Toolkit along with its components.
+\subsubsection {Runtime control}
+Even though GT allows very flexible scripting and lets to develop services using its libraries, there is no notion
+of full runtime control rather than predefined routines such 
+as MPI\footnote{http://toolkit.globus.org/alliance/publications/papers/gempi.pdf}.
+\subsubsection {Applicability}
+GT is a mere product rather than a framework to build new services on top of it.
+
 %\subsection{Taverna}
 %\subsection{PETSc}
 \subsection{Hadoop}
