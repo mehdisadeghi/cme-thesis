@@ -1,38 +1,41 @@
 \chapter{Related Work}
 \label{cha:literature}
 
-In this chapter we will go through a number of existing solutions. 
-First we introduce the parameters which are important for us and we are interested in them.
-It is important to say that we have only considered free and open source projects. Projects
-which need royalty fees to be used or do not allow free usage and their code is not available
-publicly have not been considered. 
+In this chapter we will go through a number of existing solutions. First we discuss some well known
+HPC products which offer a complete set of features to launch and operate an HPC site. These are
+mostly large scale software which include every aspect of data intensive computing. 
+Then we introduce data distribution solutions which are desinged to manage big data. Afterwards
+we introduce some state distribution solutions which could be utilized in a possible solution to
+spread object states among a number of programs. At the end we introduce some existing efforts
+in scientific workflow management field. At each part we introduce a the parameters which are
+interesting for us and then we analyse the given product against them.
 
-This decision has a very strong background. To offer a 
-sustainable solution for small groups with limited budgets and members it is crucial to avoid
-any royalty costs in relation with using products and standards of third parties.
-The main threat is using a closed source program which neigther us
-nor others do not have any chance to improve it according to our needs. The other case which is
-even more critical is implementing standards or protocls which might require paying royalty fees.
-Therefore we decide to avoid such products, standards or protocols.
+It is also important to mention that we have only considered mostly free and open source projects. 
+Projects which need royalty fees or limit the use cases and their code is not available
+publicly have not been considered. Rationale for this decision is to achieve a 
+sustainable solution for small groups with limited budgets. Therefore it is crucial to avoid
+any notable costs in relation with using products and implementing non-free and non-open standards or protocls.
+In case of closed source programs it would not be possible to extend them and in case of protocols it is
+obviously a bad choice because it will impose future risks on us. 
+Therefore we decide to avoid such products, standards or protocols all together.
 
-\section{Parameters}
-We asses existing solutions against our set of requirements and we leave out other factors. 
-It is of crucial importance to notice that we asses these products against 
-very requirements of small and agile
-scientific groups which often only have access to limited resources.
-Moreover we look for an application
-level solution and not a sole product.
-Here are the extracted parameters according to the discussed requirements:
 
-\begin{itemize}
-\item Deployment complexity
-\item Data provision methods
-\item State preservation
-\item Centralization
-\item Required user rights
-\item Runtime control
-\item Applicability
-\end{itemize}
+%\section{Parameters}
+%We asses existing solutions against our set of requirements and we leave out other factors. 
+%It is importance to notice that we asses these products against 
+%requirements of small and agile scientific groups which often only have access to limited resources.
+%Moreover we look for an application level solutions and not a sole product.
+%Here are the extracted parameters according to the discussed requirements:
+
+%\begin{itemize}
+%\item Deployment complexity
+%\item Data provision methods
+%\item State preservation
+%\item Centralization
+%\item Required user rights
+%\item Runtime control
+%\item Applicability
+%\end{itemize}
 
 %\subsubsection {Deployment complexity}
 %\subsubsection{Data provision methods}
@@ -44,6 +47,30 @@ Here are the extracted parameters according to the discussed requirements:
 
 
 \section{Grid Computing Solutions}
+There are various products in high performance computing field, such as grid middlewares, distributed
+storage systems, data storage management systems, workflow managers, operating systems for massively parallel 
+super computers and so on. Most of these products are targeted toward super computers and large scale
+operations. However we require more light weight solution toward small, distributed groups. 
+Therefore in this section we do not want to go through
+all the existing products in HPC field, which is out of scope, instead we discuss a number of them
+which are more likely to be used in European scientific communities, specially in the working 
+environment that I am accomlishing my work.
+
+%We asses existing solutions against our set of requirements and we leave out other factors. 
+It is importance to notice that we asses these products against 
+requirements of small and agile scientific groups which often only have access to limited resources.
+Moreover we look for an application level solutions and not a sole product.
+Here are the extracted parameters according to the discussed requirements:
+
+\begin{itemize}
+\item Deployment complexity
+\item Data provision methods
+\item State preservation
+\item Centralization
+\item Required user rights
+\item Runtime control
+\item Applicability
+\end{itemize}
 Here go through a number of projects which are widely being used.
 \subsection{UNICORE}
 UNICORE is one of the main providers of European Middleware Inititative(EMI) \cite{EMI}. 
@@ -170,13 +197,39 @@ Even though GT allows very flexible scripting and lets to develop services using
 of full runtime control rather than predefined routines such 
 as MPI\footnote{http://toolkit.globus.org/alliance/publications/papers/gempi.pdf}.
 \subsubsection {Applicability}
-GT is a mere product rather than a framework to build new services on top of it.
+Like UNICORE, GT is a product rather than a framework to build new services on top of it. However it is more flexible
+in terms of devloping new services on top of it. It could be utilized as another backend to our solution which makes it
+possible to take advantage of a wide range of HPC resources in our solution. But itself alone is not sufficient for 
+our mission.
 
-%\subsection{Taverna}
-%\subsection{PETSc}
-\subsection{Hadoop}
+\subsection{Apache Hadoop}
+%\subsubsection {Deployment complexity}
+%\subsubsection{Data provision methods}
+%\subsubsection {State preservation}
+%\subsubsection {Centralization}
+%\subsubsection {Required user rights}
+%\subsubsection {Runtime control}
+%\subsubsection {Applicability}
 
 \section{Distributing Data}
+Before introducing approaches toward data distribution we define our parameters:
+\begin{itemize}
+\item Deployment complexity
+\item Data provision methods
+\item State preservation
+\item Centralization
+\item Required user rights
+\item Runtime control
+\item Applicability
+\end{itemize}
+%\subsubsection {Deployment complexity}
+%\subsubsection{Data provision methods}
+%\subsubsection {State preservation}
+%\subsubsection {Centralization}
+%\subsubsection {Required user rights}
+%\subsubsection {Runtime control}
+%\subsubsection {Applicability}
+
 \subsection{Distributed File Systems}
 One way to achieve fault tolerant and reliable data storage and access is to use
 distributed file systems (DFS). In this case the data will be replicated over a
@@ -185,7 +238,8 @@ system. We will discuss a number of free and open source solutions.
 
 \subsubsection{Hadoop Distributed File System (HDFS)}
 ``The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on
-commodity hardware.'' \cite[tp.~3]{HDFSDocuments}
+commodity hardware.'' 
+The primary objective of HDFS is to store data reliably even in the presence of failures.\cite[tp.~3]{HDFSDocuments}
 
 ``Hadoop1 provides a distributed file system and a framework 
 for the analysis and transformation of very large data sets 
@@ -197,12 +251,11 @@ other servers called DataNodes.''\cite{TheHDFS}
 
 
 \subparagraph{Deployment Complexity}
-src:\url{http://hadoop.apache.org/docs/r0.18.3/quickstart.html}
-needs Java 1.5.x ssh and sshd and rsync. Three basic modes are available:
+It needs Java 1.5.x ssh and sshd and rsync. Three basic modes are available:
 Local, Pseudo-Distributed and Fully Distributed mode. XML configuration,
 installation of Local and Pseudo Distributed modes are almost straight
 forward, for fully distributed note extra steps are required (official
-doc link is dead).
+doc link is dead)\footnote{\url{http://hadoop.apache.org/docs/r0.18.3/quickstart.html}}.
 
 
 \subparagraph{Fault Tolerance}
@@ -214,9 +267,6 @@ the file content is replicated on multiple DataNodes for reliability.''
 \cite{TheHDFS}
 
 ``HDFS has been designed to be easily portable from one platform to another.''
-
-%\subparagraph{Robustness}
-%``The primary objective of HDFS is to store data reliably even in the presence of failures.''
 
 \subparagraph{Accessibility}
 \begin{enumerate}
@@ -239,6 +289,16 @@ and HDFS. Cites? Hadoop website?
 \url{https://infosys.uni-saarland.de/publications/BigDataTutorial.pdf}
 
 \section{Distributing State}
+As previous sections first we introduct some parameters:
+\begin{itemize}
+\item Deployment complexity
+\item Data provision methods
+\item State preservation
+\item Centralization
+\item Required user rights
+\item Runtime control
+\item Applicability
+\end{itemize}
 In this section we go through a number of existing methods to distributed an object or in another terms to distribute the state.
 
 \subsection{Distributed Hash Tables (DHT)}
@@ -393,6 +453,17 @@ methods showed that even in this scenario it is not reliable and one can not gua
 Describe why it is not suitable for us. It allows single object sharing.
 
 \section{Distributed Workflows}
+For our last section of this chapter we also need to define some parameteres in the beginning:
+\begin{itemize}
+\item Deployment complexity
+\item Data provision methods
+\item State preservation
+\item Centralization
+\item Required user rights
+\item Runtime control
+\item Applicability
+\end{itemize}
+
 In this section we introduce a number of existing scientific workflow systems.
 \subsection{COSMOS}\cite{Gafni30062014}
 \subsection{Weaver}\cite{Bui_weaver:integrating}
