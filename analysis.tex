@@ -10,34 +10,93 @@ we have a number of nodes and datasets, and we need one or more datasets to do c
 In this chapter we explain possible combinations of operations, nodes and datasets.
 
 \section{Operations}
+In a final solution there would be many services, some will carry administrative tasks such as
+getting a list of currently running tasks, or a list of available datasets. These services do not
+change state of the system. It means that even though they could influces the performance of the 
+running machine, i.e. with querying the database, they will not make any permanent change into 
+data stores or the running instance. We are not insterested in these services.
+
+There are a number of other services who carry the business logic of our application. Calling of
+these services will probably change the state of the running instance and might store persistence
+data or create new datasets. Moreover they are often data intensive and will trigger some workflows
+to begin. We are interested in these services and we call them operations. They could be
+any scientific operation, however we do not discuss the detail of them. Instead we are interested on
+categorizing them based on their characteristics, such as type and number of required datasets.
 \subsection{Types}
-In every scenario we want to run an operation which could be linear or non-linear.
+We devide data intensive operations into two main groups, the linear operations and non-linear ones.
+This is simply comes from the nature of the operation, if it should be applied to input datasets
+in parallel or serial. We describe this with a simple algebraic notion.
+%In every scenario we have an operation which could be linear or non-linear.
 
 \subsubsection{Linear Operation}
 Being linear means that the operation
-could be broken into its components and then run in parallel or series. Here is algebraic notation
+could be broken into smaller operation and then run in parallel. Having two datasets we can apply the
+operation on each of them separately and the aggregate the results. Here is the algebraic notation
 of a linear operation which acts on two datasets:
 
 \[ Operation(A + B) = Operation(A) + Operation(B) \]
 
-Being linear or non-linear only matters when we have to operate on more that one dataset.
+Being linear or non-linear only matters when we have to operate on more that one dataset, or we want to
+break the input into many parts.
+
+Another subtle point here is that for a linear operation we can simply run the operation on the machine that
+contains the required dataset, avoiding any dataset transfer amoung different locations in case the requested
+dataset is not available locally on the machine which has received the command to start the operation.
 
 \subsubsection{Non-linear Operation}
-In contrast to linear there is non-linear operation. This means that this kind of operation has dependent parts and
-those parts could not run in parallel:
+In contrast to linear there is non-linear operation. This type of operations require all the inputs to be processed
+at once. It is not possible to apply the same operation on each of the input datasets and aggregate the result at the
+end. This means that these operations could not be run in parallel.
+Here is the algebraic notion of such operation:
 
 \[ Operation(A + B) \neq Operation(A) + Operation(B) \]
 
-\subsection{Input/Output}
-For each operation we need one or more datasets which may be available on the same node that wants to run the operation
-initially or could reside on other nodes. 
+A sample of non-linear operations is comparison, when it is required to compare all elements on two different datasets. 
+Such a use case happens in many areas of science and engineering. These operations are also called All-Pairs. \cite{moretti08}
+%This is a common use case with material-science community when applying multi-scale modelling.
+
+In non-linear case the complexity of running operations on multiple remote datasets dramatically increases. When the required
+datasets are available on the same machine which starts the operation, there is no problem. However when the datasets are not
+available on the same machine or even not on a single remote machine, we have to make at least one data transfer. In this 
+case at least one dataset should be moved to the location of the other datasets to make it possible to run the non-linear
+operation on one single machine which contains both of required datasets.
+
+\subsection{Data files}
+As operations need input and produce output datasets, we have to see how the input data will be provided and where the output
+data will be stored. 
+Typically users will copy files around and will move them using file transfer tools to a working directory and then will
+launch desired script using job scheulders. However they do not pass large data files around and will mention their location
+inside their script files, which normally points to some shared ftp storage. 
+The scheduler program in turn will run the script at some point of time in future and then
+will look for data files inside working directory. Finally any output file will be created in the same directory or a location
+explicitely defined in the script.
+For each operation we need one or more input datasets which might be available on the same node that wants to run the operation
+initially or could reside on other nodes. We desribe some characteristics of these data files shortly.
 
 \subsubsection{Input}
-Input files are normally not mission critical and could be reproduced.
+One need to pay attention that we do not pass complete and real datasets as input parameters,
+instead we use identifiers to find the required dataset. Currently for most users these identifiers are nothing
+than the name of the data files inside the working directory or the explicit path of a dataset on a network machine.
+It is assumed that the system has knowledge of available
+datasets and can find them prividing an identifier, in this case filename. 
+Another point about data files is that they are normally not mission critical and could be reproduced, hence is the emphasizis
+on the state. The last point to mention is that input data is not managed by the system.
+
+% TODO: emphaise managed data files, state machine and raft algorith.http://raftconsensus.github.io/
+
+%Therefore we pass kind of unique identifier to data intensiver operations
+%(or any operation requiring a dataset as input), not any binary form or data structure containing real data.
+
 
 \subsubsection{Output}
 Operations create output datasets which normally are small in size, therefore we ignore the transfer cost of operation
-results in our work.
+results in our work. These data files will be normally stored in working directories and are of less importance to us.
+In typical environments users check output directory for their result and again they use conventional file transfer
+tools to get have that data locally or provide it to some visualization tools to be visualized. However all these steps
+are manual and no control and value added services could be built on top of them. Users are not able to track their
+activities and there is no history left about them (of course except the server logs), no reports could be made and no
+administrative decisions could be made about usages, user activities and so on. This all means that the output data files
+are not managed.
 
 \subsubsection{Locating}
 Every input or output needs an explicit address, an endpoint, either local or remote.
