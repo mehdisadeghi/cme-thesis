@@ -63,7 +63,7 @@ operation on one single machine which contains both of required datasets.
 
 \subsection{Data files}
 As operations need input and produce output datasets, we have to see how the input data will be provided and where the output
-data will be stored. 
+data will be stored. Every input or output needs an explicit address, an endpoint, either local or remote.
 Typically users will copy files around and will move them using file transfer tools to a working directory and then will
 launch desired script using job scheulders. However they do not pass large data files around and will mention their location
 inside their script files, which normally points to some shared ftp storage. 
@@ -98,82 +98,65 @@ activities and there is no history left about them (of course except the server 
 administrative decisions could be made about usages, user activities and so on. This all means that the output data files
 are not managed.
 
-\subsubsection{Locating}
-Every input or output needs an explicit address, an endpoint, either local or remote.
+%\subsubsection{Locating}
+%Every input or output needs an explicit address, an endpoint, either local or remote.
 
 \section{Dataset Identification}
-When we ask for an operation and we want to store the result somewhere on the network we have to think about the result name. 
-We need a consistent way of naming datasets. If we ask users to provide resulting dataset names it will break soon, we need to 
-let user to somehow give some \textbf{tags} but not the real names. We have to let the user know about the result name but also
-let her to look for datasets by providing some tags.
+When we ask for an operation and we want to store the result somewhere on the network we have to think about an identifier
+for them. 
+We need a consistent way of naming datasets. If we ask users to provide result dataset names it will break soon, because we
+would have duplicated names. The naming should be managed by system, as well as data management and transfer itself. 
+However, we have to provide a user friendly way for naming, one idea is to assign tags to datasets. If a user search for
+these tags, any dataset which has that tag will appear in the query results.
+Another approach is to store a database of datasets and operations. Having such a database lets the system to make a relation
+between datasets, operations and possible other desired factors.
 
-The simplest problems that will happen if we store datasets with similar names is redundant work in the network. Peers will start 
-to process and override the same dataset.
+Even though we want to avoid duplicates in our network, it does not mean we do not want redundancy and replication for our 
+data, but it means that we rely on other solutions, such as distributed file systems with built-in replication, to do this task.
 
 \subsection{Data Manipulation}
-We will need to let users to manipulate currently existing datasets, but very fast it comes to mind that not every dataset should be
-writable, we will need to categorize and identify our datasets based on some criteria. These problems are not part of my thesis but
-We mention it as part of problem analysis.
-
-%We consider three different approaches toward preparing required data for operations.
-%\subsubsection{Conventional Approach}
-%in this approach we put the required data on a network file system and all
-%application instances will access it there. We will utilize an NFS mounted file system.
-%\subsubsection{Centralized Approach}
-%in this approach we will have a central instance which will orchestrate operation
-%delegation and operation output forwarding to other nodes.
-%\subsubsection{Decentralized Approach}
-%in this approach we will eliminate the orchestrator node and the network of
-%application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
-%task.
-
-%For every approach we will run performance tests and we will compare the results.
-
-%\subsubsection{Method}
-%For each scenario we will analyze the possible combinations of data and operations and we will discuss how to 
-%deliver the input data and where to store output data. We will discuss workflow management and data transfer further in this chapter.
-
-
-% TODO: I might need to introduce "Decision Tree"
-\section{Decision Making}
-The main decision that we need to make at every scenario is whether we should transfer the required data or we
-need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
-answer a number of questions. First we need to know the location of the data:
-
-\begin{enumerate}
-\item Is the data available locally?
-\item If not, is the data available on another node? -- Here only the physical location of data matters not the instance
-controlling it.
-\end{enumerate}
+Normally we do not manipulate existing datasets. Each operation results in a number of new datasets. However if we
+opt for a storage mechanism such as Hierarchical Data Format (HDF) we might want to store and retrieve datasets from
+a single data file presumably in HDF5 format. But it depends on our further design and it does not change the fact
+that each operation produces new datasets and we have to store it.
 
 
 \section{Scenarios}
-We begin with a simple scenario and we gradually add details to it and build new scenarios.
+According to the operation type and number of input datasets, a number of combinations are possible.
+In this section we introduce them as scenarios. We begin with a simple one and we gradually add details 
+to it and make new scenarios. The following text describes the scenario and it contains expectations of 
+my supervisor about the internals of the system, therfore it goes a little into design of the system. 
+However in the next chapter we will explain our final approach, therefore any design related material in
+this chapter represent only ideas and expectations.%TODO: remove design related material from this chapter
 
-\subsection{Scenario 1 (UC1)}
+For the following scenarios we assume these genearl statements to be true:
+\begin{enumerate}
+\item \textbf{The user has neither a prior knowledge where the datasets are stored}
+\item \textbf{Nor of how many servers are present on the network}
+\end{enumerate}
+
+\subsection{Scneario 1 - Linear operation with one input set}
+\label{sc:sc1}
 In this scenario we have a linear operation, e.g. \(Op^A\) on \(Node^A\) which
 requires one single dataset such as \( Dataset^1 \) which is available on one of the other peers.
 
-%\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \) and the operation is linear.
-%\subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
-%to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
-
+%\subsubsection{Assumptions}
 We have a distributed network of collaborating servers, where in this case, we consider two computers. 
 Each server has its own storage and maintains a number of datasets on it. These servers collaborate 
 together to accomplish issued commands. User in this case wants to perform one operation on a dataset
 that resides only on one of the servers. 
 
-\subsubsection{Assumptions}
-There are two main assumptions here:
-\begin{enumerate}
-\item \textbf{The user has neither a prior knowledge where the data is stored}
-\item \textbf{Nor of how many servers are present on the network}
-\end{enumerate}
+%\subsubsection{Assumptions}
+%There are two main assumptions here:
+%\begin{enumerate}
+%\item \textbf{The user has neither a prior knowledge where the data is stored}
+%\item \textbf{Nor of how many servers are present on the network}
+%\end{enumerate}
 
 The user connects to one of the servers, which we call a client. This server is assumed to be part 
 of the network, though it may not have any local data stores on it. The user issues, interactively
 (or non-interactively) a command on a set of data providing some kind of identification. This command
-is broadcast by the client to all servers in the network. All servers receive this command and check
+is broadcasted by the client to all servers in the network. All servers receive this command and check
 whether they have the data locally. The server which has the data performs the operation and the others
 ignore it. The result of the operation in this case, remains on the same server which the original 
 dataset was on. 
@@ -193,9 +176,10 @@ S1 & DS1 & No \\
 S2 & DS2 & Yes \\
 \end{tabular}\\
 
-Let us assume the data sets are \(10^6\) random numbers.
-Let us assume the operation is to transform the real random numbers to a set of [0 or 1 ] depending on whether the number is even or odd. 
-This operation is assumed here to be a user defined method that operates on the data set.
+Let us assume the data sets are \(10^6\) random numbers and
+the operation is to transform the real random numbers to a set of [0 or 1 ] depending on whether the number is even or odd. 
+This operation is assumed to be a user defined method that operates on the data set and 
+represents user's intented logic.
 
 \begin{itemize}
 \item Note: A dataset can be for example defined as an object that has an id, and a one dimensional array (python list).
@@ -208,27 +192,32 @@ The user issues the command like this from a python shell:
 \item Note: it is assumed that all functions are already defined on all servers, since they execute the same environment.
 \end{itemize}
 
-The client broadcasts this function to all servers. Each server will check if the data set with this id exists, if so will run the command. 
+The client broadcasts this function to all servers. 
+Each server will check if the dataset with this id exists, if so will run the command. 
 
 This means that each server, especially the client, has to “know about all data sets existing in all servers.
 It does not need to have the actual data, but needs to know about it. So that when the user issues the command
-above, he/she does not get a “data structure not existent” error from the client, just because the data is not
+above, she does not get a non-existing dataset error from the client, just because the data is not
 there. Hence we need some interface, or some wrapper function that checks the argument for the data type, or to 
-create some proxy interface from all data to all nodes. 
+create some proxy interface from all data to all nodes.
 
-\subsection{Scenario 2 (UC2)}
-This is similar to scenario one, except that the operation requires two datasets to be done. We have a network of peers collaborating
-to finish some linear and non-linear tasks. In this scenario we need at least three peers involved. We assume the first peer has no
-data of our interest therefore it should cooperate with others to accomplish the request. Our operation in this case requires two 
-different datasets which are not available on the first peer and we should access them on other peers. 
+In proposal chapter\ref{cha:proposal} we explain in detail our suggested solution.
 
-\subsubsection{Assumptions}
-The main points the same:
-\begin{enumerate}
-\item \textbf{The user has neither a prior knowledge where the datasets are stored}
-\item \textbf{Nor of how many servers are present on the network}
-\item \textbf{The operation is linear}
-\end{enumerate}
+\subsection{Scenario 2 - Linear operation with two input sets}
+\label{sc:sc2}
+This is similar to scenario one, except that the operation requires two datasets to operate. 
+In this scenario we need at least three peers involved. We assume the first peer has no
+data of our interest therefore it should cooperate with others to accomplish the request. 
+Our operation in this case requires two 
+different input datasets which are not available on the first peer and we should access them on other peers. 
+
+%\subsubsection{Assumptions}
+%The main points the same:
+%\begin{enumerate}
+%\item \textbf{The user has neither a prior knowledge where the datasets are stored}
+%\item \textbf{Nor of how many servers are present on the network}
+%\item \textbf{The operation is linear}
+%\end{enumerate}
 
 We assume the data distribution is like the following table:
 
@@ -238,6 +227,45 @@ S0 & --- & Yes \\
 S1 & DS1 & No \\
 S2 & DS2 & No \\
 \end{tabular}\\
+
+\subsection{Scenario 3 - Linear operation with 2+ input sets}
+\label{sc:sc3}
+This scenario is slightly different than scenario two only about the number of input datasets. All the assumptions and 
+requirements remain the same. Except that we would have one more more extra machines containing the rest of datasets.
+However we consider the worst case here, where every machine contains only one of the required datasets and the initial 
+machine has none of them.
+In reality there would be cases than all the data would be available on the same machine or a number of datasets
+would exist in one remote machine. The worst data distribution for this case would be like this:
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S0 & --- & Yes \\
+S1 & DS1 & No \\
+S2 & DS2 & No \\
+S3 & DS3 & No \\
+\end{tabular}\\
+
+Theoratically there could be more datasets but it is unlikely and often it does not exceed two inputs.
+
+\subsection{Scenario 4 - Non-Linear operation with one input set}
+With the similar assumptions as before, we have only a different type of operation. With one dataset there is no 
+difference between this scenario and first scenario, where the operation is linear. In case this dataset could
+be broken into smaller parts we should consider the operation type to prevent any unexpected results.
+
+
+\subsection{Scenario 5 - Non-Linear operation with two input sets}
+This case is very complecated. We can not solve it like the previous ones, and we need to make extra decisions.
+In this kind of operation we would need both datasets at the same time in one machine in order to produce any
+results. Therefore it is not possible to distribute this operation on multiple machines like we can do for 
+a linear operation with multiple inputs. 
+
+\subsection{Scenario 6 - Non-Linear operation with 2+ input sets}
+This is an extension to the previos scenario. 
+If we could find a solution for scenario 5, we would extend it to cover this scenario as well. 
+There is no fundamental difference between this scneario and the last one. Again we consider the same
+data distribution as described for scenario 3.
+
+\iffalse
 
 \subsubsection{Possible Approach}
 In order to calculate the result we might take a number of approachers, we start with a combination of \textbf{divide and conquer} and
@@ -356,3 +384,4 @@ Now if user makes a query giving the operation id this would be the result:
 \item If the operation is marked done, return the dataset id
 \item If it is not done, return the status.
 \end{enumerate}
+\fi
