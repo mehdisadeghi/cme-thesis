@@ -247,23 +247,56 @@ S3 & DS3 & No \\
 
 Theoratically there could be more datasets but it is unlikely and often it does not exceed two inputs.
 
-\subsection{Scenario 4 - Non-Linear operation with one input set}
+\subsection{Scenario 4 - non-Linear operation with one input set}
 With the similar assumptions as before, we have only a different type of operation. With one dataset there is no 
 difference between this scenario and first scenario, where the operation is linear. In case this dataset could
 be broken into smaller parts we should consider the operation type to prevent any unexpected results.
 
 
-\subsection{Scenario 5 - Non-Linear operation with two input sets}
+\subsection{Scenario 5 - non-Linear operation with two input sets}
 This case is very complecated. We can not solve it like the previous ones, and we need to make extra decisions.
 In this kind of operation we would need both datasets at the same time in one machine in order to produce any
 results. Therefore it is not possible to distribute this operation on multiple machines like we can do for 
 a linear operation with multiple inputs. 
 
-\subsection{Scenario 6 - Non-Linear operation with 2+ input sets}
+\subsection{Scenario 6 - non-Linear operation with 2+ input sets}
 This is an extension to the previos scenario. 
 If we could find a solution for scenario 5, we would extend it to cover this scenario as well. 
 There is no fundamental difference between this scneario and the last one. Again we consider the same
 data distribution as described for scenario 3.
+
+\subsection{Scenario 7 - mixed operations}
+We previously discussed a number of scenarios to run atomic operations on one ore more datasets. The solution to 
+above mentioned scenarios will be discussed in detail in the next chapter. However these are the simple cases and
+do not cover all possible operations that we need. Here we introduce operations which are composed of another
+operation types which we call them \textit{sub-operation}.
+Here is the main assumption before mixing operations:
+
+\begin{itemize}
+\item \textbf{Any sub-operation will produce in a new dataset}
+\end{itemize}
+
+This is necessary in order to simplify the problem and allow us to make some reasonable results
+for a limited set of cases and let aside other possiblities for further work. This would be enough
+for us to demonstrate our main problems and also to build our basic proposal on top of that.
+
+An algebraic notion of such a problem would be like this:
+%http://oeis.org/wiki/List_of_LaTeX_mathematical_symbols
+%http://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics
+\begin{subequations}
+
+\textit{f} and \textit{g} are linear functions
+\begin{align*}
+\delta &= f(a + g(b + c))\\
+&= f(a) + g(b + c)
+\end{align*}
+
+Which will result in:
+\begin{equation}
+f(a) + g(b + c) = f(a) + g(b) + g(c)
+\end{equation}
+\end{subequations}
+
 
 \iffalse
 
