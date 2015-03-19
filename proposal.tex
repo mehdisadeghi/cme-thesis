@@ -48,9 +48,11 @@ We will cover these in more detail during this chapter.
 
 \section{Basic Idea}
 The basic idea that we will follow in this chapter, relies on breaking the operations into smaller units which
-we can solve them in one separate step, such as only one operatino call or service call. 
-The building blocks for complex operations are the simple operations.
+we can solve them in one step, such as only one operationor service call. 
+In our design the simple operations are the building blocks for mixed ones.
 We build them on top of the atomic units, which we know how to solve them.
+This idea has the advantage of allowing us to reuse our work and decrease the complexitly of implementing
+more complicated operatins. However we would have increased complexity in messaging parts.
 
 We assume that we have the information about the datasets
 available on all machines i.e. in form of a distributed table
@@ -59,7 +61,8 @@ information the application can decide if it has the required data or
 not. We will explain this in detail later in this and next chapter.
 
 Based on this algorithm the application implicitly delegates operations to the other 
-nodes (instances of the same program), where the data is available. It would be a non-blocking service call, 
+nodes (instances of the same program), where the data is available. 
+It would be a non-blocking service call, 
 just like signaling others about an incoming request.
 Along with any operation change, the distributed workflow manager will synchronize the information amoung the peers.
 Any change in datasets in any collaborative node will also be synchronized with peers and will be added to 
@@ -75,21 +78,67 @@ on two datasets we break it into two smaller units, and one \textit{meta operati
 
 After having two smaller operations and one meta operation, we launch the smaller operations implicitly. Actually we break
 scenario number two into two instances of scenario one and one meta operation to observe the overall process. The implementaion
-of this process will be presented in the prototype and will be discussed in detail.
+of this process will be presented in the prototype.
+
+\subsection{Non-blocking Calls}
+We base our desing on non-blocking service calls. This means all the calls in our system would be asynchronous.
+When a user calls a servie, she would instantly receive an id, instead of being blocked for the real result.
+The rationale here is because of possible long-execution times in our use cases. 
+One needs to think of a service call in our design as \textit{request submission}. 
+Not only the interaction between user and peers is asynchronous but the inter-peer service calls follow the same path.
+Any service call regarding running an operation would be non-blocking and will result in an unique identifier.
+
+\subsection{Dataset identification}
+When a user or peer wants to submit a request for an operation, they would not provide a real dataset as input.
+They would instead provide the unique id of a dataset existing on our network of collaborative peers.
+The our system, i.e. the peer who has received the request, will look at its internal dataset store to see if it
+has the dataset locally or not.
+This will happen in the pre-processing step. 
+In any case a signal will be dispatched to other peers about the new operation.
+The nature of these signals are also non-blocking.
 
 \subsection{Distributed Operation}
 To realize the above mentioned method, we need to distribute any single operation. To achieve this we assign one unique id
-to every incoming operation. Afterwards this operation will be tracked with this id. One can image this as a ticket which
-allows following every change to an operation. Apart from id we will store name of the operation and input datasets. This 
-will allow us to relaunch this operation in case we need to. The store that keeps this information is distributed amoung
-all participating nodes. Any further infromation such as results will be attached to this store during the process. There
-are concerns running a distributed store that needs further attention and 
+to every incoming operation. This will happen before doing any real work on the request. In our prototype we have implemented
+this with \textit{decorators} in python programming language. 
+From this point of time, 
+the operation will be known and tracked with this id. One can imagine this as a ticket which
+allows monitoring every change made to an operation. 
+Apart from id we will store name of the operation and its input datasets. 
+This will allow us to relaunch this operation in case we need to. 
+The store that keeps this information is distributed amoung all participating nodes. 
+Any further infromation such as results will be attached to this store during the process. 
+There are concerns running a distributed store that needs further attention and 
 we try to cover them in further discussions and futher work.
 
+\subsection{Distributed stores}
+We will use this term many times in the next sections, therefore we have to explain it.
+Basically we talk about a simple key/value storage. 
+Currently the storage mechanism is not important for us, it could be memory or anything else.
+This stores are like dictionaries, the keys would be the unique identifers.
+Either id of an operation or id of a dataset. 
+Then we will store futher information about that object as the value for that key.
+We will take advantage of very simple structure to make it easy to be exchanged among peers.
+
+From one side, these stores would be simple repositories to read/write key/value pairs.
+This simplifies dependant parts.
+From another point of view these stores are distributed objects, but not really.
+The keep sending signals about any change in their internals.
+These signals will be catched and handled buy another component respectively.
+The other component will then signal other peers about certain changes that has been happened in this store.
+Other peers then will catch this message and will unpack the message and will updted their own storages.
+
+This way with minimum coupling we would have a distributed storage which its distributed nature is hidden from
+the objects which need to use it.
+
 \subsection{Collectors}
+Nature of simple operations is simple. 
+An operation either will be handled locally or a dispatched signal will be handled
+by a peer who has the requested data. 
+The status and result dataset id will be stored inside the operation store under the operation's unique id.
 
 
-\subsection{Asynchronous Calls}
+
 \subsection{Unique IDs}
 
 
