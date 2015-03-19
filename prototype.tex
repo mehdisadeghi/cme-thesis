@@ -44,10 +44,18 @@ signals will trigger the appropriate internal business logic, therefore they can
 \subsection{Actors}
 There are two types of actors in our problem domain.
 \subparagraph{User}
-A user who launches, control and monitor an operation.
+A user who launches, control and monitor an operation. Typically they are employees of scientific institutes or universities.
+The goal of these users is to utilize the program to launch some kind of simulation and get back the result.
 \subparagraph{Instance}
-Every instance can launch and observe an operation on other instances on other nodes.
+Every instance can launch and observe an operation on other instances on other nodes. If we launch a single instance
+network, then there would be no other instance to talk to, therefore any recursive service call will happen on the
+same instance and not on any other one.
+When there are more than one instance on one network, on instance has the ability to call services/operations on other
+instances, basically using the same channel that one nomral user does. This will make our application to act as a user
+of itself. We will utilize this when we introduce recursive service calls inside our application, hence the term
+\textit{collaboration}.
 \subsection{Messaging}
+
 \subsubsection{Publish/Subscribe}
 \subsubsection{Filtering}
 \subsection{Coupling}

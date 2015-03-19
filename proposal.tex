@@ -6,6 +6,46 @@ ones, and one mixed operation type. We begin with the most basic scenario, solvi
 which requires one dataset. Then we will extend it to accept more datasets and we will sove them. We will
 cover only solving linear operations and non-linear operations will be left for further work.
 
+\section{Big Picture}
+To make it easier to consume all this text we will make an effort to show a big picture of our desgin beforehand. Here it is.
+
+There would be multiple computers, our application installed on each of them. This machines do not depend on each
+other to operate. Each of them runs the same program instance as others. Each one has the same set of services that
+other instances and users can call. Each instance has a number of datasets. These peers will exchange knowledge of
+existing datasets with eachother. Each instance contains atleast two distributed internal structures,
+we call them \textit{distributed stores}, these are similar to distributed key/value stores.
+One store for operations, and another one for datasets. When an instance receives a service call for an operation, it
+will store some basic information and identification about it inside its operation store. This store automatically will
+inform other peers about these changes, so others will have the same knowledge afterwards.
+
+Upon an incoming request, an instance would be able to accomplish the task alone, only if it has access to datasets locally.
+Otherwise it will do nothing and will simply ignore it. But since the operation store will distribute this information
+seamlessly, any other peer has the opportunity to laucn the operation if they have the desired data, if it is not the case
+they will only update their internal store and do nothing. But if they had the data, they would run the desired operation
+and will update the state of the operation to a meaningful one, such as \textit{processing}, and will distribute it
+accordingly to inform others about the new state of this operation.
+
+In case of a mixed operation the receiver will break it into smaller operations and will self-launch them accordingly and
+will register a meta operation and will assign the afore-mentioned smaller operations as sub/child operations. We will
+also register this meta operation into the internal operation storage will then automatically distribute it like any other
+operation. This way we behave the same way with simple or complicated operations and we use the same interface to interact
+with them.
+
+In case of operations which have a number of child operations there would be a need to aggregate the result of sub operations.
+This would be done in a seamless way as well. We will introduce a \textit{collector} peer which will randomly take control
+and collect the results.
+
+When an operation is done, the result dataset will be given to the internal distributed dataset store of the responsible
+peer - the peer which is running it - and it will be stored in a backend storage but the unique identifer of the dataset
+will be distributed and other peers will get the knowledge of a new dataset and the container peer respectively. 
+To query results users have to use the operation id that they have received upon the initial service call. 
+
+This way we can apply a collaboration technique to a number of autonomus peers. 
+This design allows us to have peers which are able to work independantly, 
+but meanwhile are member of a larger network of peers and participate in accomplishing larger tasks.
+
+We will cover these in more detail during this chapter.
+
 \section{Basic Idea}
 The basic idea that we will follow in this chapter, relies on breaking the operations into smaller units which
 we can solve them in one separate step, such as only one operatino call or service call. 
@@ -25,9 +65,30 @@ Along with any operation change, the distributed workflow manager will synchroni
 Any change in datasets in any collaborative node will also be synchronized with peers and will be added to 
 a distributed list.
 
-\subsection{Break and Conquer}
-\subsection{Recursive Call}
+\subsection{Break and Conquer - Recursive Call}
+This makes the high level algorithm that we using in this work. We break operations into smallest possible operations
+and we implement them. Then we build other operations using these small units. For example we solve scenario number one, as
+discussed in chapter \ref{cha:schenario} to run one single operation on a single dataset.
+In order to run it successfully we need to find the corresponding dataset and in case it is not available locally we have
+to launch the operation on the node which has it. Then when we come to scenrio number two, i.e. applying the same operation
+on two datasets we break it into two smaller units, and one \textit{meta operation}.
+
+After having two smaller operations and one meta operation, we launch the smaller operations implicitly. Actually we break
+scenario number two into two instances of scenario one and one meta operation to observe the overall process. The implementaion
+of this process will be presented in the prototype and will be discussed in detail.
+
+\subsection{Distributed Operation}
+To realize the above mentioned method, we need to distribute any single operation. To achieve this we assign one unique id
+to every incoming operation. Afterwards this operation will be tracked with this id. One can image this as a ticket which
+allows following every change to an operation. Apart from id we will store name of the operation and input datasets. This 
+will allow us to relaunch this operation in case we need to. The store that keeps this information is distributed amoung
+all participating nodes. Any further infromation such as results will be attached to this store during the process. There
+are concerns running a distributed store that needs further attention and 
+we try to cover them in further discussions and futher work.
+
 \subsection{Collectors}
+
+
 \subsection{Asynchronous Calls}
 \subsection{Unique IDs}
 
