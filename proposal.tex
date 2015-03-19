@@ -1,51 +1,29 @@
-\chapter{Proposed Design}
+\chapter{Proposed Solution}
 \label{cha:proposal}
 In this chapter we explain how we can solve the scenarios which we explained in previous chapter.
-We introduced six different scenarios, three of them for linear operations and three of them for 
-non-linear operations.
-%\section{Decision Making}
-%The main decision that we need to make at every scenario is whether we should transfer the required data or we
-%need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
-%answer a number of questions. First we need to know the location of the data:
-
-%\begin{enumerate}
-%\item Is the data available locally?
-%\item If not, is the data available on another node? -- Here only the physical location of data matters not the instance
-%controlling it.
-%\end{enumerate}
-
-%\subsubsection{Conditions} \( Dataset^1 \) is not available on \( Node^A \) and the operation is linear.
-%\subsubsection{Consequences} With these conditions we either should transfer \( Dataset^1 \)
-%to local node or in case of availability delegate \(Op^A\) to the node which already has \( Dataset^1 \).
-
-\section{Possible Approaches}
-During this work we consider three different approaches toward preparing required data for operations.
-\begin{description}
-\item{Conventional Approach} in this approach we put the required data on a network file system and all
-application instances will access it there utilizing NFS mounted file system or other distributed file systems.
-\item{Centralized Approach} in this approach we have a central instance which will orchestrate operation
-delegation and operation output forwarding to other peers.
-\item{Decentralized Approach} in this approach we eliminate the orchestrator peer and the network of
-application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
-task.
-\end{description}
+We introduced seven different scenarios, three of them for linear operations and three of them for non-linear
+ones, and one mixed operation type. We begin with the most basic scenario, solving a data intensive operation
+which requires one dataset. Then we will extend it to accept more datasets and we will sove them. We will
+cover only solving linear operations and non-linear operations will be left for further work.
 
 \section{Basic Idea}
-We assume that we have the information about the Datasets
-available on all of the machines i.e. in form of a distributed table
-with entries containing the node address and Dataset id. Based on this
+The basic idea that we will follow in this chapter, relies on breaking the operations into smaller units which
+we can solve them in one separate step, such as only one operatino call or service call. 
+The building blocks for complex operations are the simple operations.
+We build them on top of the atomic units, which we know how to solve them.
+
+We assume that we have the information about the datasets
+available on all machines i.e. in form of a distributed table
+with entries containing the node address and dataset id. Based on this
 information the application can decide if it has the required data or
-not. 
+not. We will explain this in detail later in this and next chapter.
 
-Based on this algorithm the initial application delegates operations to the other 
-nodes (instances of the same program), where the data is available. 
-Our distributed workflow manager will synchronize the information on these running operation and
-will label the output data and will add it to the distributed data table.
-
-After finishing operations A and B we will run operation C in either
-of these nodes, because the required data is partially available on these
-nodes. Then we have to transfer the rest of the data to one of these
-nodes to run the operation C which needs both parts simultaneously.
+Based on this algorithm the application implicitly delegates operations to the other 
+nodes (instances of the same program), where the data is available. It would be a non-blocking service call, 
+just like signaling others about an incoming request.
+Along with any operation change, the distributed workflow manager will synchronize the information amoung the peers.
+Any change in datasets in any collaborative node will also be synchronized with peers and will be added to 
+a distributed list.
 
 \subsection{Break and Conquer}
 \subsection{Recursive Call}

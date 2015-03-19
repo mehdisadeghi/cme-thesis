@@ -2,14 +2,44 @@
 \label{cha:prototype}
 
 \section{Architecture}
-In a traditional approach toward application layering we would have three tiers, i.e. client layer (GUI),
+There are a number of possible ways to design a system to run distributed data intensive operations. Here are 
+three well known approaches:
+\begin{description}
+\item{Conventional Approach} there is no distributed application in this case. Applications run on desktop machines
+and they access data on on network storages such as NFS mounted or other distributed file systems. This is pretty much
+the same thing that many users of data intensive scentific applications do today.
+
+\item{Centralized Approach} this approach is we have a central orchestrator which users connect to it directly or
+using a client to submit their operatinos. This is similar to the traditional client/servier architecture. In 
+many HPC distributed applications such as UNICORE, this would be the software which is installed on the cluster
+and could have multiple other machines -as resources- under its control. The emphasise in this model is providing
+a managed access to distributed computing resources.
+
+\item{Decentralized Approach} in this approach we eliminate the orchestrator peer and the network of
+application instances should collaborate in a decentralized fashion to keep track of data and control flow for each
+task. This is the paradigm that we will follow in this chapter as our proposed design. 
+\end{description}
+
+\subsection{Collaborative design}
+To give a better understanding of our solution one should think of it as a distributed collaborative application. 
+Even though one instance of our application has same basic functionalities as multiple peers together
+but it has been desined for collaboration and a single instance will only be functionl if all the requested data are
+available locally. Nevertheless this makes it possible to use application in standalone mode with no peers which might
+come beneficial to some users with only local data.
+
+We have picked a decentralized design, where peers will share the knowledge of running operatinos and existing datasets
+with one another. The next stark point is that they will collaborate to accomplish one simple or complicated operatin.
+In terms of delegating a simple operatino from a node which does not have the required data - but has received the command
+to run such operation - to a node which contains the data.
+
+\subsection{Hexagonal Architecture}
+In a traditional approach toward application design we would have three tiers, i.e. client layer (GUI),
 business layer (logic) and database layer. These tiers correspond to a one dimentional application architecture,
 where there are only two \textit{sides} assumed to exist around application logic, client and database. However
 this is not the case when we have a multi-dimentional architecture, where there are multiples input/output channels
 around our business logic. In the latter case we have to use a so called hexagonal architecture. \cite{alistair}
 In such an architecture applications receive signals from multiple communication means at the same time. This 
 signals will trigger the appropriate internal business logic, therefore they can't be layered in one dimention.
-\subsection{Overview}
 
 \subsection{Actors}
 There are two types of actors in our problem domain.
@@ -110,6 +140,8 @@ itself to all other nodes which are listed in config file.
 \subsubsection{Possible Reactions}
 \subsection{Incoming Message Flow}
 \subsubsection{Possible Reactions}
+
+\section{Queries}
 
 \section{Deployment}
 The software is easily installable in a Python Virtual Environment.

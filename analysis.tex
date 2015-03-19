@@ -34,7 +34,7 @@ could be broken into smaller operation and then run in parallel. Having two data
 operation on each of them separately and the aggregate the results. Here is the algebraic notation
 of a linear operation which acts on two datasets:
 
-\[ Operation(A + B) = Operation(A) + Operation(B) \]
+\[ f(a + b) = f(a) + f(b) \]
 
 Being linear or non-linear only matters when we have to operate on more that one dataset, or we want to
 break the input into many parts.
@@ -49,7 +49,7 @@ at once. It is not possible to apply the same operation on each of the input dat
 end. This means that these operations could not be run in parallel.
 Here is the algebraic notion of such operation:
 
-\[ Operation(A + B) \neq Operation(A) + Operation(B) \]
+\[ f(a + b) \neq f(a) + f(b) \]
 
 A sample of non-linear operations is comparison, when it is required to compare all elements on two different datasets. 
 Such a use case happens in many areas of science and engineering. These operations are also called All-Pairs. \cite{moretti08}
@@ -280,22 +280,51 @@ This is necessary in order to simplify the problem and allow us to make some rea
 for a limited set of cases and let aside other possiblities for further work. This would be enough
 for us to demonstrate our main problems and also to build our basic proposal on top of that.
 
-An algebraic notion of such a problem would be like this:
+Here is the algebraic notion of such a problem, \textit{f} and \textit{g} are linear functions:
 %http://oeis.org/wiki/List_of_LaTeX_mathematical_symbols
 %http://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics
 \begin{subequations}
-
-\textit{f} and \textit{g} are linear functions
 \begin{align*}
-\delta &= f(a + g(b + c))\\
-&= f(a) + g(b + c)
+\Sigma &= f(a + g(b + c))\\
+&= f(a) + g(b + c)\\
+&= f(a) + g(b) + g(c)
 \end{align*}
-
-Which will result in:
-\begin{equation}
-f(a) + g(b + c) = f(a) + g(b) + g(c)
-\end{equation}
 \end{subequations}
+
+In the above text we assumed linear operations, however we would have mix of linear and non-linear operations. 
+We will discuss this further in next chapter, while proposing a solution to solve such operations.
+
+
+\section{Decision Making}
+The main decision that we need to make at every scenario is whether we should transfer the required data or we
+need to delegate the operation to an instance on a node which already has the data. To make a decision we need to
+answer a number of questions. First we need to know the location of the data:
+
+\begin{enumerate}
+\item What is the operation type?
+\item Are required datasets available locally?
+\end{enumerate}
+
+These points derive directly from our two main requirements about distributing workflow information and 
+eliminating data location. But how these questions serve those purposes?
+
+First of all we need to recognize the type of the operation that we are going to launch. This operation could
+resemble any of the discuess scenarios in this chapter. This will make it clear for us if we can directly
+jump into distributing the workflow and launching the task or we need to take further steps into breaking
+the operation into smaller units. We will discuss this in detail in next chapter, whilc describing our design.
+
+The next import question regarding operations is data availibility. If a local machine has received an operation
+and the required dataset is available on locall machine then there is no need for any transfer, then we would need
+only to distribute the operation information amoung collaborating peers.
+
+Answers to the above questions will help us to decide whether on which machine we should run the operation. Running an
+operation remotely means that we will not transfer back the requested data from another machine, instead we will launch
+the operation on the machine containing the data. This is different from conventional approach of transferring methods
+or executables to a remote resource and executing it there. In our case we assume that we have the same service API 
+available on all the participating machine. Therefore we only need to decide on which machine we have to forward
+the request. In case of forwarding or delegating a request to other machines we would need to preserve regarding
+workflow information on all the participating machines. This will be discuess in next chapter as part of our
+distributed workflow management design.
 
 
 \iffalse
