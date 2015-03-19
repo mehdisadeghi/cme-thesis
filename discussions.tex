@@ -1,6 +1,19 @@
 \chapter{Discussions}
 \label{cha:discussions}
 
+\section{Using Prior Art}
+\subsection{Data Transfer}
+We can take advantage of existing Distributed File Systems
+(DFS) to make the data available for operations. We can then eliminate
+the complexity of data transfer between these two nodes and delegate it
+to existing distributed file systems. The main point is we don't rely on
+DFS for all of our decision making part but we explicitly make the 
+decision which operations to run on specific nodes and then for the 
+data transfer part we can use a meta or universal disk concept to deliver the
+remaining data.
+
+In current design we store files on a random temp folder.
+
 \section{Possible Issues}
 \subsection{High Load}
 \subsection{Orphan Operations}

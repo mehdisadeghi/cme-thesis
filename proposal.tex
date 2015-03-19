@@ -68,6 +68,15 @@ Along with any operation change, the distributed workflow manager will synchroni
 Any change in datasets in any collaborative node will also be synchronized with peers and will be added to 
 a distributed list.
 
+Here is a short definition of operations from design point of view:
+
+\begin{itemize}
+\item{Simple Operation} Any operation that has only one input dataset. We solve these.
+\item{Complex Operations} Operations with more that one input dataset. We turn them into simple operations and we solve them.
+\item{Mixed Operation} Any operation that has another operation as input. We turn them into simple and complext operations and
+then we solve them.
+\end{itemize}
+
 \subsection{Break and Conquer - Recursive Call}
 This makes the high level algorithm that we using in this work. We break operations into smallest possible operations
 and we implement them. Then we build other operations using these small units. For example we solve scenario number one, as
@@ -97,7 +106,7 @@ This will happen in the pre-processing step.
 In any case a signal will be dispatched to other peers about the new operation.
 The nature of these signals are also non-blocking.
 
-\subsection{Distributed Operation}
+\subsection{Distributed operation}
 To realize the above mentioned method, we need to distribute any single operation. To achieve this we assign one unique id
 to every incoming operation. This will happen before doing any real work on the request. In our prototype we have implemented
 this with \textit{decorators} in python programming language. 
@@ -111,7 +120,7 @@ Any further infromation such as results will be attached to this store during th
 There are concerns running a distributed store that needs further attention and 
 we try to cover them in further discussions and futher work.
 
-\subsection{Distributed stores}
+\subsection{Distributed store}
 We will use this term many times in the next sections, therefore we have to explain it.
 Basically we talk about a simple key/value storage. 
 Currently the storage mechanism is not important for us, it could be memory or anything else.
@@ -131,31 +140,50 @@ Other peers then will catch this message and will unpack the message and will up
 This way with minimum coupling we would have a distributed storage which its distributed nature is hidden from
 the objects which need to use it.
 
-\subsection{Collectors}
+\subsection{Meta operations}
 Nature of simple operations is simple. 
 An operation either will be handled locally or a dispatched signal will be handled
 by a peer who has the requested data. 
 The status and result dataset id will be stored inside the operation store under the operation's unique id.
 
+As soon as it comes to next scenarios this simplicity vanishes. 
+Then we have to deal with multiple operations under one initial request from users.
+We have decided to repeat the same structure for operations with one or more datasets.
+Therefore in pre-process we check the number of inputs and we create the same number of
+smaller operations. 
+This is only for linear operations, as we will not cover non-linear operatinos.
+Nevertheless, an input could be an operation call in case of mixed operations.
+In this case again we go back to our main patter, \textit{break and conquer}. 
+We create a meta operation and we store it. 
+We create sub operations for \textbf{level one} operations and we will store its id 
+in our meta operation as child operation. 
+The same story will happen subsequently for any sub operation as well. 
+Meaning that those might also create their own sub-operatinos and so on.
 
+To better understand this structure think of how method calls work in programming languages.
+A programmer can call functions and pass other function calls as input arguments.
+The runtime will begin to execute each function call and will use a stack to restore
+the last execution point to continue from there after finishing the nested call.
+We apply the same mechanism but in a distributed and non-blocking way.
 
-\subsection{Unique IDs}
+\subsection{Collectors}
+In last part we discussed meta-operations. 
+But who will be responsible to aggregate the result of these small operations spread all over the network? 
+Here we introduce a new role for a peer, \textit{collector}. 
+During the pre-process phase, where we create sub-operations we randomly assign
+a flag for one of sub-operatins to indicate that it should collect the results. 
+That peer - which is yet unknown - apart from running its part of the meta operation,
+will take an extra responsibility. That is, it would check frequently to see if the
+sub-operations are done. As soon as the sub-operations are done, it will
+launch the target function, bypassing the pre-process phase.
 
-
-\section{Operation Types}
-\subsection{Simple Operation}
-\subsection{Mixed Operation}
-
-\section{Using Prior Art}
-\subsection{Data Transfer}
-We can take advantage of existing Distributed File Systems
-(DFS) to make the data available for operations. We can then eliminate
-the complexity of data transfer between these two nodes and delegate it
-to existing distributed file systems. The main point is we don't rely on
-DFS for all of our decision making part but we explicitly make the 
-decision which operations to run on specific nodes and then for the 
-data transfer part we can use a meta or universal disk concept to deliver the
-remaining data.
+In this part the meta operation will be labled complete and the resulting dataset will be stored.
+If the target functio - which carries the desired business calculation - needs any number of datasets,
+they will be copied to local machine to complete the process. 
+Since we expecte the resulting datasets have small sizes this would not cause a problem. 
+Moreover in case of linear operations we can optimize the selection of this machine much easier than
+non-linear operations where we need to copy a dataset to another machine. 
+In such cases we would select the machine which contains the larger dataset.
 
 
 % ==============================================
