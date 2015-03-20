@@ -186,23 +186,69 @@ non-linear operations where we need to copy a dataset to another machine.
 In such cases we would select the machine which contains the larger dataset.
 
 
-% ==============================================
-% ==============================================
-\section{Proposed Approach}
-In order to calculate the result we might take a number of approachers, we start with a combination of \textbf{divide and conquer} and
-\textbf{produce-consume-collect} methods.
+\section{Realizing Scenarios}
+\subsection{Scneario 1 - Linear operation with one input set}
+We introduced this scenario in last chapter and this was the assumed data and servie distribution:
 
-The S0, in this case, is the peer who receives the command and initiates the request. The two other peers, S1 and S2 respectively, have the required
-datasets. The initiator will find the corresponding datasets and will dispatch commands to run each part on each peer and then will collect
-the resulting datasets. This will be a blocking operation, we will wait until the other peers finish their parts and return the result
-to us. If the output is a number it will be returned to the user, if it is a dataset it will be stored based on defined storage mechanism, 
-currently we use random storage. The peer will break the operation into smaller operations each one calculating result for one of datasets, 
-this \textbf{sub-operations} will be executed like \textbf{scenario 1} and the result will be collected by initiator peer.
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S1 & DS1 & No \\
+S2 & DS2 & Yes \\
+\end{tabular}\\
 
-We assume that in this case we have two arrays, each consisting of \(10^6\) random numbers. We have to first transform these datasets into
-a set of [0 or 1] based on the number being even or odd (use case 1) and then we make a third dataset which contains the sum of every two
-corresponding numbers in range of [0 to 2].
+In this case \(S^2\) receives a request to run an operation such as \(Op^A\) on \(DS^1\).
+However \(DS^1\) is available on the other node.
+Upon getting such a request we will take a number of steps on the receiver (machine which received the command)
+and the container (the one with desired data) machine and on neutral machines which neither have receved the
+request nor have the desired dataset.
 
+On the receiver machine:
+\begin{enumerate}
+\item If operation requires one dataset continue, otherwise go to next scenario.
+\item Store the operation in distributed operation store and get the id
+\item Return operation id to user
+\item If data store has the dataset locally do these
+  \begin{enumerate}
+  \item Run desired operation on the dataset
+  \item Store the result dataset in dataset store \# Currently we choose a random peer to store results there
+  \item Add the result dataset id to the operation \# Will be distributed
+  \item Update the operation state \# Will be distributed
+  \end{enumerate}
+\end{enumerate}
+
+On the other machines, either container or neutral the flow starts with receiving a signal:
+\begin{enumerate}
+\item An operation update signal is received.
+\item Update our internal operation store silently (without distributing this change).
+\item If we have desired dataset do these, otherwise do nothing:
+  \begin{enumerate}
+  \item Run desired operation on the dataset
+  \item Store the result dataset in dataset store \# Currently we choose a random peer to store results there
+  \item Add the result dataset id to the operation \# Will be distributed
+  \item Update the operation state \# Will be distributed
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{Scneario 2 - Linear operation with two input sets}
+First lets have another look at our data distribution and peers as described in analysis chapter:
+
+\begin{tabular}{ l c r }
+\em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
+S0 & --- & Yes \\
+S1 & DS1 & No \\
+S2 & DS2 & No \\
+\end{tabular}\\
+
+The S0, in this case, is the peer who receives the command and initiates the request. 
+Each of the other two peers, S1 and S2, has one of the required datasets. 
+
+In order to realize this scenario we apply \textbf{divide and conquer} and \textbf{produce-consume-collect} methods.
+We create one meta operation and two subs. Sub operations will operation excactly as described in previous section
+and their results will be reflected in our distributed stores.
+
+As an example we assume that in this case we have two arrays, each consisting of \(10^6\) random numbers. 
+We have to first transform these datasets into a set of [0 or 1] based on the number being even or odd (use case 1) 
+and then we make a third dataset which contains the sum of every two corresponding numbers in range of [0 to 2].
 
 \begin{itemize}
 \item Note: in this case each pear should be able to run the requested linear operation on one or more datasets.
@@ -212,14 +258,21 @@ The notation of above mentioned approach will be like this:
 
 \[ Operation(A + B) = Operation(A) + Operation(B) \]
 
-In order to run this operation in a collective way, we need to think of the type of service calls in our system, whether they are blocking or
-non-blocking. Since often the operations in HPC environments are time consuming and long-running, we consider the non-blocking approach. In
-this way the user will provide a dataset name for storing the result. The operation will be \textbf{submitted} to the collaborative network.
-Later on user is able to query for the result using the key that she had provided at the time of submission. This allows us to design our system
-in a more decentralized way, where each peer can inform others (neighbors) about a request in a \textbf{publish-subscribe} manner, where the peer
-will publish a request and finish the operation. Later on the peer who has the dataset will \textbf{react} to the published request and will take
-further actions, all the other peers who do not have the requirements (the dataset for now) will ignore it, however they can store the details of 
-running operations for next steps, when we will come to more complex workflow.
+In order to run this operation in a collective way, 
+we need to think of the type of service calls in our system, 
+whether they are blocking or non-blocking. 
+Since often the operations in HPC environments are time consuming and long-running, 
+we consider the non-blocking approach. 
+In this way the user will provide a dataset name for storing the result. 
+The operation will be \textbf{submitted} to the collaborative network.
+Later on user is able to query for the result using the key that she had provided at the time of submission. 
+This allows us to design our system in a more decentralized way, 
+where each peer can inform others (neighbors) about a request in a \textbf{publish-subscribe} manner, 
+where the peer will publish a request and finish the operation. 
+Later on the peer who has the dataset will \textbf{react} to the published request 
+and will take further actions, 
+all the other peers who do not have the requirements (the dataset for now) will ignore it, 
+however they can store the details of running operations for next steps, when we will come to more complex workflow.
 
 To show more detailed version of this operation we demonstrate the steps for it:
 
@@ -234,20 +287,26 @@ to \textbf{itself}, which will cause a situation like scenario 1
 \end{enumerate}
 
 \begin{itemize}
-\item With the use of operation ids we eliminate the need to get a result dataset name from user but we still can accept \textbf{tags} from users.
+\item With the use of operation ids we eliminate the need to get a 
+result dataset name from user but we still can accept \textbf{tags} from users.
 \end{itemize}
 
 \begin{itemize}
-\item We assume every operation involving more than one dataset is made of other operations which are already defined in the system.
+\item We assume every operation involving more than one dataset is made of
+other operations which are already defined in the system.
 \end{itemize}
 
-There is an important issue here, we create sub-operations for each operation and we run them in a non-blocking manner, this will
-cause it almost impossible to return the result of operation to the user in one run. One might think that we can block and query
-until the result of sub-operations are ready, but this is something that we want to avoid. Therefore to solve this issue in a 
-distributed manner, we introduce an operation id for each user request. We inform all the peers via sending messages (signals) about
-the new operation and it is id and sub-commands. Each peer will update this operation internally based on further received messages.
-We also return the operation id to the user instead of any results. Then user will query for the result of operation, providing the 
-operation id. We change the above steps like this:
+There is an important issue here, we create sub-operations for each operation and we run them in a non-blocking manner,
+this will
+cause it almost impossible to return the result of operation to the user in one run.
+One might think that we can block and query until the result of sub-operations are ready,
+but this is something that we want to avoid.
+Therefore to solve this issue in a distributed manner, we introduce an operation id for each user request.
+We inform all the peers via sending messages (signals) about the new operation and it is id and sub-commands. 
+Each peer will update this operation internally based on further received messages.
+We also return the operation id to the user instead of any results. 
+Then user will query for the result of operation, providing the operation id. 
+We change the above steps like this:
 
 \begin{enumerate}
 \item User issues the command to S0, providing DS1, DS2 and a unique name for the result
@@ -305,3 +364,15 @@ Now if user makes a query giving the operation id this would be the result:
 \item If the operation is marked done, return the dataset id
 \item If it is not done, return the status.
 \end{enumerate}
+
+\subsection{Realizing Queries}
+Having an operation id at hand a user can query the result of operations. 
+Since each peer has enough information about the running operations it can return list of operations and list of datasets.
+So user can get informed about current operations and existing datasets and query for operation results or further details.
+
+When user provides an id we return the operation details, such as sub-operation ids, state of each operation,
+duration, parent operation id (in case this operation is a child), operation name (the requested service), 
+result dataset id, submit time and etc.
+
+Providing a dataset's id we can return the dataset or \textit{download} and store it in a local file to be observed by user.
+We discuss more on possible extensions in further works section.
