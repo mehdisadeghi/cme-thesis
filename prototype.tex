@@ -289,38 +289,140 @@ can use publish-subscribe to get extra information on that particular subject.
 
 \section{Layers}
 \subsection{Network}
+This layer is responsible to run the publisher channel. 
+Here are the responsibilities of this layer:
+
+\begin{itemize}
+\item Exposing application public interface
+\item Running publisher channel
+\item Listening to internal signals to publish corresponding messages
+\item Subscribing to peers
+\item Getting incoming messages from subscirbers 
+\item Find and call approapriate handler upon arrival of new messages
+\end{itemize}
+
 \subsubsection{API}
-Since this is going to be a network program we need to use a form of Remote Procedure Call (RPC) 
-to communicate between nodes. Rather than implementing ourselves we used a library based on zeromq 
-called \textit{zerorpc}. Using this library we now expose a set of APIs and let the nodes talk to 
+Since this is a network program we need to use a form of Remote Procedure Call (RPC) 
+to communicate between nodes. We used a library based on zeromq 
+called \textit{zerorpc}. Using this library we now expose a set of APIs as services and let the nodes talk to 
 each other based on this API. There are multiple solutions for exposing services which we do not discuss here.
+
 \subsubsection{Publisher}
+Publisher is a ZeroMQ socket object which is binded to one port on the running machine. 
+Having endpoint of this port, other peers can subscribe to it and listen to whatever it publishes.
+
 \subsubsection{Listener}
+Listener is another type of ZeroMQ socket. 
+Having connected to a publisher's endpoint address, 
+we can read any incoming messages, similar to regular sockets.
+But it has this feature of connecting to multiple endpoints.
+
 \subsection{Pre-processing}
-\subsubsection{Incoming Messages}
+In python we can simply wrap any function or method or even classes, inside another one.
+This is realized using decorators in python. 
+Basic usage of decorator in python is like this:
+
+\begin{python}
+def delegate(func):
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        # do preprocess
+        # call func, if desired
+        # do post process
+    return new_func
+
+# In our code:
+
+@delegate
+def legacy_function(an_arg, an_option=somevalue, a_flag=False):
+    # some life-changing processing here...
+
+\end{python}
+As you can see, we wrapped a function only with putting \textit{@delegate} on top of it.
+Now when \textit{legacy\_function} is called, the code inside the \textit{new\_func} block
+will be executed first. 
+There we would have access to the original function and all of its parameters. 
+We can then apply any required processing. 
+We can even decide to call the real function all not.
+All of these without changing the caller code and makes our application very dynamic.
+This way it is really trivial to write pre-processing and post-processing for any function.
+We have implemented our pre and post processing using decorators.
+
+%\subsubsection{Incoming Messages}
 \subsubsection{API Calls}
-\subsection{Backend}
-\subsubsection{Logic}
-\subsubsection{Stores}
-\subsubsection{Database}
+Since we have used zerrpc to expose our services, we have two ways of calling them.
+First is using the command line tool provided along with it which has the same name.
+The second is using zerorpc python package which lets us to programmatically call
+our exposed services.
+
+Here is how we call a service from command line:
+
+\begin{python}
+\$ zerorpc tcp://127.0.0.1:9998
+connecting to "tcp://127.0.0.1:9998"
+list             Return a list of datasets or peers
+echo             Echo
+use_case_2       Invokes operation for use case 1 described in the report. Accepts 'peers', 'datasets' and 'operations as option.
+use_case_1       Invokes operation for use case 1 described in the report. Accepts 'peers', 'datasets' and 'operations as option.
+\end{python}
+This is the the normal output when we provide the endpoint of one of our instances. 
+We get a list of available (exposed) commands along with their documents.
+
+Here we call a service:
+\begin{python}
+\$ zerorpc tcp://127.0.0.1:9998 use_case_1 ds1
+\end{python}
+
+This would be how we get the content of operation store after calling aforementioned command:
+
+\begin{python}
+\$ zerorpc tcp://127.0.0.1:9998 list operations
+connecting to "tcp://127.0.0.1:9998"
+{'1096486d-ed28-40b6-9254-9b2006e8557d': {'args': ['ds1'],
+                                          'command': 'use_case_1',
+                                          'duration': 5.635747909545898,
+                                          'result_dataset_id': '3fb9a21c-aee3-4a6a-98b0-ad0890d75686',
+                                          'state': 'done',
+                                          'submit_moment': 1427122073.528059}}
+\end{python}
+
+To programmatically calling a service we would use zerorpc package:
+
+\begin{python}
+import zerorpc
+c = zerorpc.Client()
+c.connect("tcp://192.168.1.1:4000")
+answer = c.echo('hi')
+\end{python}
+
+%\subsection{Backend}
+%\subsubsection{Logic}
+%\subsubsection{Stores}
+%\subsubsection{Database}
 
 \section{Initialization}
 First of all each application instance establish its own zeromq publisher socket. Then it subscribes
-itself to all other nodes which are listed in config file.
+itself to all other nodes which are listed in config file. It will also bring up the API channel.
+There would be more steps such as registering handlers for various topics and preparing internal
+signal handlers.
 \subsection{Local Database}
+For testing purposes we used a temporary HDF5 file as backend storage.
 \subsection{Stores}
+During initialization step we initialize our dataset store with available datasets in our HDF5 file.
 \subsection{Network}
+All of network initialization will be done after reading the local store.
 
-\section{Control Flows}
-\subsection{API Call Flow}
-\subsubsection{Possible Reactions}
-\subsection{Incoming Message Flow}
-\subsubsection{Possible Reactions}
+%\section{Control Flows}
+%\subsection{API Call Flow}
+%\subsubsection{Possible Reactions}
+%\subsection{Incoming Message Flow}
+%\subsubsection{Possible Reactions}
 
-\section{Queries}
+%\section{Queries}
 
 \section{Deployment}
-The software is easily installable in a Python Virtual Environment.
+The software is easily installable in a Python Virtual Environment. 
+All the requirements could be installed within the virtual environment.
 
 \section{Test Results}
 To be able to assess the performance of each given solution to the mentioned scenarios we made a demo application
@@ -344,6 +446,7 @@ causes the signals for events spread among all greenlets and make trouble. To av
 each server in a separate processes. Running them inside threads won't help as well because the blinker python
 library is thread-safe so it moves signals between threads as well as Greenlets.
 
+\iffalse
 \subsubsection{Scenario 2 Errors}
 While testing scenario 2 we observed a common error. We this scenario with three different peers as the following table:
 
@@ -363,3 +466,4 @@ Meanwhile this is exactly happening on the other peer, therefore both block.
 To solve the blocking peers problem we used the already running main application API instead of 
 opening temporary PULL/PUSH zeromq sockets. 
 This change is working fine and the peers exchanging datasets with no problem.
+\fi
