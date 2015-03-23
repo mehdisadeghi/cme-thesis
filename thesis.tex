@@ -3,6 +3,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{graphicx}
+
+\usepackage{perpage} %the perpage package
+\MakePerPage{footnote} %the perpage package command
 
 \usepackage{csquotes}
 \usepackage[backend=biber]{biblatex}
@@ -148,6 +152,16 @@ February 28, 2015 \\
 
 Mehdi Sadeghi
 
+\chapter*{Copyright}
+\noindent
+\begin{flushleft}
+\copyright 2015 Mehdi Sadeghi - sadeghi [at] mehdix [dot] com.
+ 
+This work is licensed under a Creative Commons Attribution- ShareAlike 3.0 License.
+To view a copy of this license visit:
+\url{http://creativecommons.org/licenses/by-sa/3.0/legalcode}.
+\end{flushleft}
+
 \chapter*{Abstract}
 This document contains my master thesis report including the problem definition, requirements, problem analysis,
 an overview of state of the art, proposed solution, designed prototype, discussions and conclusion.
@@ -159,6 +173,8 @@ we asynchronously launch operations on the network and how we store and collect 
 
 %\chapter*{Acknowledgement}
 %Here will come acknowledgement
+
+\listoffigures
 
 \tableofcontents
 \newpage

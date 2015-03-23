@@ -54,21 +54,189 @@ When there are more than one instance on one network, on instance has the abilit
 instances, basically using the same channel that one normal user does. This will make our application to act as a user
 of itself. We will utilize this when we introduce recursive service calls inside our application, hence the term
 \textit{collaboration}.
+
 \subsection{Messaging}
+When it comes to choosing messaging technology, the field is dominated with centralized solutions.
+There are multiple solutions which bring messaging into applications, 
+e.g. RabbitMQ, ActiveMQ, Celery and so on\footnote{A compelling list could be found here: \url{http://queues.io/}}.
+Most of them are centralized, even though they allow
+distributed paradigms, their still need central servers.
+
+Because of the nature of our application, peers might join and leave the network.
+Therefore we need an transport layer which is designed having this in mind. 
+We haved selected ZeroMQ as our transport layer 
+becuase it is trivial to build effective distributed messaging systems on top of that.
+It is an open source project and has a very active community with hundreds of contributors. 
+It is written in C programming language and has bindings for multiple programming languages including Python.
+It is also multiplatform and is available on different architectures and operating systems.
+
+\subsubsection{Supported Patterns}
+ZeroMQ supports different messaging paradigms, among many others:
+\begin{enumerate}
+\item PUB/SUB which is publish/subscribe
+\item REQ/REP which is similar to traditional client/server
+\end{enumerate}
+We only use publish subscribe during the course of this work.
 
 \subsubsection{Publish/Subscribe}
-\subsubsection{Filtering}
+Since we need to inform other peers about certain topics, we need a mechanism to inform them all together.
+Any peer which is interested in other peers will \textit{subscribe} to their \textit{news channel}. 
+The publish-subscribe pattern is the best way to realize this. 
+ZeroMQ allows us to subscribe to any number of \textit{publisher} channels. 
+Here are some important aspects of ZeroMQ publish-subscribe sockets:
+\begin{itemize}
+\item An application can subscribe to non-existing or non-running publishers.
+\item A publisher will maintain separate queues and will keep messages for any subscribed party.
+\item A publisher will simply drop the messages if there are no subscribers.
+\item A publisher could have any number of subscribers.
+\item A subscriber could subscirbe to any number of publishers.
+\end{itemize}
+
+The above mentioned features gives let use to design distributed.
+We could subscribe to peers regardless of their current state. 
+They might fail and come back again but ZeroMQ will try recover and reconnect when the other peer is available.
+In the other hand, the subscribers will not lose their messages if they go offline and come back online again.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=3in]{zmq_fig4}
+  \caption[Publish-subscribe pattern.]
+   {Publishe-subscribe pattern from ZMQ guide. \cite{zguide}}
+\end{figure}
+
+\subsubsection{Message types}
+We have decided to have a number of messages which will be exchanged between peers.
+Each peer will listen to all the other peers via subscribing to their news channel.
+We assign a numeric id to each of these messages to identify them. 
+Here is a short overview of these topics (they are called topic in ZMQ):
+
+\subparagraph{Delegation} informs other about a request to be handled
+\subparagraph{Operation update} informs others about a change in operation distributed store
+\subparagraph{Pull request} ask others to download a temporary dataset from the provided endpoint
+
+For each of these topics there are certain topic handlers desgind to maximize flexibility of application and
+make it easy to introduce new topics and change topic handlers without touching or with minimum change to existing code.
+
+\subsubsection{Topic matching}
+Topic matching or message filtering is a technique as described 
+in Advanced Message Queuing Protocol (AMQP) v1.0 specification\footnote{\url{https://www.amqp.org/}}.
+For each peer we have one publisher channel and one subscriber channel. 
+The publisher is responsible to publish any given messgage to all the subscribers.
+If we could assign certain message types in transport layer it makes it easier
+to handle them upon arrival. 
+ZeroMQ provides a very basic matching algorithm for this purpose.
+It prefixes a message with a number then a blank space. 
+
+This is how a message will be published:
+\begin{python}
+import zmq
+import msgpack
+context = zmq.Context()
+socket = context.socket(zmq.PUB)
+# A sample local ip address
+socket.bind("tcp://192.168.1.1:4000") 
+message = {'id': '247506b8-09e9-40d8-968d-6f739ba802d3'}
+packed = msgpack.packb(message)
+# An agreed constant for operation news
+topic = 10013
+socket.send('%s %s' % (topic, packed))
+\end{python}
+
+\subparagraph{Messagepack} is a serializer that we use in our transport layer. 
+"MessagePack is an efficient binary serialization format. 
+It lets you exchange data among multiple languages like JSON.
+But it's faster and smaller. 
+Small integers are encoded into a single byte, 
+and typical short strings require only one extra byte in addition to the strings themselves."
+as described by its developers\footnote{\url{http://msgpack.org/}}.
+
+This is how a subscriber will receive a message:
+\begin{python}
+import zmq
+import msgpack
+context = zmq.Context()
+socket = context.socket(zmq.SUB)
+# connecting to the publisher endpoint
+socket.connect("tcp://192.168.1.1:4000")
+while True:
+    msg = socket.recv()
+    topic, delimiter, packed = msg.partition(' ')
+    topic = int(topic)
+    message_dict = msgpack.unpackb(packed)
+    # call appropriate handler here ..
+\end{python}
+
 \subsection{Coupling}
+We have followed event driven pattern in our design.
+The application components are loosely coupled and communicate using signals.
+
+To do so we have used a python thread-safe signaling library 
+called \textit{blinker}\footnote{"Fast, simple object-to-object and broadcast signaling" -
+\url{https://pypi.python.org/pypi/blinker}}.
+
+The main cases that we use signaling is when a component wants to publish a message. 
+In that case it would send a signal with corresponding topic and message. 
+The publisher component will grab that signal, and will issue the real message to the peers.
+
+In the other hand, when a new message arrives we will use dynamically registered handler objects.
+Than handler will run its logic code and will notify further components by issuing corresponding signals.
+
+Here is a basic overview of publishing process. First in sender component:
+
+\begin{python}
+from blinker import signal
+publish_signal = signal('publish') # signals are named
+publish_signal.send(sender, {'topic': 10013})
+\end{python}
+
+The publisher component will be notified in case of a new publish message. 
+This is the code that initialized the publisher upon application start:
+\begin{python}
+def _run_publisher(self):
+    context = zmq.Context()
+    socket = context.socket(zmq.PUB)
+    socket.bind("tcp://%s:%s" % (self.ip, self.config['PUB_PORT']))
+    def publish_handler(sender, topic=None, **kwargs):
+	packed = msgpack.packb(kwargs)
+	socket.send('%s %s' % (topic, packed))
+    publish = signal('publish')
+    publish.connect(publish_handler, weak=False)
+\end{python}
+
+As seen in above code snippet, the publisher assigns a function to be run when
+a new signal arrives. The \textit{weak=False} is to prevent \textit{publish\_handler}
+to be garbage collected when it goes out of scope with having a non-weak reference to it.
+
 \subsection{State}
+In current design we have no state machine but a number of objects have states.
+The most important ones are:
+\begin{itemize}
+\item Operation store
+\item Dataset store
+\item Publisher
+\end{itemize}
+
+Operation store and dataset store are almost explained so far. 
+The publisher is part of the application that has queues for each of subscribers.
+In case of a failure or restart, the messages inside these queues will be discarded.
 
 \section{Technology}
 We have created a python application using Gevent\footnote{\url{http://www.gevent.org/}},
 zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} 
 to be able to service multiple requests in a non-blocking way.
 
+ZeroRPC is a remote procedure call framework which is built on top of ZeroMQ.
+It is capable of exposing a given object's methods as API and made them accessible using an endpoint address.
+
+"gevent is a coroutine-based\footnote{PEP 380 - \url{https://www.python.org/dev/peps/pep-0380/}}
+Python networking library that 
+uses greenlet\footnote{Lightweight in-process concurrent programming - \url{https://pypi.python.org/pypi/greenlet}} 
+to provide a high-level synchronous API on top of the libev event loop."\footnote{See first footnote}
+
+
 \subsection{Programming Language}
-We select Python as the main programming language to implement this project. There are a number of 
-justifications to do so. Here are the main ones:
+We selected Python as the main programming language to implement this project. 
+There are a number of justifications to do so. Here are the main ones:
 
 \subparagraph{Multi-Platform} Python is a multi-platform language. It runs on different operating systems
 seamlessly, hence easier deployment.
@@ -99,7 +267,7 @@ project dependencies into a single directory (which serves as the virtual root f
 directories which normal users do not have access to them. While working inside a \textit{virtaulenv}, all the changes is written to a single directory
 and all binary files, downloaded Python packages goes into that directory. Therefore this is the best way to deploy a Python project in user space.
 
-\subsection{ØMQ}
+\subsection{ZeroMQ}
 The main library that powers our prototype is called ØMQ or ZeroMQ~\cite{ZeroMQ}.
 ZeroMQ is an asynchronous messaging library written in C with 
 bindings for many languages including python. This library helps us to easily scale and use 
@@ -188,9 +356,10 @@ S2 & DS2 & No \\
 
 We also used \textbf{Random Dataset Storage} mechanism, simply to store resulting dataset of one operation on one of the network
 peers. The problem is when two peers decide to store the result of one operation on each other a blocking condition happens. Our
-approach was opening a temporary port and inform the other peer to fetch the data. Meanwhile this is exactly happening on the other
-peer, therefore both block.
+approach was opening a temporary port and inform the other peer to fetch the data. 
+Meanwhile this is exactly happening on the other peer, therefore both block.
 
 \subparagraph{Solution}
-To solve the blocking peers problem we used the already running main application API instead of opening temporary PULL/PUSH zeromq 
-sockets. This change is working fine and the peers exchanging datasets with no problem.
+To solve the blocking peers problem we used the already running main application API instead of 
+opening temporary PULL/PUSH zeromq sockets. 
+This change is working fine and the peers exchanging datasets with no problem.
