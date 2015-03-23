@@ -202,7 +202,7 @@ in terms of devloping new services on top of it. It could be utilized as another
 possible to take advantage of a wide range of HPC resources in our solution. But itself alone is not sufficient for 
 our mission.
 
-\subsection{Apache Hadoop}
+%\subsection{Apache Hadoop}
 %\subsubsection {Deployment complexity}
 %\subsubsection{Data provision methods}
 %\subsubsection {State preservation}
@@ -288,8 +288,8 @@ take advantage of distributed computing features in Hadoop MapReduce
 and HDFS. Cites? Hadoop website?
 \url{https://infosys.uni-saarland.de/publications/BigDataTutorial.pdf}
 
-\subsubsection{iRod}
-\subsubsection{Ceph}
+%\subsubsection{iRod}
+%\subsubsection{Ceph}
 
 \section{Distributing State}
 As previous sections first we introduct some parameters:
@@ -304,7 +304,7 @@ As previous sections first we introduct some parameters:
 \end{itemize}
 In this section we go through a number of existing methods to distributed an object or in another terms to distribute the state.
 
-\subsection{The Raft Consensus Algorithm}\cite{ongaro2014search}
+%\subsection{The Raft Consensus Algorithm}\cite{ongaro2014search}
 %\subsection{RADICAL Ensemble MD Toolkit}
 
 \subsection{Distributed Hash Tables (DHT)}
@@ -455,6 +455,7 @@ Repeating the tests with only local processes which are bootstrapping to one of 
 methods showed that even in this scenario it is not reliable and one can not guarantee that the desired value will be returned.
 
 
+\iffalse
 \subsection{Concoord}
 Describe why it is not suitable for us. It allows single object sharing.
 
@@ -473,3 +474,4 @@ For our last section of this chapter we also need to define some parameteres in 
 In this section we introduce a number of existing scientific workflow systems.
 \subsection{COSMOS}\cite{Gafni30062014}
 \subsection{Weaver}\cite{Bui_weaver:integrating}
+\fi
