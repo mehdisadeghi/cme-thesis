@@ -64,11 +64,11 @@ distributed paradigms, their still need central servers.
 
 Because of the nature of our application, peers might join and leave the network.
 Therefore we need an transport layer which is designed having this in mind. 
-We haved selected ZeroMQ as our transport layer 
-becuase it is trivial to build effective distributed messaging systems on top of that.
+We have selected ZeroMQ as our transport layer 
+because it is trivial to build effective distributed messaging systems on top of that.
 It is an open source project and has a very active community with hundreds of contributors. 
 It is written in C programming language and has bindings for multiple programming languages including Python.
-It is also multiplatform and is available on different architectures and operating systems.
+It is also multi-platform and is available on different architectures and operating systems.
 
 \subsubsection{Supported Patterns}
 ZeroMQ supports different messaging paradigms, among many others:
@@ -89,7 +89,7 @@ Here are some important aspects of ZeroMQ publish-subscribe sockets:
 \item A publisher will maintain separate queues and will keep messages for any subscribed party.
 \item A publisher will simply drop the messages if there are no subscribers.
 \item A publisher could have any number of subscribers.
-\item A subscriber could subscirbe to any number of publishers.
+\item A subscriber could subscribe to any number of publishers.
 \end{itemize}
 
 The above mentioned features gives let use to design distributed.
@@ -101,7 +101,7 @@ In the other hand, the subscribers will not lose their messages if they go offli
   \centering
   \includegraphics[width=3in]{zmq_fig4}
   \caption[Publish-subscribe pattern.]
-   {Publishe-subscribe pattern from ZMQ guide. \cite{zguide}}
+   {Publish-subscribe pattern from ZMQ guide. \cite{zguide}}
 \end{figure}
 
 \subsubsection{Message types}
@@ -114,14 +114,14 @@ Here is a short overview of these topics (they are called topic in ZMQ):
 \subparagraph{Operation update} informs others about a change in operation distributed store
 \subparagraph{Pull request} ask others to download a temporary dataset from the provided endpoint
 
-For each of these topics there are certain topic handlers desgind to maximize flexibility of application and
+For each of these topics there are certain topic handlers designed to maximize flexibility of application and
 make it easy to introduce new topics and change topic handlers without touching or with minimum change to existing code.
 
 \subsubsection{Topic matching}
 Topic matching or message filtering is a technique as described 
 in Advanced Message Queuing Protocol (AMQP) v1.0 specification\footnote{\url{https://www.amqp.org/}}.
 For each peer we have one publisher channel and one subscriber channel. 
-The publisher is responsible to publish any given messgage to all the subscribers.
+The publisher is responsible to publish any given message to all the subscribers.
 If we could assign certain message types in transport layer it makes it easier
 to handle them upon arrival. 
 ZeroMQ provides a very basic matching algorithm for this purpose.
@@ -297,8 +297,8 @@ Here are the responsibilities of this layer:
 \item Running publisher channel
 \item Listening to internal signals to publish corresponding messages
 \item Subscribing to peers
-\item Getting incoming messages from subscirbers 
-\item Find and call approapriate handler upon arrival of new messages
+\item Getting incoming messages from subscribers 
+\item Find and call appropriate handler upon arrival of new messages
 \end{itemize}
 
 \subsubsection{API}
