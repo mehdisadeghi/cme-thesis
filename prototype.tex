@@ -6,13 +6,13 @@ There are a number of possible ways to design a system to run distributed data i
 three well known approaches:
 \begin{description}
 \item{Conventional Approach} there is no distributed application in this case. Applications run on desktop machines
-and they access data on on network storages such as NFS mounted or other distributed file systems. This is pretty much
-the same thing that many users of data intensive scentific applications do today.
+and they access data on on network stores such as NFS mounted or other distributed file systems. This is pretty much
+the same thing that many users of data intensive scientific applications do today.
 
 \item{Centralized Approach} this approach is we have a central orchestrator which users connect to it directly or
-using a client to submit their operatinos. This is similar to the traditional client/servier architecture. In 
+using a client to submit their operations. This is similar to the traditional client/server architecture. In 
 many HPC distributed applications such as UNICORE, this would be the software which is installed on the cluster
-and could have multiple other machines -as resources- under its control. The emphasise in this model is providing
+and could have multiple other machines -as resources- under its control. The emphasis in this model is providing
 a managed access to distributed computing resources.
 
 \item{Decentralized Approach} in this approach we eliminate the orchestrator peer and the network of
@@ -23,23 +23,23 @@ task. This is the paradigm that we will follow in this chapter as our proposed d
 \subsection{Collaborative design}
 To give a better understanding of our solution one should think of it as a distributed collaborative application. 
 Even though one instance of our application has same basic functionalities as multiple peers together
-but it has been desined for collaboration and a single instance will only be functionl if all the requested data are
+but it has been designed for collaboration and a single instance will only be functional if all the requested data are
 available locally. Nevertheless this makes it possible to use application in standalone mode with no peers which might
 come beneficial to some users with only local data.
 
-We have picked a decentralized design, where peers will share the knowledge of running operatinos and existing datasets
-with one another. The next stark point is that they will collaborate to accomplish one simple or complicated operatin.
-In terms of delegating a simple operatino from a node which does not have the required data - but has received the command
+We have picked a decentralized design, where peers will share the knowledge of running operations and existing datasets
+with one another. The next stark point is that they will collaborate to accomplish one simple or complicated operation.
+In terms of delegating a simple operation from a node which does not have the required data - but has received the command
 to run such operation - to a node which contains the data.
 
 \subsection{Hexagonal Architecture}
 In a traditional approach toward application design we would have three tiers, i.e. client layer (GUI),
-business layer (logic) and database layer. These tiers correspond to a one dimentional application architecture,
+business layer (logic) and database layer. These tiers correspond to a one dimensional application architecture,
 where there are only two \textit{sides} assumed to exist around application logic, client and database. However
-this is not the case when we have a multi-dimentional architecture, where there are multiples input/output channels
+this is not the case when we have a multi-dimensional architecture, where there are multiples input/output channels
 around our business logic. In the latter case we have to use a so called hexagonal architecture. \cite{alistair}
 In such an architecture applications receive signals from multiple communication means at the same time. This 
-signals will trigger the appropriate internal business logic, therefore they can't be layered in one dimention.
+signals will trigger the appropriate internal business logic, therefore they can't be layered in one dimension.
 
 \subsection{Actors}
 There are two types of actors in our problem domain.
@@ -51,7 +51,7 @@ Every instance can launch and observe an operation on other instances on other n
 network, then there would be no other instance to talk to, therefore any recursive service call will happen on the
 same instance and not on any other one.
 When there are more than one instance on one network, on instance has the ability to call services/operations on other
-instances, basically using the same channel that one nomral user does. This will make our application to act as a user
+instances, basically using the same channel that one normal user does. This will make our application to act as a user
 of itself. We will utilize this when we introduce recursive service calls inside our application, hence the term
 \textit{collaboration}.
 \subsection{Messaging}
@@ -76,9 +76,9 @@ seamlessly, hence easier deployment.
 is a great advantage for use, because we do not need to take further steps to install a runtime in highly conservative institutes.
 \subparagraph{Familiarity} Python is already being used as main scripting languages in many scientific environments. This would be an advantage
 for us in further steps when users want to contribute to the project or maintain it.
-\subparagraph{Based on C} Python is well known to be very close to C programming languages. Even though Python is slow in arithmatic operations
+\subparagraph{Based on C} Python is well known to be very close to C programming languages. Even though Python is slow in arithmetic operations
 it is possible to write speed critical parts in C and execute it directly within Python code. However in our current solution we do not have
-arithmatic operations.
+arithmetic operations.
 \subparagraph{Faster Development} Since Python does not need special tools to build and deploy its scripts it is much cheaper and faster
 to start, build and test programs.
 \subparagraph{Aspect Oriented Support} With Python it is very easy to wrap methods and apply pre-process and post-process conditions to them. We have
@@ -176,7 +176,7 @@ causes the signals for events spread among all greenlets and make trouble. To av
 each server in a separate processes. Running them inside threads won't help as well because the blinker python
 library is thread-safe so it moves signals between threads as well as Greenlets.
 
-\subsubsection{Scnenario 2 Errors}
+\subsubsection{Scenario 2 Errors}
 While testing scenario 2 we observed a common error. We this scenario with three different peers as the following table:
 
 \begin{tabular}{ l c r }

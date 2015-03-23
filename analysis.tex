@@ -12,9 +12,9 @@ In this chapter we explain possible combinations of operations, nodes and datase
 \section{Operations}
 In a final solution there would be many services, some will carry administrative tasks such as
 getting a list of currently running tasks, or a list of available datasets. These services do not
-change state of the system. It means that even though they could influces the performance of the 
+change state of the system. It means that even though they could affect the performance of the 
 running machine, i.e. with querying the database, they will not make any permanent change into 
-data stores or the running instance. We are not insterested in these services.
+data stores or the running instance. We are not interested in these services.
 
 There are a number of other services who carry the business logic of our application. Calling of
 these services will probably change the state of the running instance and might store persistence
@@ -23,7 +23,7 @@ to begin. We are interested in these services and we call them operations. They 
 any scientific operation, however we do not discuss the detail of them. Instead we are interested on
 categorizing them based on their characteristics, such as type and number of required datasets.
 \subsection{Types}
-We devide data intensive operations into two main groups, the linear operations and non-linear ones.
+We divide data intensive operations into two main groups, the linear operations and non-linear ones.
 This is simply comes from the nature of the operation, if it should be applied to input datasets
 in parallel or serial. We describe this with a simple algebraic notion.
 %In every scenario we have an operation which could be linear or non-linear.
@@ -40,7 +40,7 @@ Being linear or non-linear only matters when we have to operate on more that one
 break the input into many parts.
 
 Another subtle point here is that for a linear operation we can simply run the operation on the machine that
-contains the required dataset, avoiding any dataset transfer amoung different locations in case the requested
+contains the required dataset, avoiding any dataset transfer among different locations in case the requested
 dataset is not available locally on the machine which has received the command to start the operation.
 
 \subsubsection{Non-linear Operation}
@@ -65,21 +65,21 @@ operation on one single machine which contains both of required datasets.
 As operations need input and produce output datasets, we have to see how the input data will be provided and where the output
 data will be stored. Every input or output needs an explicit address, an endpoint, either local or remote.
 Typically users will copy files around and will move them using file transfer tools to a working directory and then will
-launch desired script using job scheulders. However they do not pass large data files around and will mention their location
+launch desired script using job schedulers. However they do not pass large data files around and will mention their location
 inside their script files, which normally points to some shared ftp storage. 
 The scheduler program in turn will run the script at some point of time in future and then
 will look for data files inside working directory. Finally any output file will be created in the same directory or a location
-explicitely defined in the script.
+explicitly defined in the script.
 For each operation we need one or more input datasets which might be available on the same node that wants to run the operation
-initially or could reside on other nodes. We desribe some characteristics of these data files shortly.
+initially or could reside on other nodes. We describe some characteristics of these data files shortly.
 
 \subsubsection{Input}
 One need to pay attention that we do not pass complete and real datasets as input parameters,
 instead we use identifiers to find the required dataset. Currently for most users these identifiers are nothing
 than the name of the data files inside the working directory or the explicit path of a dataset on a network machine.
 It is assumed that the system has knowledge of available
-datasets and can find them prividing an identifier, in this case filename. 
-Another point about data files is that they are normally not mission critical and could be reproduced, hence is the emphasizis
+datasets and can find them providing an identifier, in this case file name. 
+Another point about data files is that they are normally not mission critical and could be reproduced, hence is the emphasizes
 on the state. The last point to mention is that input data is not managed by the system.
 
 % TODO: emphaise managed data files, state machine and raft algorith.http://raftconsensus.github.io/
@@ -125,17 +125,17 @@ that each operation produces new datasets and we have to store it.
 According to the operation type and number of input datasets, a number of combinations are possible.
 In this section we introduce them as scenarios. We begin with a simple one and we gradually add details 
 to it and make new scenarios. The following text describes the scenario and it contains expectations of 
-my supervisor about the internals of the system, therfore it goes a little into design of the system. 
+my supervisor about the internals of the system, therefore it goes a little into design of the system. 
 However in the next chapter we will explain our final approach, therefore any design related material in
 this chapter represent only ideas and expectations.%TODO: remove design related material from this chapter
 
-For the following scenarios we assume these genearl statements to be true:
+For the following scenarios we assume these general statements to be true:
 \begin{enumerate}
 \item \textbf{The user has neither a prior knowledge where the datasets are stored}
 \item \textbf{Nor of how many servers are present on the network}
 \end{enumerate}
 
-\subsection{Scneario 1 - Linear operation with one input set}
+\subsection{Scenario 1 - Linear operation with one input set}
 \label{sc:sc1}
 In this scenario we have a linear operation, e.g. \(Op^A\) on \(Node^A\) which
 requires one single dataset such as \( Dataset^1 \) which is available on one of the other peers.
@@ -179,7 +179,7 @@ S2 & DS2 & Yes \\
 Let us assume the data sets are \(10^6\) random numbers and
 the operation is to transform the real random numbers to a set of [0 or 1 ] depending on whether the number is even or odd. 
 This operation is assumed to be a user defined method that operates on the data set and 
-represents user's intented logic.
+represents user's intended logic.
 
 \begin{itemize}
 \item Note: A dataset can be for example defined as an object that has an id, and a one dimensional array (python list).
@@ -195,7 +195,7 @@ The user issues the command like this from a python shell:
 The client broadcasts this function to all servers. 
 Each server will check if the dataset with this id exists, if so will run the command. 
 
-This means that each server, especially the client, has to “know about all data sets existing in all servers.
+This means that each server, especially the client, has to know about all data sets existing in all servers.
 It does not need to have the actual data, but needs to know about it. So that when the user issues the command
 above, she does not get a non-existing dataset error from the client, just because the data is not
 there. Hence we need some interface, or some wrapper function that checks the argument for the data type, or to 
@@ -245,7 +245,7 @@ S2 & DS2 & No \\
 S3 & DS3 & No \\
 \end{tabular}\\
 
-Theoratically there could be more datasets but it is unlikely and often it does not exceed two inputs.
+Theoretically there could be more datasets but it is unlikely and often it does not exceed two inputs.
 
 \subsection{Scenario 4 - non-Linear operation with one input set}
 With the similar assumptions as before, we have only a different type of operation. With one dataset there is no 
@@ -254,15 +254,15 @@ be broken into smaller parts we should consider the operation type to prevent an
 
 
 \subsection{Scenario 5 - non-Linear operation with two input sets}
-This case is very complecated. We can not solve it like the previous ones, and we need to make extra decisions.
+This case is very complicated. We can not solve it like the previous ones, and we need to make extra decisions.
 In this kind of operation we would need both datasets at the same time in one machine in order to produce any
 results. Therefore it is not possible to distribute this operation on multiple machines like we can do for 
 a linear operation with multiple inputs. 
 
 \subsection{Scenario 6 - non-Linear operation with 2+ input sets}
-This is an extension to the previos scenario. 
+This is an extension to the previous scenario. 
 If we could find a solution for scenario 5, we would extend it to cover this scenario as well. 
-There is no fundamental difference between this scneario and the last one. Again we consider the same
+There is no fundamental difference between this scenario and the last one. Again we consider the same
 data distribution as described for scenario 3.
 
 \subsection{Scenario 7 - mixed operations}
@@ -277,7 +277,7 @@ Here is the main assumption before mixing operations:
 \end{itemize}
 
 This is necessary in order to simplify the problem and allow us to make some reasonable results
-for a limited set of cases and let aside other possiblities for further work. This would be enough
+for a limited set of cases and let aside other possibilities for further work. This would be enough
 for us to demonstrate our main problems and also to build our basic proposal on top of that.
 
 Here is the algebraic notion of such a problem, \textit{f} and \textit{g} are linear functions:
@@ -308,27 +308,27 @@ These points derive directly from our two main requirements about distributing w
 eliminating data location. But how these questions serve those purposes?
 
 First of all we need to recognize the type of the operation that we are going to launch. This operation could
-resemble any of the discuess scenarios in this chapter. This will make it clear for us if we can directly
+resemble any of the discussed scenarios in this chapter. This will make it clear for us if we can directly
 jump into distributing the workflow and launching the task or we need to take further steps into breaking
-the operation into smaller units. We will discuss this in detail in next chapter, whilc describing our design.
+the operation into smaller units. We will discuss this in detail in next chapter, while describing our design.
 
-The next import question regarding operations is data availibility. If a local machine has received an operation
-and the required dataset is available on locall machine then there is no need for any transfer, then we would need
-only to distribute the operation information amoung collaborating peers.
+The next import question regarding operations is data availability. If a local machine has received an operation
+and the required dataset is available on local machine then there is no need for any transfer, then we would need
+only to distribute the operation information among collaborating peers.
 
 Answers to the above questions will help us to decide whether on which machine we should run the operation. Running an
 operation remotely means that we will not transfer back the requested data from another machine, instead we will launch
 the operation on the machine containing the data. This is different from conventional approach of transferring methods
-or executables to a remote resource and executing it there. In our case we assume that we have the same service API 
+or executable to a remote resource and executing it there. In our case we assume that we have the same service API 
 available on all the participating machine. Therefore we only need to decide on which machine we have to forward
 the request. In case of forwarding or delegating a request to other machines we would need to preserve regarding
-workflow information on all the participating machines. This will be discuess in next chapter as part of our
+workflow information on all the participating machines. This will be discussed in next chapter as part of our
 distributed workflow management design.
 
 \iffalse
 
 \subsubsection{Possible Approach}
-In order to calculate the result we might take a number of approachers, we start with a combination of \textbf{divide and conquer} and
+In order to calculate the result we might take a number of approaches, we start with a combination of \textbf{divide and conquer} and
 \textbf{produce-consume-collect} methods.
 
 The S0, in this case, is the peer who receives the command and initiates the request. The two other peers, S1 and S2 respectively, have the required

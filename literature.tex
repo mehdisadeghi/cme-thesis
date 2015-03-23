@@ -4,17 +4,17 @@
 In this chapter we will go through a number of existing solutions. First we discuss some well known
 HPC products which offer a complete set of features to launch and operate an HPC site. These are
 mostly large scale software which include every aspect of data intensive computing. 
-Then we introduce data distribution solutions which are desinged to manage big data. Afterwards
+Then we introduce data distribution solutions which are designed to manage big data. Afterwards
 we introduce some state distribution solutions which could be utilized in a possible solution to
 spread object states among a number of programs. At the end we introduce some existing efforts
 in scientific workflow management field. At each part we introduce a the parameters which are
-interesting for us and then we analyse the given product against them.
+interesting for us and then we analyze the given product against them.
 
 It is also important to mention that we have only considered mostly free and open source projects. 
 Projects which need royalty fees or limit the use cases and their code is not available
 publicly have not been considered. Rationale for this decision is to achieve a 
 sustainable solution for small groups with limited budgets. Therefore it is crucial to avoid
-any notable costs in relation with using products and implementing non-free and non-open standards or protocls.
+any notable costs in relation with using products and implementing non-free and non-open standards or protocols.
 In case of closed source programs it would not be possible to extend them and in case of protocols it is
 obviously a bad choice because it will impose future risks on us. 
 Therefore we decide to avoid such products, standards or protocols all together.
@@ -54,7 +54,7 @@ operations. However we require more light weight solution toward small, distribu
 Therefore in this section we do not want to go through
 all the existing products in HPC field, which is out of scope, instead we discuss a number of them
 which are more likely to be used in European scientific communities, specially in the working 
-environment that I am accomlishing my work.
+environment that I am accomplishing my work.
 
 %We asses existing solutions against our set of requirements and we leave out other factors. 
 It is importance to notice that we asses these products against 
@@ -86,24 +86,24 @@ is also a command line interface available. GUI provides workflow design and exe
 allows users to design complex workflows and combine multiple applications while selecting
 the desired amount of RAM and number of CPUs on target resources. It introduces a concept 
 called GridBeans that allows users to extend the GUI to take advantage of software available on
-the grids and visulaizing output data.
+the grids and visualizing output data.
 
 The service layer of UNICORE is composed of Gateway and number of other components. Gateway, as
 its name says, is the entry point to a UNICORE site. It is like the middle-man between inside
 and outside world in UNICORE. Client makes job specification in Job Service Description Language
  (JSDL)\footnote{\url{http://en.wikipedia.org/wiki/Job_Submission_Description_Language}}.
- This layor exposes resources via Web Services Resource Framework (WSRF) compliant web 
+ This layer exposes resources via Web Services Resource Framework (WSRF) compliant web 
  services\footnote{\url{http://en.wikipedia.org/wiki/Web_Services_Resource_Framework}}
  for file transfer, job submission and management. There are also a wide range of file transfer
  protocols supported for site-to-site and 
  client-to-site\footnote{\url{https://www.unicore.eu/unicore/architecture/service-layer.php}}.
 
-It has been used in supercomputing domain to allow exposing and mangaing of available 
+It has been used in super-computing domain to allow exposing and managing of available 
 computing resources.\cite{unicore_arch}
 
 \subsubsection {Deployment complexity}
 Deployment requires Java Runtime Environment in place, which if not available would require 
-further assistance from IT administrators to be installed. It is also intented to be installed
+further assistance from IT administrators to be installed. It is also intended to be installed
 on a cluster site not normal workstations. To access web features a browser plugin should be
 installed\footnote{
 \url{https://www.unicore.eu/documentation/manuals/unicore/files/client_intro.pdf}}.
@@ -114,7 +114,7 @@ To install the server components admin rights on Windows or root access on Unix-
 systems are necessary. Even though running the client does not need any special permissions.
 \subsubsection{Data provision methods}
 Output files are produced on remote resource (service layer) and can be downloaded to client
-machine on demand. Input files should be transfered to the UNICORE storage using the client.
+machine on demand. Input files should be transferred to the UNICORE storage using the client.
 There are also command line tools such as \textit{uftp} to transfer files to remote 
 storages\footnote{
 \url{https://www.unicore.eu/documentation/manuals/unicore/files/uftpclient/uftpclient-manual.pdf}}.
@@ -137,7 +137,7 @@ not give control over the run-time internals of the application, instead it is m
 to write extensions for the program.
 \subsubsection {Applicability}
 There are a number of considerations that prevent us from taking UNICORE as a solution. However
-it is a well stablished and mature product on its own.
+it is a well established and mature product on its own.
 
 UNICORE is supposed to be a site manager software. A group have to install it on a cluster and
 then users will be able to access the resources. Only a well-informed and skilled group can 
@@ -160,10 +160,10 @@ platfrom to build new solutions on top of them.
 \subsection{Globus Toolkit}
 Globus Toolkit (GT) is the widely developed application for resource management and grid computing today.\cite{eickermann2005steering}
 It lets people share resources, such as computational power, databases, etc online while preserving the
-provider's local autonomy. It consists of various modules and allows futher sevices
+provider's local autonomy. It consists of various modules and allows further services
 to use GT libraries to build new services.\cite{foster2005network}
 
-Unlike UNICORE which is heavily dependant on its Eclipse based client, 
+Unlike UNICORE which is heavily dependent on its Eclipse based client, 
 GT does not provide an interactive user interface. However it offers its services in form of multiple command 
 line tools that makes them suitable to be used in 
 scripting\footnote{\url{http://toolkit.globus.org/toolkit/docs/4.0/data/key/}}.
@@ -176,9 +176,9 @@ from pre-compiled binaries or install from source, since GT is free software and
 under Globus Toolkit Public License (GTPL)\footnote{\url{http://toolkit.globus.org/toolkit/docs/6.0/licenses/}}.
 
 \subsubsection{Data provision methods}
-GT implements GridFTP protocl\footnote{\url{https://www.ogf.org/documents/GFD.20.pdf}} as defined by Open Grid Forum (OGF).
+GT implements GridFTP protocol\footnote{\url{https://www.ogf.org/documents/GFD.20.pdf}} as defined by Open Grid Forum (OGF).
 Users have to use command line tool as well as some GUIs provided by GT to move files between local and remote 
-machiens before and after executing jobs.
+machines before and after executing jobs.
 \subsubsection {State preservation}
 GT has a component called Grid Resource Allocation and Management (GRAM) which provides job submission, management
 and monitoring. GRAM is not a Local Resource Manager (LRM)\footnote{Local job managers control a resource
@@ -198,7 +198,7 @@ of full runtime control rather than predefined routines such
 as MPI\footnote{http://toolkit.globus.org/alliance/publications/papers/gempi.pdf}.
 \subsubsection {Applicability}
 Like UNICORE, GT is a product rather than a framework to build new services on top of it. However it is more flexible
-in terms of devloping new services on top of it. It could be utilized as another backend to our solution which makes it
+in terms of developing new services on top of it. It could be utilized as another backend to our solution which makes it
 possible to take advantage of a wide range of HPC resources in our solution. But itself alone is not sufficient for 
 our mission.
 
@@ -251,7 +251,7 @@ other servers called DataNodes.''\cite{TheHDFS}
 
 
 \subparagraph{Deployment Complexity}
-It needs Java 1.5.x ssh and sshd and rsync. Three basic modes are available:
+It needs Java 1.5.x, ssh, sshd and rsync. Three basic modes are available:
 Local, Pseudo-Distributed and Fully Distributed mode. XML configuration,
 installation of Local and Pseudo Distributed modes are almost straight
 forward, for fully distributed note extra steps are required (official
@@ -292,7 +292,7 @@ and HDFS. Cites? Hadoop website?
 %\subsubsection{Ceph}
 
 \section{Distributing State}
-As previous sections first we introduct some parameters:
+As previous sections first we introduce some parameters:
 \begin{itemize}
 \item Deployment complexity
 \item Data provision methods
@@ -314,7 +314,7 @@ a decentralized way among a network of peers.
 
 \subsubsection{Kademlia}
 Kademlia is a p2p DHT algorithm introduced in 2002. We first tried to use it as a distributed key/value store but 
-it is not suitable for our case and changes do not propagate only to a few neighbours \cite{KademliaPaper}.
+it is not suitable for our case and changes do not propagate only to a few neighbors \cite{KademliaPaper}.
 
 In our case to keep track of the available data on the network of collaborating peers, we tried a DHT implementation 
 (I was not aware of the problem in the beginning).
@@ -460,7 +460,7 @@ methods showed that even in this scenario it is not reliable and one can not gua
 Describe why it is not suitable for us. It allows single object sharing.
 
 \section{Distributed Workflows}
-For our last section of this chapter we also need to define some parameteres in the beginning:
+For our last section of this chapter we also need to define some parameters in the beginning:
 \begin{itemize}
 \item Deployment complexity
 \item Data provision methods
