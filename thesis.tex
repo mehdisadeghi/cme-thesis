@@ -93,6 +93,17 @@ emphstyle={\color{self}\slshape},
 	    filecolor=magenta,
 	    urlcolor=cyan,]{hyperref}
 
+\newenvironment{dedication}
+  {\clearpage           % we want a new page
+   \thispagestyle{empty}% no header and footer
+   \vspace*{\stretch{1}}% some space at the top 
+   \itshape             % the text is in italics
+   %\raggedleft          % flush to the right margin
+  }
+  {\par % end the paragraph
+   \vspace{\stretch{3}} % space at bottom is three times that at the top
+   \clearpage           % finish off the page
+  }
 
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
@@ -179,8 +190,23 @@ we asynchronously launch operations on the network and how we store and collect 
 \thispagestyle{empty} 
 \clearpage
 
-%\chapter*{Acknowledgement}
-%Here will come acknowledgement
+\begin{dedication}
+To Rozita
+\end{dedication}
+%\thispagestyle{empty} 
+%\clearpage
+
+
+\chapter*{Acknowledgement}
+Foremost, I would like to express my gratitude to my advisor Dr. Adham Hashibon for his continuous support, creativity,
+encouragement and enthusiasm during the course of this thesis.
+%His guidance helped me to understand scientific research and helped me to take steps toward bigger ideas and to take a great learning leap in my life.
+%He has motivated me to pursuade the scientific approach, to be creative and not be afraid of following new ways.
+
+Besides my advisor, I would like to sincerely thank my supervisor Prof. Dr. Katharina Mehner-Heindl for her insightful comments,
+scientific support, and encouragement. Her support has always helped me to continue with more self-confidence.
+
+%Last but not the least, I would like to thank my wife, Rozita, for her support and patience during my thesis.
 
 \include{preface}
 
