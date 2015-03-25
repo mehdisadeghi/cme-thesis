@@ -1,31 +1,59 @@
 \chapter{Discussions}
 \label{cha:discussions}
 
-\section{Using Prior Art}
-\subsection{Data Transfer}
-We can take advantage of existing Distributed File Systems
-(DFS) to make the data available for operations. We can then eliminate
-the complexity of data transfer between these two nodes and delegate it
-to existing distributed file systems. The main point is we don't rely on
-DFS for all of our decision making part but we explicitly make the 
-decision which operations to run on specific nodes and then for the 
-data transfer part we can use a meta or universal disk concept to deliver the
+\section{Data Transfer}
+In current design we store files on a random temp folder for each peer.
+But we can take advantage of existing Distributed File Systems (DFS).
+We can then eliminate the complexity of data transfer among peers. 
+DFS has not been considered in our current design but it is an essential part of 
+distributed applications.
+
+Currently we store result datasets randomly between peers as there is no
+network accessible storage.
+We also delegate operations to the peers which contain the data, 
+but the data could be availabe via a shared storage.
+This will make the whole effort meaningless, 
+or it could be better to say that we focus on situations that
+machines containg the data do not have access to shared storages.
+Again another possibility comes to mind, 
+we could make a shared cloud or use a cloud storage provider to 
+share data amoung our peers.
+
+These assumptions somehow contradict with our initial requirement,
+where we having large datasets spread on multiple machines (and not on a shared storage accessible by all of them). 
+We can also consider the price of accessing such data on shared storages and
+compare it with having faster local storages and transferring only necessary parts for each operation.
+Even though these data could be moved to a cloud but this is not the case for us.
+
+The only improvement that I can think of here, 
+is changing the storage strategy and use a cloud storage to keep the results
+(one advantage of having a flexible design is right here, 
+where we can change our storage strategy with a change in configuration file).
+This will let us to avoid the expense of transfering datasets back and forth
+between our peers and we would enjoy the simplicity of having one \textit{meta-disk}
+to work with. 
+We don't rely on DFS in our desgin, we make the decision 
+on which node we have to run the operation and when it comes to 
+data transfer part we can use a \textit{universal disk} concept to deliver the
 remaining data.
 
-In current design we store files on a random temp folder.
+\subsection{Large Dataset Transfer}
+To transfer large arrays over the network there are a number of considerations. 
+Should the array be stored locally before transfer?
+What if the array is so big that it does not fit into the machines memory? 
+And how the array should be transferred?
+
+Currently we assume the result dataset to fit into the memory, 
+therefore there is only the question of how to transfer them over the network. 
+To prevent unnecessary copies, we consider streams to send them to other peers. 
+In the demo application this is done with streaming sockets. 
+The other peer will be notified and then it will fetch the desired dataset.
+
+We need to develop a mechanism to consider dataset size for transfer. 
+User defined files are normally small and we can safely transfer them but
+system datasets are large and for any transfer some sort of control should happen.
 
 \section{Possible Issues}
 \subsection{High Load}
 \subsection{Orphan Operations}
 \subsection{Complexity Growth}
-
-\subsection{Large Dataset Transfer}
-To transfer large arrays over the network there are a number of considerations. Should the array be stored locally before transfer?
-What if the array is so big that it does not fit into the machines memory? And how the array should be transferred?
-
-Currently we assume the result datasets fit into memory, therefore there is only the question of how 
-to transfer them over the network. To prevent unnecessary copies, we consider streams to send them to
-other peers. In the demo application this is done with streaming sockets. The other peer will be notified and then it will fetch the desired dataset.
-
-We need to develop a mechanism to consider dataset size for transfer. User defined files are normally small and we can safely transfer them but
-system datasets are large and for any transfer some sort of control should happen.
