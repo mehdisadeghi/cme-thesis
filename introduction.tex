@@ -1,8 +1,38 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
+We are accomplishing this work in order to faciliate creating data-intensive and computationally intensive 
+scientific\footnote{So-called e-Science} applications.
+Where users often run different simulation software over some pre-existing data sets.
+An example of such data sets could be information of a limited number of atoms representing a piece of metal. 
+This information would be stored in numeric structures and arrays.
+Then there would be applications which will simulate pressure, collision, etc over that data set.
+
+Nowadays this is a common practice in many fields of science, 
+where typical non-expert users have to write scripts in order to run their intented applications,
+log-in to clusters, finding all required data sets and moving them to a folder
+accessible by their script, launch and monitor their scripts and finally collect output files.
+
+Often there would be more than one data set involved in an operation. 
+Those data sets would be spread among multiple machines. 
+In some cases (such as ours) there would be data being produces on multiple destinations and
+they would be required on other machines for some operations.
+Then users would have to deal with even more complexity or they would not be able to run
+such operations at all or would probably have a poor performance if they do.
+
+Regardless of the subject, this workflow is almost similar. 
+Every field will use different simulations but they share same execution process.
+In this non-managed approach non-experts have to deal with the complexities of high performance computing systems.
+
+The aforementioned workflow is not flexible and is not managed at all. 
+Our goal is to find a solution that let us to mange this situation, 
+take the complexities a way from users, create a distributed platform and minimize the transferred data.
+Moreover we want to deliver these promises regardless of the workstation that user works with to be
+able to run a network of computers which collaborate together to deliver the task. 
+This will in turn help us to have more parallelism and avoid single point of failure.
+
 \section{Objectives}
-There are two main objectives in these thesis as the title suggests.
+There are two main objectives in these thesis as the title suggests:
 \begin{itemize}
 \item distributing the workflow of application, i.e. the state
 \item minimizing the amount of transferred data during an operation
@@ -13,12 +43,14 @@ This is how multiple computers will manage to finish an operation collectively i
 We want to find a way to keep the state of the running operation distributed amount all the participants.
 
 Next we want to avoid unnecessary data transfer during an operation as much as possible.
-We prefer to have the operation be transferred rather than data. However this is not possible all the time,
+We prefer to have the operation be transferred rather than data. 
+However this is not possible all the time,
 hence minimizing and smart transfer are mentioned.
 
-Both of these objectives are tailored toward the context that this work is done. This means that even thought 
-there are existing workflow management tools and data transfer solutions 
-but those tools does not meet our requirements. This will be discussed in more detail in chapter \ref{cha:requirements}.
+Both of these objectives are tailored toward the context that this work is done. 
+This means that even thought there are existing workflow management tools and data transfer solutions 
+but those tools do not meet our requirements. 
+This will be discussed in more detail in chapter \ref{cha:requirements}: Requirements.
 
 %To accomplish these objectives we will discuss our specific distributed workflow management and data transfer methods. 
 %We define our requirements regarding the above mentioned topics and we will extract the parameters which we are going
