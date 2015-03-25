@@ -80,10 +80,7 @@ emphstyle={\color{self}\slshape},
 }
 \author{\large\sc{Mehdi Sadeghi}}
 
-\date{13. Feb 2015}
-
-
-%\pagenumbering{roman}
+\date{31. March 2015}
 
 
 % Defining a chapter counter
@@ -100,8 +97,11 @@ emphstyle={\color{self}\slshape},
 \begin{document}
 \nocite{*} % Everything in bibtex file will appear in bibliography
 
+% Numbering according to 
+% http://www.cgu.edu/PDFFiles/Office%20of%20Records%20forms/Degree%20Completion/PaginatingYourDissertation.pdf
+%\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+
 \setlength{\unitlength}{1cm}
-%\maketitle
 
 \makeatletter
 \begin{titlepage}%
@@ -137,7 +137,6 @@ emphstyle={\color{self}\slshape},
 \end{titlepage}%
 \makeatother
 
-%\clearpage\mbox{}\clearpage
 
 \chapter*{Declaration of Authorship}
 \noindent
@@ -148,19 +147,25 @@ I also confirm that the quotes included show the extent of the original quotes a
 as such. I know that a false declaration will have legal consequences. \\
 
 
-February 28, 2015 \\
+March 31, 2015 \\
 
 Mehdi Sadeghi
+
+\thispagestyle{empty} 
+\pagenumbering{roman}
+\clearpage
 
 \chapter*{Copyright}
 \noindent
 \begin{flushleft}
-\copyright 2015 Mehdi Sadeghi - sadeghi [at] mehdix [dot] com.
+\copyright 2015 Mehdi Sadeghi - sadeghi [at] mehdix [dot] org.
  
 This work is licensed under a Creative Commons Attribution- ShareAlike 3.0 License.
 To view a copy of this license visit:
 \url{http://creativecommons.org/licenses/by-sa/3.0/legalcode}.
 \end{flushleft}
+
+\thispagestyle{empty} 
 
 \chapter*{Abstract}
 This document contains my master thesis report including the problem definition, requirements, problem analysis,
@@ -171,18 +176,23 @@ and we have implemented the solution to address those scenarios using a distribu
 we break a complicated operation into simple parts and how we will calculate the final result without any central broker. We will show how
 we asynchronously launch operations on the network and how we store and collect results of collaborating peers.
 
+\thispagestyle{empty} 
+\clearpage
+
 %\chapter*{Acknowledgement}
 %Here will come acknowledgement
 
-\listoffigures
+\include{preface}
 
 \tableofcontents
 \newpage
+\listoffigures
+\newpage
+
 
 \pagenumbering{arabic}
-
-\include{preface}
 \include{introduction} % objectives, the problem, the context
+
 \include{requirements} % in detail
 \include{literature} % making readers familiar with state of the art, where to asses?
 \include{analysis} % problem analysis
