@@ -179,13 +179,20 @@ To view a copy of this license visit:
 \thispagestyle{empty} 
 
 \chapter*{Abstract}
-This document contains my master thesis report including the problem definition, requirements, problem analysis,
-an overview of state of the art, proposed solution, designed prototype, discussions and conclusion.
-During this work we have proposed a solution to collaboratively run various types of operations in a network without any broker or orchestrator. 
-We have defined and analyzed a number of scenarios according to our requirements 
-and we have implemented the solution to address those scenarios using a distributed workflow management approach. We explain how
-we break a complicated operation into simple parts and how we will calculate the final result without any central broker. We will show how
-we asynchronously launch operations on the network and how we store and collect results of collaborating peers.
+This document contains my master thesis report, including problem definition, requirements, problem analysis,
+review of current state of the art, proposed solution, designed prototype, discussions and conclusion.
+
+During this work we propose a collaborative solution to run different types of operations 
+in a broker-less network without relying on a central orchestrator. 
+
+Based on our requirements, we define and analyze a number of scenarios.
+Then we design a solution to address those scenarios using a distributed workflow management approach. 
+We explain how we break a complicated operation into simpler parts 
+and how we manage it in a non-blocking and distributed way.
+Then we show how we asynchronously launch them on the network and 
+how we collect and aggregate results.
+
+Later on we introduce an implemented prototype that demonstrates the proposed design.
 
 \thispagestyle{empty} 
 \clearpage
@@ -193,20 +200,14 @@ we asynchronously launch operations on the network and how we store and collect 
 \begin{dedication}
 To Rozita
 \end{dedication}
-%\thispagestyle{empty} 
-%\clearpage
 
 
 \chapter*{Acknowledgement}
 Foremost, I would like to express my gratitude to my advisor Dr. Adham Hashibon for his continuous support, creativity,
 encouragement and enthusiasm during the course of this thesis.
-%His guidance helped me to understand scientific research and helped me to take steps toward bigger ideas and to take a great learning leap in my life.
-%He has motivated me to pursuade the scientific approach, to be creative and not be afraid of following new ways.
 
 Besides my advisor, I would like to sincerely thank my supervisor Prof. Dr. Katharina Mehner-Heindl for her insightful comments,
 scientific support, and encouragement. Her support has always helped me to continue with more self-confidence.
-
-%Last but not the least, I would like to thank my wife, Rozita, for her support and patience during my thesis.
 
 \include{preface}
 
@@ -214,7 +215,6 @@ scientific support, and encouragement. Her support has always helped me to conti
 \newpage
 \listoffigures
 \newpage
-
 
 \pagenumbering{arabic}
 \include{introduction} % objectives, the problem, the context
