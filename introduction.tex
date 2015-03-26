@@ -2,56 +2,57 @@
 \label{cha:introduction}
 
 We are accomplishing this work in order to facilitate creating data-intensive and computationally intensive 
-scientific\footnote{So-called e-Science} applications.
+scientific\footnote{So-called e-Science} applications. 
+In this chapter we introduce the problem domain and typical workflow and environment which is in practice today.
+This work is done in a european material science research institute, 
+therefore throughout this thesis we have their needs in 
+mind\footnote{See \textit{Material Informatics}\url{http://en.wikipedia.org/wiki/Materials_informatics}}. 
+We begin with introducing the problem context.
 
-Where users often run different simulation software over some pre-existing data sets.
-An example of such data sets could be information of a limited number of atoms representing a piece of metal. 
-This information would be stored in numeric structures and arrays 
-(other subjects could have other data types such as images).
-Then there would be applications which will simulate pressure, collision, etc over that data set.
+\section{Problem Context}
+European scientific communities launch many experiments everyday, resulting in huge amounts
+of data. Specifically in molecular dynamics and material science fields. 
+There are many different simulation software which are being used to accomplish multiscale 
+modeling \footnote{For more information see Computational Multiscale Modeling of Fluids and Solids Steinhauser, Martin 2008}
+tasks.
+
+These tasks often involve running multiple simulation programs over pre-existing datasets 
+or datasets which are produced by other simulation software to achieve desired results. 
+These datasets often resemble models of physical systems, i.e. information about atoms, molecules, etc.
+This information would be stored in numeric structures and arrays, 
+however there are other data types such as images, which have their own use cases (depending on the field).
+In material science community it is about particles and their attributes such as coordinates in a given space and velocity.
+%Then there would be applications which will simulate pressure, collision, etc using those datasets 
+%(depending on the field simulations vary).
 
 Nowadays this is a common practice in many fields of science, 
 where typical non-expert users have to write scripts in order to run their intended applications,
 log-in to clusters, find all required data sets, move them to a folder
-accessible by their script, launch and monitor the scripts and finally collect output files.
+accessible by their script, launch and monitor status of the submitted jobs
+and finally collect output files.
 
 Often there would be more than one data set involved in an operation. 
-Those data sets would be spread among multiple machines. 
-In some cases (such as ours) there would be data being produces on multiple destinations and
-they would be required on other machines for some operations.
+Those data sets would be spreaded among multiple machines. 
+In some cases (such as ours) there would be datasets being produced on multiple destinations and
+they would be requested on other machines for some operations.
 Then users would have to deal with even more complexity or they would not be able to run
 such operations at all or would probably have a poor performance if they do.
 
-Regardless of the subject, this workflow is almost similar. 
-Every field will use different simulations but they share same execution process.
+Every community uses different simulations but they share similar process.
+%This type of work routine is a common form of workflow management in above mentioned communities.
 In this non-managed approach non-experts have to deal with the complexities of high performance computing systems.
 
 The aforementioned workflow is not flexible and is not managed at all. 
+While simpler and smaller experiments could be handled this way,
+larger and more complicated experiments require different solutions. 
+Such experiments are the source of many high performance computing (HPC) problems,
+specially workflow management and data transfer.
+
 Our goal is to find a solution that let us to mange this situation, 
 take the complexities a way from users, create a distributed platform and minimize the transferred data.
 Moreover we want to deliver these promises regardless of the workstation that user works with to be
 able to run a network of computers which collaborate together to deliver the task. 
 This will in turn help us to have more parallelism and avoid single point of failure.
-
-\section{Problem Context}
-European scientific communities launch many experiments everyday, resulting in huge amounts
-of data. Specifically in molecular dynamics and material science fields there are many different
-simulation software which are being used to accomplish multi-scale modeling tasks. 
-
-These tasks often involve running multiple simulation programs over the existing datasets or the data which is
-produced by other simulation software. It's common to run multiple programs on existing datasets
-during one operation to produce the desired results. The order to run simulation software is normally 
-defined within scripts written by users. 
-
-Moreover users have to provide the required data manually and copy all required files to a working
-directory to submit their job, and they might have to login to different machines to prepare files,
-submit the script, monitor the status of the job and finally collect the output files. 
-This type of work routine is a common form of workflow management in above mentioned communities.
-
-While simpler and smaller experiments could be handled this way, larger and more complicated experiments
-require different solutions. 
-Such experiments are the source of many high performance computing (HPC) problems,
-specially workflow management and data transfer.
 
 \section{Objectives}
 There are two main objectives in these thesis as the title suggests:
@@ -74,7 +75,7 @@ This means that even thought there are existing workflow management tools and da
 but those tools do not meet our requirements. 
 This will be discussed in more detail in chapter \ref{cha:requirements}: Requirements.
 
-\section{Terms and definitions}
+\section{Terms and Definitions}
 We will use a number of terms through this report. Here are the meaning for each.
 \subparagraph{Node}
 Refers to one computer in the network.
