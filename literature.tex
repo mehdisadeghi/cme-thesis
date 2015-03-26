@@ -20,32 +20,6 @@ obviously a bad choice because it will impose future risks on us.
 Therefore we decide to avoid such products, standards or protocols all together.
 
 
-%\section{Parameters}
-%We asses existing solutions against our set of requirements and we leave out other factors. 
-%It is importance to notice that we asses these products against 
-%requirements of small and agile scientific groups which often only have access to limited resources.
-%Moreover we look for an application level solutions and not a sole product.
-%Here are the extracted parameters according to the discussed requirements:
-
-%\begin{itemize}
-%\item Deployment complexity
-%\item Data provision methods
-%\item State preservation
-%\item Centralization
-%\item Required user rights
-%\item Runtime control
-%\item Applicability
-%\end{itemize}
-
-%\subsubsection {Deployment complexity}
-%\subsubsection{Data provision methods}
-%\subsubsection {State preservation}
-%\subsubsection {Centralization}
-%\subsubsection {Required user rights}
-%\subsubsection {Runtime control}
-%\subsubsection {Applicability}
-
-
 \section{Grid Computing Solutions}
 There are various products in high performance computing field, such as grid middlewares, distributed
 storage systems, data storage management systems, workflow managers, operating systems for massively parallel 
@@ -56,7 +30,6 @@ all the existing products in HPC field, which is out of scope, instead we discus
 which are more likely to be used in European scientific communities, specially in the working 
 environment that I am accomplishing my work.
 
-%We asses existing solutions against our set of requirements and we leave out other factors. 
 It is importance to notice that we asses these products against 
 requirements of small and agile scientific groups which often only have access to limited resources.
 Moreover we look for an application level solutions and not a sole product.
@@ -202,33 +175,17 @@ in terms of developing new services on top of it. It could be utilized as anothe
 possible to take advantage of a wide range of HPC resources in our solution. But itself alone is not sufficient for 
 our mission.
 
-%\subsection{Apache Hadoop}
-%\subsubsection {Deployment complexity}
-%\subsubsection{Data provision methods}
-%\subsubsection {State preservation}
-%\subsubsection {Centralization}
-%\subsubsection {Required user rights}
-%\subsubsection {Runtime control}
-%\subsubsection {Applicability}
-
 \section{Distributing Data}
-Before introducing approaches toward data distribution we define our parameters:
-\begin{itemize}
-\item Deployment complexity
-\item Data provision methods
-\item State preservation
-\item Centralization
-\item Required user rights
-\item Runtime control
-\item Applicability
-\end{itemize}
-%\subsubsection {Deployment complexity}
-%\subsubsection{Data provision methods}
-%\subsubsection {State preservation}
-%\subsubsection {Centralization}
-%\subsubsection {Required user rights}
-%\subsubsection {Runtime control}
-%\subsubsection {Applicability}
+%Before introducing approaches toward data distribution we define our parameters:
+%\begin{itemize}
+%\item Deployment complexity
+%\item Data provision methods
+%\item State preservation
+%\item Centralization
+%\item Required user rights
+%\item Runtime control
+%\item Applicability
+%\end{itemize}
 
 \subsection{Distributed File Systems}
 One way to achieve fault tolerant and reliable data storage and access is to use
@@ -237,6 +194,11 @@ network of storage servers with different magnitudes based on the underlying fil
 system. We will discuss a number of free and open source solutions.
 
 \subsubsection{Hadoop Distributed File System (HDFS)}
+Here we discuss HDFS and not Hadoop itself, but here is a short description of what Hadoop is:
+``Apache Hadoop is a set of algorithms (an open-source software framework written in Java) 
+for distributed storage and distributed processing of very large data sets (Big Data) 
+on computer clusters built from commodity hardware\footnote{\url{http://en.wikipedia.org/wiki/Apache_Hadoop}}.''
+Thus it targets the same goals that we have but in very large scale with a different approach.
 ``The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on
 commodity hardware.'' 
 The primary objective of HDFS is to store data reliably even in the presence of failures.\cite[tp.~3]{HDFSDocuments}
@@ -251,61 +213,59 @@ other servers called DataNodes.''\cite{TheHDFS}
 
 
 \subparagraph{Deployment Complexity}
-It needs Java 1.5.x, ssh, sshd and rsync. Three basic modes are available:
-Local, Pseudo-Distributed and Fully Distributed mode. XML configuration,
-installation of Local and Pseudo Distributed modes are almost straight
-forward, for fully distributed note extra steps are required (official
-doc link is dead)\footnote{\url{http://hadoop.apache.org/docs/r0.18.3/quickstart.html}}.
-
+HDFS requires Java 1.5.x, ssh, sshd and rsync to be installed. 
+Three basic modes are available: local, pseudo-distributed and fully distributed mode. 
+XML configuration, installation of local and pseudo distributed modes are almost straightforward,
+but for fully distributed note extra steps are required according 
+to quick start guide.\footnote{\url{http://hadoop.apache.org/docs/stable/}}.
+It is also portable. ``HDFS has been designed to be easily portable from one platform to another.''\cite{TheHDFS}
 
 \subparagraph{Fault Tolerance}
-``Hardware failure is the norm rather than the exception.''
+According to Hadoop ``Hardware failure is the norm rather than the exception.''
+There is also heartbeat technique in place.
 ``Each DataNode sends a Heartbeat message to the NameNode periodically.''
 ``The DataNodes in HDFS do not rely on data protection mechanisms 
 such as RAID to make the data durable. Instead, like GFS, 
-the file content is replicated on multiple DataNodes for reliability.''
-\cite{TheHDFS}
-
-``HDFS has been designed to be easily portable from one platform to another.''
+the file content is replicated on multiple DataNodes for reliability.''\cite{TheHDFS}
 
 \subparagraph{Accessibility}
+HDFS provides three main access methods:
 \begin{enumerate}
-\item FS Shell
-\item DFSAdmin
-\item Browser
+\item FS Shell ``includes various shell-like commands that directly interact with 
+the Hadoop Distributed File System (HDFS) as well as other file systems that Hadoop supports''
+\item Administrative Commands a set of commands to control HDFS from command line interfaces (CLI)
+\item WebHDFS to interact with HDFS via HTTP, i.e. REST\footnote{Representational state transfer} API
 \end{enumerate}
 
 \subparagraph{Applicability}
-There is a good document here:
-\url{http://hadoop.apache.org/docs/r0.18.0/hdfs_design.pdf}
-Hints: HADOOP is for big data and the programming should be different (map/reduce)
- and it does not look suitable for our use cases and requirements. The burden would
- be so high that we will waste a lot of resources. I have to put these in scientific
- words with more logic and references to sizes that we need and more numbers.
+Hadoop is targeted toward big data and thousands of nodes and it requires MapReduce\cite{DG04} programming technique.
+Hadoop is a promising tool if we deal with multi-terabyte datasets. 
+But it has its own requirements, one need to adapt the programming techniques along with 
+running an Hadoop site to benefit from its advantages. 
+Since we are after a distributed workflow framework (according to our requirements), 
+HDFS could serve as a backend but Hadoop itself can not replace our system, 
+at least not untill we deal with smaller datasets (large in Hadoop terms is beyond terabytes of data).
 
-Users have to program their applications using Java and Hadoop to 
-take advantage of distributed computing features in Hadoop MapReduce
-and HDFS. Cites? Hadoop website?
-\url{https://infosys.uni-saarland.de/publications/BigDataTutorial.pdf}
-
-%\subsubsection{iRod}
-%\subsubsection{Ceph}
+For our current state I do not find Hadoop a suitable solution.
+It will put unnecessary burden on us, however it is amoung top solutions for data centers and very large sites.
+But still I could think of applying MapReduce itself as an algorithm in some of our scenarios.
+%It remains along with MapReduce a potential candidate for very large scale scenarios. 
+%Users have to program their applications using Java and Hadoop to take advantage of 
+%distributed computing features in Hadoop MapReduce and HDFS.
+%\url{https://infosys.uni-saarland.de/publications/BigDataTutorial.pdf}
 
 \section{Distributing State}
-As previous sections first we introduce some parameters:
-\begin{itemize}
-\item Deployment complexity
-\item Data provision methods
-\item State preservation
-\item Centralization
-\item Required user rights
-\item Runtime control
-\item Applicability
-\end{itemize}
+%As previous sections first we introduce some parameters:
+%\begin{itemize}
+%\item Deployment complexity
+%\item Data provision methods
+%\item State preservation
+%\item Centralization
+%\item Required user rights
+%\item Runtime control
+%\item Applicability
+%\end{itemize}
 In this section we go through a number of existing methods to distributed an object or in another terms to distribute the state.
-
-%\subsection{The Raft Consensus Algorithm}\cite{ongaro2014search}
-%\subsection{RADICAL Ensemble MD Toolkit}
 
 \subsection{Distributed Hash Tables (DHT)}
 Distributed Hash Tables (DHT), best known for their application in building torrent tracking software,
@@ -449,10 +409,67 @@ In a test having one process running on a server in Internet and outside of the 
 different processes running on one laptop but on different ports it is observed that the changes (sets) in the
 Internet does not replicate to the local processes but the changes from local processes are being replicated to the other process.
 
-\subparagraph{conclusion}
+\subparagraph{Conclusion}
 Having a network between local and Internet processes in the above mentioned method is not reliable. 
 Repeating the tests with only local processes which are bootstrapping to one of them and running the setter/getter
 methods showed that even in this scenario it is not reliable and one can not guarantee that the desired value will be returned.
+
+\section{Other Works}
+There are a number of other notable works that we did not discuss here but they are worth mentioning.
+Moreover this enlarges our vision of state of the art and let us to know more similar efforts 
+which we might take advantage of them in future.
+
+\subsection{The Raft Consensus Algorithm}
+``Raft\cite{ongaro2014search} is a consensus algorithm that is designed to be easy to understand. ''
+``Consensus is a fundamental problem in fault-tolerant distributed systems.
+Consensus involves multiple servers agreeing on values. Once they reach a decision on a value, that decision is final.''
+\footnote{\url{http://raftconsensus.github.io/}}
+
+\subsection{RADICAL Ensemble MD Toolkit}
+As described on their website\footnote{\url{http://radical-cybertools.github.io/ensemble-md/index.html}}:
+``The Ensemble MD Toolkit is a Python library for developing and executing large-scale ensemble-based
+Molecular Dynamics (MD) simulations and workflows. It is being developed by the RADICAL Research
+Group at Rutgers University. Ensemble MD Toolkit is released under the MIT License.''
+
+\subsection{Concoord}
+``ConCoord is a novel coordination service that provides replication and synchronization 
+support for large-scale distributed systems. ConCoord employs an object-oriented approach, 
+in which the system creates and maintains live replicas for Python objects written by the user. 
+ConCoord converts these Python objects into Paxos Replicated State Machines (RSM) and enables clients
+to do method invocations on them transparently as if they are local objects.''\footnote{\url{https://pypi.python.org/pypi/concoord}}
+
+ConCoord has been used as underlying technology to create OpenReplica\footnote{\url{http://openreplica.org/}}, 
+a coordination service for distributed applications.\cite{altinbuken2012commodifying}
+
+\subsection{COSMOS}
+``A Python library for workflow
+management that allows formal description of pipelines and partition-
+ing of jobs. In addition, it includes a user interface for tracking the
+progress of jobs, abstraction of the queuing system and fine-grained
+control over the workflow.''\cite{Gafni30062014}
+
+\subsection{Weaver}
+``Weaver\cite{Bui_weaver:integrating} is a high-level framework that enables the integration of distributed computing abstractions
+into scientific and data processing workflows using the Python programming language. 
+This takes advantage of users' familiarity with Python, minimizes barriers to adoption, 
+and allows for integration with a rich ecosystem of existing software.``\footnote{\url{http://cs.uwec.edu/~buipj/research/software/weaver.html}}
+
+\subsection{iRod}
+From iRod's documentation\footnote{\url{http://irods.org/wp-content/uploads/2012/04/iRODS-Overview-November-2014.pdf}}:
+
+iRODS is open-source, data management software that lets users:
+\begin{itemize}
+\item access, manage, and share data across any type or number of storage
+systems located anywhere, while maintaining redundancy and security,
+and
+\item exercise precise control over their data with extensible rules that
+ensure the data is archived, described, and replicated in accordance
+with their needs and schedule
+\end{itemize}
+
+\subsection{Ceph}
+``Ceph is a distributed object store and file system designed to provide excellent performance, 
+reliability and scalability\footnote{\url{http://ceph.com}}."
 
 
 \iffalse
