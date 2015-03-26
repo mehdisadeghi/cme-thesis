@@ -3,15 +3,17 @@
 
 We are accomplishing this work in order to facilitate creating data-intensive and computationally intensive 
 scientific\footnote{So-called e-Science} applications.
+
 Where users often run different simulation software over some pre-existing data sets.
 An example of such data sets could be information of a limited number of atoms representing a piece of metal. 
-This information would be stored in numeric structures and arrays.
+This information would be stored in numeric structures and arrays 
+(other subjects could have other data types such as images).
 Then there would be applications which will simulate pressure, collision, etc over that data set.
 
 Nowadays this is a common practice in many fields of science, 
 where typical non-expert users have to write scripts in order to run their intended applications,
-log-in to clusters, finding all required data sets and moving them to a folder
-accessible by their script, launch and monitor their scripts and finally collect output files.
+log-in to clusters, find all required data sets, move them to a folder
+accessible by their script, launch and monitor the scripts and finally collect output files.
 
 Often there would be more than one data set involved in an operation. 
 Those data sets would be spread among multiple machines. 
@@ -31,61 +33,6 @@ Moreover we want to deliver these promises regardless of the workstation that us
 able to run a network of computers which collaborate together to deliver the task. 
 This will in turn help us to have more parallelism and avoid single point of failure.
 
-\section{Objectives}
-There are two main objectives in these thesis as the title suggests:
-\begin{itemize}
-\item distributing the workflow of application, i.e. the state
-\item minimizing the amount of transferred data during an operation
-\end{itemize}
-
-First of all we want to focus on collaboration in a distributed application.
-This is how multiple computers will manage to finish an operation collectively in a distributed environment.
-We want to find a way to keep the state of the running operation distributed amount all the participants.
-
-Next we want to avoid unnecessary data transfer during an operation as much as possible.
-We prefer to have the operation be transferred rather than data. 
-However this is not possible all the time,
-hence minimizing and smart transfer are mentioned.
-
-Both of these objectives are tailored toward the context that this work is done. 
-This means that even thought there are existing workflow management tools and data transfer solutions 
-but those tools do not meet our requirements. 
-This will be discussed in more detail in chapter \ref{cha:requirements}: Requirements.
-
-%To accomplish these objectives we will discuss our specific distributed workflow management and data transfer methods. 
-%We define our requirements regarding the above mentioned topics and we will extract the parameters which we are going
-%to assess other solutions with them. Then we will go through the currently available solutions and we will discuss them shortly to see
-%whether they are applicable to our problem domain with regard to our requirements.
-
-%This data belongs to operations which might be linear or non-linear
-%and might involve other operations as well. Each operation can be initiated in any participating
-%peer but the required data is not necessarily available on that computer even though
-%the operation result might be delivered back to the same peer.
-
-
-\section{Terms and definitions}
-We will use a number of terms through this report. Here are the meaning for each.
-\subparagraph{Node}
-Refers to one computer in the network.
-\subparagraph{Dataset}
-We mean both consumed and produced data of scientific applications .e.g. NumPy arrays or HDF5 datasets.
-\subparagraph{Application}
-The prototype which has been developed to show case the proposed solution, see \ref{cha:prototype}.
-\subparagraph{Instance}
-An instance of the application running on a node.
-\subparagraph{Peer}
-One instance of the network application which is in collaboration with other local or remote instances.
-\subparagraph{Operation}
-Some functions, carrying logic of our application, which users want to run on datasets.
-\subparagraph{Task}
-Same as the operation with more emphasize on the output rather than the functionality.
-\subparagraph{Service}
-Remote procedures provided by the application which could be called remotely.
-\subparagraph{System}
-The combination of nodes, datasets, application, instances, operations and services as a whole.
-\subparagraph{User}
-A scientist, researcher or student who uses the system.
-
 \section{Problem Context}
 European scientific communities launch many experiments everyday, resulting in huge amounts
 of data. Specifically in molecular dynamics and material science fields there are many different
@@ -103,10 +50,55 @@ This type of work routine is a common form of workflow management in above menti
 
 While simpler and smaller experiments could be handled this way, larger and more complicated experiments
 require different solutions. 
-Such experiments are the source of many high performance computing (HPC) problems, specially workflow management and data transfer.
-%In this thesis we work on these issues.
+Such experiments are the source of many high performance computing (HPC) problems,
+specially workflow management and data transfer.
 
-\subsection{Typical Environment}
+\section{Objectives}
+There are two main objectives in these thesis as the title suggests:
+\begin{itemize}
+\item distributing the workflow of an application, i.e. the state
+\item minimizing the amount of transferred data during an operation
+\end{itemize}
+
+First of all we want to focus on collaboration in a distributed application.
+This is how multiple computers will manage to finish an operation collectively in a distributed environment.
+We want to find a way to keep the state of the running operation distributed amount all the participants.
+
+Next we want to avoid unnecessary data transfer during an operation as much as possible.
+We prefer to have the operation be transferred rather than data. 
+However this is not possible all the time,
+hence minimizing and smart transfer are mentioned.
+
+Both of these objectives are tailored toward the context that this work is done. 
+This means that even thought there are existing workflow management tools and data transfer solutions 
+but those tools do not meet our requirements. 
+This will be discussed in more detail in chapter \ref{cha:requirements}: Requirements.
+
+\section{Terms and definitions}
+We will use a number of terms through this report. Here are the meaning for each.
+\subparagraph{Node}
+Refers to one computer in the network.
+\subparagraph{Dataset}
+Consumed and produced data by scientific applications .e.g. NumPy arrays or HDF5 datasets.
+Data or Data sets also refer to this one.
+\subparagraph{Application}
+The prototype which has been developed to show case the proposed solution, see \ref{cha:prototype}.
+\subparagraph{Instance}
+An instance of the application running on a node.
+\subparagraph{Peer}
+One instance of the network application which is in collaboration with other local or remote instances.
+\subparagraph{Operation}
+Some functions, carrying logic of our application, which users want to run on datasets.
+\subparagraph{Task}
+Same as the operation with more emphasize on the output rather than the functionality.
+\subparagraph{Service}
+Remote procedures provided by the application which could be called remotely.
+\subparagraph{System}
+The combination of nodes, datasets, application, instances, operations and services as a whole.
+\subparagraph{User}
+A scientist, researcher or student who uses the system.
+
+\section{Typical Environment}
 While working in an institute, often there are many computers which users connect to them remotely. In a typical
 scientific and research environment users have their own windows or Linux machine and meanwhile they can SSH to other
 Linux machines on the same network with their user credentials. In such environments it is common to have computer clusters
@@ -135,12 +127,31 @@ for distributed solutions which not only have to distribute state of the program
 but have to provide smarter ways to move data between these machines during operation executions.
 
 \section{Document Overview}
-This document is organized into \arabic{chapter_count} chapters. Here is a short overview of them:
-\subparagraph{Introduction} The opening chapter.
-\subparagraph{Requirements} The problems that we are supposed to answer.
-\subparagraph{Literature} Introducing the related work.
-\subparagraph{Analysis} Different aspects of the problem will be discussed.
-\subparagraph{Proposal} We will explain the proposed solution.
-\subparagraph{Prototype} Implementation of the proposal.
-\subparagraph{Discussions} About the applicability of the proposed solution.
-\subparagraph{Conclusion} Summary and future work.
+This document is organized into \arabic{chapter_count} chapters. 
+The current chapter is for the opening and introducing the context.
+
+In chapter two we explain the requirements. We try to introduce our fields of interest. 
+These requirements will form our orientation during the rest of this work.
+
+In chapter three some related works will be discussed. 
+We will assess each of them against our requirements and interests.
+
+In chapter four different aspects of the problem will be discussed. 
+We will analyse multiple scenarios. This chapter would prepare the basics for the proposal.
+
+In chapter five we will explain the proposed solution. 
+We will suggest an approach that could solve the discussed scenarios.
+
+In chapter six we talk about our designed prototype and its implementation.
+We will talk about the chosen technologies and their advantages.
+
+In chapter seven we discuss about the applicability of the proposed solution, some issues and future work.
+
+And the last chpater is for conclusion.
+
+
+
+
+
+
+
