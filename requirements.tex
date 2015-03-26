@@ -2,18 +2,80 @@
 \label{cha:requirements}
 
 Every group has its own needs. That is the reason that we have many different solutions in the market.
+We focus on requirements of material science community in this work, 
+even though the results could be applied to similar fields as well. 
+
+One of the efforts in material science community is an ongoing european project called SimPhonY.
+It is focused on delivering a product which will run multiple distributed third-party simulation engines
+under the cover of one application.
+This application has to keep state of ongoing simulations and provide them with necessary datasets 
+while running\footnote{\url{http://www.simphony-project.eu/about-simphony/}}.
+Our requirements which will be introduced further in this chapter all originate from this project 
+and our results more likely to be used in the same project.
+
 In this chapter we explain the requirements according to our context.
 
+\section{Assumptions}
+We have a certain problem which we want to focus on rather than reintroducing solutions that already exist. 
+Here we go through assumptions which are necessary to understand the next chapters.
 
-\section{Data Endpoint Abstraction}
-We need to abstract the absolute path of required data from users. To run every operation
-we provide certain data files as input. This is part of the manual step of running an operation and
-it makes it fragile. Currently users have to take care of storing input files in correct folders before
-running their scripts, or they have to copy the input files from the shared network file system to the
-appropriate runtime folder. This is something that we want to disappear. We want the system to 
-manage the input data and its absolute location.
+\subsection{Data Characteristics}
+In our context data is mostly numerical and explains characteristics of physical particles such as atoms and molecules. 
+This data is being used in multiscale simulations. 
+One important aspect of our datasets is that they are not critical and we can reproduce them. 
+We are more concerned about preserving the running state of a distributed application rather than
+preserving datasets, hence is the focus on distributed workflow.
 
-\section{Distributed State}
+\subsection{Data Transfer}
+We assume a data transfer approach is already in place.
+This could be any file system which supports 
+network storage. Rather than going into details of how data could be transferred more efficiently, 
+we will focus on finding which data to be transferred and from which computer to which destination.
+
+\subsection{Independent Work}
+Our work is independent from any simulation or any context related tools.
+We do not rely on any specific software or very specific datasets.
+When we refer to domain related topics, 
+it is to help us to better understand the practical use cases of this thesis.
+
+
+\section{Requirements}
+Before bringing in the requirements we take a moment to better depict the environment that these requirements come from.
+
+It is common that users work with scientific data with help from SciPy 
+project\footnote{"A Python-based ecosystem of open-source software for mathematics, science, and engineering" \url{www.scipy.org}}.
+This project alone is a reason why we are biased toward Python, as later we will discuss.
+SciPy project includes NumPy which is an N-dimentional array package which often is used by users and programs
+to deal with datasets. 
+
+There is a well known portable scientific data file format called 
+HDF5\footnote{Hierarchical Data Format \url{http://www.hdfgroup.org/HDF5/}}.
+This format is de facto standard for storing large datasets in many scientific fields which need to store numerical data.
+Later on we will see that we have used HDF5 as storage in our prototype, even though we are not dependant on it.
+NumPy and HDF5 play well together, i.e. there are many tools and libraries to store and retrieve NumPy data structurs 
+within a HDF5 file. HDF5 does not need a runtime, having HDF5 library is enough to access and manipulate it.
+
+It is also good to mention that our intended users normally work in places where there is a cluster
+and they access it using their own workstations via local area network (LAN).
+It is also very common that they have minimum access rights to their workstations, 
+since administrators do not want to install programs that might increase the risk of problems and the cost of maintenance.
+
+And one more point about operations that we talk about them a lot in this text.
+Users can run simulations on their own laptop and workstations (which is very common),
+but when it comes to more time consuming tasks, they need to work with clusters.
+Usually they login to remote machine or they use some local programs that will submit their scripts to remote resources.
+However this is not a versatile approach and we need to change this.
+
+We are looking for a solution that puts the user first.
+We want to be able to give a single user, the opportunity to run complicated operations right
+from her workstation, while preserving the workflow out of her machine.
+To help them easily install our application, and to use it with minimum learning curve.
+We want to let the user to focus on their main tasks rather than distracting them with 
+data and workflow management and put no burden on them.
+
+Having said this short introduction, we continue with requirements.
+
+\subsection{Distributed State}
 We need a distributed solution which eliminates the need to have central orchestration.
 We want to decrease the dependency between running programs therefore we want to have 
 some sort of distributed application which distributes the operations to all other computers.
@@ -22,14 +84,22 @@ in such a way that we could bootstrap a new application to a certain state. To m
 we need to look at the network of peers as one whole which has knowledge of currently running
 operations along with available datasets and preserves this state among all the nodes.
 
-\section{Distributed Data}
+\subsection{Distributed Data}
 We want to be able to store the result of an operation on different computers, i.e. distribute it on the network.
 This comes from the nature of our workflows. Normally we have huge datasets which represent certain models i.e.
 particles of a fluid or gas inside a container and we want to run multiple operations on those datasets. These
 are normally available on different computers of an institute, and if there are multiple institutes cooperating
 on a topic then we have to fetch data from remote computers. Therefore we need to consider distributed data management.
 
-\section{Server Agnostic}
+\subsection{Data Endpoint Abstraction}
+We need to abstract the absolute path of required data from users. To run every operation
+we provide certain data files as input. This is part of the manual step of running an operation and
+it makes it fragile. Currently users have to take care of storing input files in correct folders before
+running their scripts, or they have to copy the input files from the shared network file system to the
+appropriate runtime folder. This is something that we want to disappear. We want the system to 
+manage the input data and its absolute location.
+
+\subsection{Server Agnostic}
 We want to have the same user experience regardless of the machine that we connect to. It is very common
 that a user moves from one workstation to another one or connects to different machines using SSH. We 
 want to be able to provide the requested information to the user, no matter to which machine she connects.
@@ -40,54 +110,33 @@ and we want to let the users to talk to each of them and be able to launch same 
 It also means that if one users initiates an operation in first computer and then goes to the next one and asks
 for the status of the operation, she should be able to do that as if she is working with the first computer.
 
-\section{Runtime Control}
+\subsection{Runtime Control}
 While an operation is running we want to have full control over every step. In traditional approaches using job
 scheduling systems this is not possible. Except basic control such as stop, resume or similar operations, users
 can not control the runtime behavior of their program. In contrast we want to control all aspects of an operation.
 
-\section{Easy Deployment}
+\subsection{Easy Deployment}
 We look for a solution that is easy to deploy onto new machines. A fully automated installation process
 is required. Unnecessary dependencies should be avoided. Users in science field are not professionals in the field
 of computer and therefore installing complex software requires system administrators to come in. Such installations
 costs money because user herself is not able to finish it without help from others. Moreover it makes it non-feasible
 for single users or small groups to try the software.
 
-\section{User Space Solution}
+\subsection{User Space Solution}
 We need a user space solution. It means that it should be possible to deploy, install and run the software without
 having full control over the machine which is supposed to run it. Any software which needs administrator or root access
 rights is not of our concern. Therefore the software itself along all of its dependencies should be installed and should
 be able to work correctly in user space, under a normal Windows or Linux user account with no special rights except the
 default ones.
 
-\section{OS Agnostic}
+\subsection{OS Agnostic}
 We want to be able to run the solution on both Linux machines and Windows machines. It is common that users have
 two machines, one for office tasks with Windows OS and the other for running simulations with Linux. However Linux
 is the favorite machine to run the software but it could be possible to run it on Windows as well.
 
-\section{Light Weight}
+\subsection{Light Weight}
 We look for a light weight solution which could be run on both laptops and stronger machines, with minimum dependencies
 and launch time.
-
-
-\section{Assumptions}
-During this work we have a number of assumptions. We have a certain problem which we want to focus
-on rather than reintroducing solutions that already exist. Here are the assumptions that we have
-considered during this work:
-
-%\subsection{Collaborating Network}
-%We assume there is a network of computers which are available to run the tasks, each node is running an instance of the application. We will propose our collaboration and data transfer algorithm between them later.
-
-\subsection{Data Characteristics}
-We need to discuss more about the data. In our scientific context data is mostly numerical and explains characteristics
-of physical particles such as atoms and molecules. These data is being used to simulate collections of particles called
-models. Although our work is not dependent on these, they help us to understand the definition of the data that
-we often refer to in this report. One important aspect of the data that we are interested in is that it is not critical 
-and we can reproduce it. 
-
-\subsection{Data Transfer}
-We assume a data transfer approach is already in place. This could be any file system which supports 
-network storage. Rather than going into details of how data could be transferred more efficiently, we will
-focus on finding which data to be transferred and from which computer to which destination.
 
 %\subsection{Workflow}
 %In contrast to data we are interested in workflow. We want to find a reliable approach to access and update state of our workflow on any arbitrary node which is part of our collaborative network.
