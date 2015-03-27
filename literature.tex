@@ -283,7 +283,7 @@ Our tests showed that even though DHT is fault-tolerant and reliable for file di
 it is not adequate for our realtime requirement to find our required data. In one test we ran two peers,
 one on an Internet host and another one on local host. Here are the client and server codes:
 
-\begin{python}
+\begin{lstlisting}[language=python, caption={A twisted application to run Kademlia DHT}]
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
 
@@ -334,21 +334,20 @@ def doGetSet(msgId, *args):
         s.reply(msgId, "Err")
 
 s.gotMessage = doGetSet
-\end{python}
+\end{lstlisting}
 
 In the above example we have used \textit{twisted} networking library\cite{TwistedMatrix} and one
-python implementation\cite{KademliaImpl} of \textit{Kademlia} DHT algorithm\cite{KademliaPaper}. 
+Python implementation\cite{KademliaImpl} of \textit{Kademlia} DHT algorithm\cite{KademliaPaper}. 
 This will start a p2p network and will try to bootstrap it with another peer on the give IP address.
 Thereafter it will open another endpoint to expose a simple \textit{get/set} method for the rest of
 application for communicating with the network.
 
 The next part is a few lines of code to communicate with this network:
 
-\begin{python}
+\begin{lstlisting}[language=python, caption={Multipart messages with ZeroMQ REQ/REP pattern}]
 #
 # Request-reply client in Python
 # Connects REQ socket to tcp://localhost:5559
-# Sends "Hello" to server, expects "World" back
 #
 import zmq
 
@@ -372,7 +371,7 @@ print socket.recv()
 socket.send(b"get:", zmq.SNDMORE)
 socket.send(b"not existing")
 print socket.recv()
-\end{python}
+\end{lstlisting}
 
 This simple client will try to connect to the previously opened port and send get/set messages.
 
@@ -386,7 +385,7 @@ With a number of tests I can confirm that two nodes which are bootstrapped with 
 provide the accurate result every time and it is not clear for me why this happens. See figure~\ref{fig:threepeers} on page ~\pageref{fig:threepeers}.
 
 After running more tests, we figured out that the possible source of the above mentioned problems 
-was the confusion in using \textit{binary} and \textit{string} in python, so it was an error in our side.
+was the confusion in using \textit{binary} and \textit{string} in Python, so it was an error in our side.
 
 \begin{figure}
 \centering
