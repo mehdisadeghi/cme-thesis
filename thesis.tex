@@ -14,6 +14,8 @@
 
 \usepackage{color}
 \usepackage{listings}
+%\lstset{language=Python}
+
 \usepackage{setspace}
 \usepackage{soul}
 
@@ -37,7 +39,7 @@
 \definecolor{Operators}{rgb}{0,0,0}
 \definecolor{Background}{rgb}{0.98,0.98,0.98}
 
-\lstnewenvironment{python}[1][]{
+%\lstnewenvironment{python}[1][]{
 \lstset{
 numbers=left,
 numberstyle=\footnotesize,
@@ -69,7 +71,8 @@ keywordstyle={[2]\color{Decorators}\slshape},
 emph={self},
 emphstyle={\color{self}\slshape},
 %
-}}{}
+}
+%}{}
 
 
 \usepackage{tikz}
@@ -215,6 +218,8 @@ scientific support, and encouragement. Her support has always helped me to conti
 \tableofcontents
 \newpage
 \listoffigures
+\newpage
+\lstlistoflistings
 \newpage
 
 \pagenumbering{arabic}
