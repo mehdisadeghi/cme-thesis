@@ -109,7 +109,7 @@ The nature of these signals are also non-blocking.
 \subsection{Distributed operation}
 To realize the above mentioned method, we need to distribute any single operation. To achieve this we assign one unique id
 to every incoming operation. This will happen before doing any real work on the request. In our prototype we have implemented
-this with \textit{decorators} in python programming language. 
+this with \textit{decorators} in Python programming language. 
 From this point of time, 
 the operation will be known and tracked with this id. One can imagine this as a ticket which
 allows monitoring every change made to an operation. 
@@ -233,6 +233,13 @@ On the receiver machine:
   \end{enumerate}
 \end{enumerate}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=4in]{poster/figures/kseq.png}
+  \caption[Sequence diagram of receiving a new operation]
+   {Steps we take upon receiving a new operation when the desired dataset is not available locally}
+\end{figure}
+
 From the above steps two types of signals will be published to other peers. 
 Each of them will trigger certain actions. 
 First we show the flow will happen upon receiving an operation update message:
@@ -340,6 +347,12 @@ result dataset name from user but we still can accept \textbf{tags} from users.
 other operations which are already defined in the system.
 \end{itemize}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=4in]{poster/figures/kseq.png}
+  \caption[Sequence diagram showing arrival of an operation message]
+   {When a peer is notifed about an operation when it has the desired dataset}
+\end{figure}
 
 \iffalse
 

@@ -41,6 +41,15 @@ around our business logic. In the latter case we have to use a so called hexagon
 In such an architecture applications receive signals from multiple communication means at the same time. This 
 signals will trigger the appropriate internal business logic, therefore they can't be layered in one dimension.
 
+Here is a high level view of the components of the system:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=6in]{poster/figures/sys2.png}
+  \caption[High level view of a network of collaborative peers]
+   {High level network view of the system}
+\end{figure}
+
 \subsection{Actors}
 There are two types of actors in our problem domain.
 \subparagraph{User}
@@ -99,7 +108,7 @@ In the other hand, the subscribers will not lose their messages if they go offli
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=3in]{zmq_fig4}
+  \includegraphics[width=4in]{zmq_fig4}
   \caption[Publish-subscribe pattern.]
    {Publish-subscribe pattern from ZMQ guide. \cite{zguide}}
 \end{figure}
@@ -114,6 +123,7 @@ Here is a short overview of these topics (they are called topic in ZMQ):
 \subparagraph{Operation update} informs others about a change in operation distributed store
 \subparagraph{Pull request} ask others to download a temporary dataset from the provided endpoint
 
+\subsubsection{Topic  Handlers}
 For each of these topics there are certain topic handlers designed to maximize flexibility of application and
 make it easy to introduce new topics and change topic handlers without touching or with minimum change to existing code.
 
@@ -128,7 +138,7 @@ ZeroMQ provides a very basic matching algorithm for this purpose.
 It prefixes a message with a number then a blank space. 
 
 This is how a message will be published:
-\begin{python}
+\begin{lstlisting}[caption={Message publisher code}]
 import zmq
 import msgpack
 context = zmq.Context()
@@ -140,7 +150,7 @@ packed = msgpack.packb(message)
 # An agreed constant for operation news
 topic = 10013
 socket.send('%s %s' % (topic, packed))
-\end{python}
+\end{lstlisting}
 
 \subparagraph{Messagepack} is a serializer that we use in our transport layer. 
 "MessagePack is an efficient binary serialization format. 
@@ -151,7 +161,7 @@ and typical short strings require only one extra byte in addition to the strings
 as described by its developers\footnote{\url{http://msgpack.org/}}.
 
 This is how a subscriber will receive a message:
-\begin{python}
+\begin{lstlisting}[language=python, caption={Subscriber receives and unpacks a message}]
 import zmq
 import msgpack
 context = zmq.Context()
@@ -164,13 +174,13 @@ while True:
     topic = int(topic)
     message_dict = msgpack.unpackb(packed)
     # call appropriate handler here ..
-\end{python}
+\end{lstlisting}
 
 \subsection{Coupling}
 We have followed event driven pattern in our design.
 The application components are loosely coupled and communicate using signals.
 
-To do so we have used a python thread-safe signaling library 
+To do so we have used a Python thread-safe signaling library 
 called \textit{blinker}\footnote{"Fast, simple object-to-object and broadcast signaling" -
 \url{https://pypi.python.org/pypi/blinker}}.
 
@@ -183,15 +193,16 @@ Than handler will run its logic code and will notify further components by issui
 
 Here is a basic overview of publishing process. First in sender component:
 
-\begin{python}
+\begin{lstlisting}[language=python, caption={Publishing an internal signal with blinker}]
 from blinker import signal
 publish_signal = signal('publish') # signals are named
 publish_signal.send(sender, {'topic': 10013})
-\end{python}
+\end{lstlisting}
 
 The publisher component will be notified in case of a new publish message. 
 This is the code that initialized the publisher upon application start:
-\begin{python}
+
+\begin{lstlisting}[language=python, caption={Initializing the publisher upon application start}]
 def _run_publisher(self):
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
@@ -201,7 +212,7 @@ def _run_publisher(self):
 	socket.send('%s %s' % (topic, packed))
     publish = signal('publish')
     publish.connect(publish_handler, weak=False)
-\end{python}
+\end{lstlisting}
 
 As seen in above code snippet, the publisher assigns a function to be run when
 a new signal arrives. The \textit{weak=False} is to prevent \textit{publish\_handler}
@@ -221,7 +232,7 @@ The publisher is part of the application that has queues for each of subscribers
 In case of a failure or restart, the messages inside these queues will be discarded.
 
 \section{Technology}
-We have created a python application using Gevent\footnote{\url{http://www.gevent.org/}},
+We have created a Python application using Gevent\footnote{\url{http://www.gevent.org/}},
 zeromq\footnote{\url{http://zeromq.org/}} and zerorpc\footnote{\url{http://zerorpc.dotcloud.com/}} 
 to be able to service multiple requests in a non-blocking way.
 
@@ -270,10 +281,15 @@ and all binary files, downloaded Python packages goes into that directory. There
 \subsection{ZeroMQ}
 The main library that powers our prototype is called ØMQ or ZeroMQ~\cite{ZeroMQ}.
 ZeroMQ is an asynchronous messaging library written in C with 
-bindings for many languages including python. This library helps us to easily scale and use 
+bindings for many languages including Python. This library helps us to easily scale and use 
 different programming paradigms such as publish-subscribe, request-replay and push-pull.
 
-\section{Compoenents}
+\section{Key Compoenents}
+We have tried to make a modular architecture with cohesive components which are loosely coupled using dynamic
+method registeration. This is possible thanks to Python programming model, where functions and methods are first
+class objects and we can simply pass them around. We have applied this to topic handler registeration and
+internal signal handlers which we register dynamically.
+
 \subsection{Distributed Storages}
 Our aim is to distribute the information about available datasets and operations at each node. To achieve this
 we let our application to launch a number of communicators and publish information about it is data.
@@ -281,11 +297,49 @@ Other nodes in our network have to subscribes on other nodes, ZeroMQ allows us t
 to multiple publishers, therefore each node can subscribe to other nodes. Nodes frequently get
 \textbf{news} from other nodes, for example availability of certain datasets on a node, then it
 can use publish-subscribe to get extra information on that particular subject.
+
 \subsubsection{Operation Store}
+Operation store is a dictionary\footnote{In Python dictionaries 
+are simple key/value objects used extensively by the language itself} 
+like object that hides that distributes its content to other peers.
+The interface provides getter and setter methods to explicitely add a new dataset to the store or
+get an existing one.
+Internally it will broadcast a specific signal along with basic information about the operation. 
+It could be a newly added operation or an update to parts of the operation attributes such as a new dataset assigned
+to it or about the operation entering into a new state.
+
 \subsubsection{Dataset Store}
-\subsection{Message Handlers}
+Currently we have only implemented a \textit{Random Dataset Store} which is similar to operation store it terms of
+hiding the storage and broadcast from the rest of the application.
+Meanwhile it has a few key differences.
+First of all it does not have an update method. 
+Beside querying the datastore, 
+it only allows the application to create a new dataset and will assign a unique identifier to it.
+There is currently no notion of updating a dataset.
+It will publish information about the newly added dataset, 
+and it will use a temporary storage to buffer the dataset and will select a random peer
+and will use the networking layer to transfer the dataset to the randomly selected peer.
+
 \subsection{Decorators}
+We have used Python decorators extensively to apply pre and post processing during an operation call.
+
 \subsection{Application}
+We have capsulated the application itself as a top level class. 
+A developer then would create an instance of this object and then can run it,
+access the application configurations, certain public objects,
+register topic handlers, ask for API endpoints, or application ports and so on.
+
+\subsection{API}
+We have made a separate API Python module\footnote{Modules in Python are simply files with .py extension which contain code}
+to introduce our public API. 
+We expose all the functions defined in this module as public services accessible from outside via application API port.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=4in]{poster/figures/sys.png}
+  \caption[Another view of system compoenents]
+   {Another view of system compoenents}
+\end{figure}
 
 \section{Layers}
 \subsection{Network}
@@ -318,11 +372,11 @@ we can read any incoming messages, similar to regular sockets.
 But it has this feature of connecting to multiple endpoints.
 
 \subsection{Pre-processing}
-In python we can simply wrap any function or method or even classes, inside another one.
-This is realized using decorators in python. 
-Basic usage of decorator in python is like this:
+In Python we can simply wrap any function or method or even classes, inside another one.
+This is realized using decorators in Python. 
+Basic usage of decorator in Python is like this:
 
-\begin{python}
+\begin{lstlisting}[caption={Pre-processing with decorators in Python}]
 def delegate(func):
     @functools.wraps(func)
     def new_func(*args, **kwargs):
@@ -337,7 +391,8 @@ def delegate(func):
 def legacy_function(an_arg, an_option=somevalue, a_flag=False):
     # some life-changing processing here...
 
-\end{python}
+\end{lstlisting}
+
 As you can see, we wrapped a function only with putting \textit{@delegate} on top of it.
 Now when \textit{legacy\_function} is called, the code inside the \textit{new\_func} block
 will be executed first. 
@@ -348,52 +403,55 @@ All of these without changing the caller code and makes our application very dyn
 This way it is really trivial to write pre-processing and post-processing for any function.
 We have implemented our pre and post processing using decorators.
 
-%\subsubsection{Incoming Messages}
 \subsubsection{API Calls}
 Since we have used zerrpc to expose our services, we have two ways of calling them.
 First is using the command line tool provided along with it which has the same name.
-The second is using zerorpc python package which lets us to programmatically call
+The second is using zerorpc Python package which lets us to programmatically call
 our exposed services.
 
 Here is how we call a service from command line:
 
-\begin{python}
+\begin{lstlisting}[language=sh, caption={Quering an API endpoint for available commands}]
 \$ zerorpc tcp://127.0.0.1:9998
 connecting to "tcp://127.0.0.1:9998"
 list             Return a list of datasets or peers
 echo             Echo
-use_case_2       Invokes operation for use case 1 described in the report. Accepts 'peers', 'datasets' and 'operations as option.
-use_case_1       Invokes operation for use case 1 described in the report. Accepts 'peers', 'datasets' and 'operations as option.
-\end{python}
+use_case_2       Invokes operation for use case 1 described in the report.
+		    Accepts 'peers', 'datasets' and 'operations as option.
+use_case_1       Invokes operation for use case 1 described in the report. 
+		    Accepts 'peers', 'datasets' and 'operations as option.
+\end{lstlisting}
+
 This is the the normal output when we provide the endpoint of one of our instances. 
 We get a list of available (exposed) commands along with their documents.
 
 Here we call a service:
-\begin{python}
+\begin{lstlisting}[language=sh, caption={Running an operation on a dataset}]
 \$ zerorpc tcp://127.0.0.1:9998 use_case_1 ds1
-\end{python}
+\end{lstlisting}
 
 This would be how we get the content of operation store after calling aforementioned command:
 
-\begin{python}
+\begin{lstlisting}[language=sh, caption={Running an operation from command line}]
 \$ zerorpc tcp://127.0.0.1:9998 list operations
 connecting to "tcp://127.0.0.1:9998"
-{'1096486d-ed28-40b6-9254-9b2006e8557d': {'args': ['ds1'],
-                                          'command': 'use_case_1',
-                                          'duration': 5.635747909545898,
-                                          'result_dataset_id': '3fb9a21c-aee3-4a6a-98b0-ad0890d75686',
-                                          'state': 'done',
-                                          'submit_moment': 1427122073.528059}}
-\end{python}
+{'1096486d-ed28-40b6-9254-9b2006e8557d': 
+  {'args': ['ds1'],
+  'command': 'use_case_1',
+  'duration': 5.635747909545898,
+  'result_dataset_id': '3fb9a21c-aee3-4a6a-98b0-ad0890d75686',
+  'state': 'done',
+  'submit_moment': 1427122073.528059}}
+\end{lstlisting}
 
 To programmatically calling a service we would use zerorpc package:
 
-\begin{python}
+\begin{lstlisting}[caption={Connecting to an API endpoint in ZeroRPC}]
 import zerorpc
 c = zerorpc.Client()
 c.connect("tcp://192.168.1.1:4000")
 answer = c.echo('hi')
-\end{python}
+\end{lstlisting}
 
 %\subsection{Backend}
 %\subsubsection{Logic}
@@ -440,10 +498,10 @@ over them. To make this operation faster we changed the application to make it p
 of instances on one machine and we automated this process using a number of scripts. %TODO more details
 
 \subsubsection{Mixing Signals in Greenlets}
-We use python Greenlets instead of threads. This means that our demo application runs on only one thread. 
+We use Python Greenlets instead of threads. This means that our demo application runs on only one thread. 
 This causes a problem when launching multiple apps all together with one script and inside one thread, that
 causes the signals for events spread among all greenlets and make trouble. To avoid this we have to run
-each server in a separate processes. Running them inside threads won't help as well because the blinker python
+each server in a separate processes. Running them inside threads won't help as well because the blinker Python
 library is thread-safe so it moves signals between threads as well as Greenlets.
 
 \iffalse
