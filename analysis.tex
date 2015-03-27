@@ -92,14 +92,18 @@ on the state. The last point to mention is that input data is not managed by the
 Operations create output datasets which normally are small in size, therefore we ignore the transfer cost of operation
 results in our work. These data files will be normally stored in working directories and are of less importance to us.
 In typical environments users check output directory for their result and again they use conventional file transfer
-tools to get have that data locally or provide it to some visualization tools to be visualized. However all these steps
+tools to have that data locally or provide it to some visualization tools to be visualized. However all these steps
 are manual and no control and value added services could be built on top of them. Users are not able to track their
-activities and there is no history left about them (of course except the server logs), no reports could be made and no
+activities and there is no history left about them (except probably some server logs), no reports could be made and no
 administrative decisions could be made about usages, user activities and so on. This all means that the output data files
 are not managed.
 
-%\subsubsection{Locating}
-%Every input or output needs an explicit address, an endpoint, either local or remote.
+\subsubsection{Intermediate Output}
+With some of current tools, users can pipe output of one simulation program to another program.
+For example if we have dataset \textit{a} as input this call would be \(f(g(a))\). 
+We will address this further in our design as a \textit{Mixed Operation}.
+With a fastforward we would say that such operations will be handled asynchronously during a number of parent-child operations,
+just like function calls in a programming language or mathematics.
 
 \section{Dataset Identification}
 When we ask for an operation and we want to store the result somewhere on the network we have to think about an identifier
@@ -120,7 +124,6 @@ opt for a storage mechanism such as Hierarchical Data Format (HDF) we might want
 a single data file presumably in HDF5 format. But it depends on our further design and it does not change the fact
 that each operation produces new datasets and we have to store it.
 
-
 \section{Scenarios}
 According to the operation type and number of input datasets, a number of combinations are possible.
 In this section we introduce them as scenarios. We begin with a simple one and we gradually add details 
@@ -131,8 +134,8 @@ this chapter represent only ideas and expectations.%TODO: remove design related 
 
 For the following scenarios we assume these general statements to be true:
 \begin{enumerate}
-\item \textbf{The user has neither a prior knowledge where the datasets are stored}
-\item \textbf{Nor of how many servers are present on the network}
+\item The user has neither a prior knowledge where the datasets are stored
+\item Nor of how many servers are present on the network
 \end{enumerate}
 
 \subsection{Scenario 1 - Linear operation with one input set}
@@ -140,32 +143,26 @@ For the following scenarios we assume these general statements to be true:
 In this scenario we have a linear operation, e.g. \(Op^A\) on \(Node^A\) which
 requires one single dataset such as \( Dataset^1 \) which is available on one of the other peers.
 
-%\subsubsection{Assumptions}
 We have a distributed network of collaborating servers, where in this case, we consider two computers. 
 Each server has its own storage and maintains a number of datasets on it. These servers collaborate 
-together to accomplish issued commands. User in this case wants to perform one operation on a dataset
-that resides only on one of the servers. 
+together to accomplish issued commands. 
+User in this case wants to perform one operation on a dataset that resides only on one of the servers. 
 
-%\subsubsection{Assumptions}
-%There are two main assumptions here:
-%\begin{enumerate}
-%\item \textbf{The user has neither a prior knowledge where the data is stored}
-%\item \textbf{Nor of how many servers are present on the network}
-%\end{enumerate}
-
-The user connects to one of the servers, which we call a client. This server is assumed to be part 
-of the network, though it may not have any local data stores on it. The user issues, interactively
-(or non-interactively) a command on a set of data providing some kind of identification. This command
-is broadcasted by the client to all servers in the network. All servers receive this command and check
-whether they have the data locally. The server which has the data performs the operation and the others
-ignore it. The result of the operation in this case, remains on the same server which the original 
-dataset was on. 
+The user connects to one of the servers, which we call a client for now. 
+This server is assumed to be part of the network, though it may not have any local data stored on it.
+The user interactively (or non-interactively) issues a command on a set of datasets providing some kind of identification.
+This command is broadcasted by the client to all servers in the network.
+All servers receive this command and check whether they have the data locally. 
+The server which has the data performs the operation and the others ignore it.
+The result of the operation in this case, remains on the same server which the original dataset was on. 
 
 \begin{itemize}
-\item Note: it is assumed that at any instance of time, only one server acts as a client.
+%\item Note: it is assumed that at any instance of time, only one server acts as a client.
+\item Note: further we will see in our design that the notion of \textit{client-server} does not describe
+our design, since it would be more \textit{peer-to-peer} and we would have temporary \textit{result collectors} only.
 \end{itemize}
 
-Moreover we assume the user has already queried the available data in the entire network by 
+We assume the user has already queried the available data in the entire network by 
 issuing something like “list datasets” which outputs dataset names and ids.
 
 The following table shows two servers, each has one dataset. The user is connected to S2.\\
@@ -178,30 +175,38 @@ S2 & DS2 & Yes \\
 
 Let us assume the data sets are \(10^6\) random numbers and
 the operation is to transform the real random numbers to a set of [0 or 1 ] depending on whether the number is even or odd. 
-This operation is assumed to be a user defined method that operates on the data set and 
-represents user's intended logic.
+This operation is assumed to be a user defined method that operates on the data set and represents user's intended 
+logic\footnote{This scenario is partially from a raw requirement text by my advisor.}.
 
 \begin{itemize}
-\item Note: A dataset can be for example defined as an object that has an id, and a one dimensional array (python list).
+\item Note: A dataset can be defined as an object that has an id, and a one dimensional array (Python list).
 \end{itemize}
 
-The user issues the command like this from a python shell: 
+The user issues the command like this from a command line interface: 
 
 \begin{itemize}
-\item real2bin(DS1) will result in -> Broadcast(real2bin(DS1))
-\item Note: it is assumed that all functions are already defined on all servers, since they execute the same environment.
+\item real2bin(DS1) will result in  Broadcast(real2bin(DS1))
+\item Note: it is assumed that all functions are already defined on all servers%, since they execute the same environment.
 \end{itemize}
 
 The client broadcasts this function to all servers. 
 Each server will check if the dataset with this id exists, if so will run the command. 
 
 This means that each server, especially the client, has to know about all data sets existing in all servers.
-It does not need to have the actual data, but needs to know about it. So that when the user issues the command
-above, she does not get a non-existing dataset error from the client, just because the data is not
-there. Hence we need some interface, or some wrapper function that checks the argument for the data type, or to 
-create some proxy interface from all data to all nodes.
+It does not need to have the actual data, but needs to know about it. 
+So that when the user issues the above command,
+she would not get a non-existing dataset error from the client, just because the data is not there. 
+%Hence we need some interface, or some wrapper function that checks the argument for the data type, 
+%or to create some proxy interface from all data to all nodes.
 
-In proposal chapter\ref{cha:proposal} we explain in detail our suggested solution.
+Such operations will be done in two simple steps. 
+First would be publishing the recieved operation to all of the participating peers.
+This step is basically transfer the operation to another peer, but in a distributed manner.
+Afterwards, when each peer has received the operation request, 
+the peer which contains the desired dataset would run the operation in one step,
+hence this operation requires one dataset.
+
+In chapter \ref{cha:proposal} we explain in detail our suggested solution.
 
 \subsection{Scenario 2 - Linear operation with two input sets}
 \label{sc:sc2}
@@ -211,15 +216,7 @@ data of our interest therefore it should cooperate with others to accomplish the
 Our operation in this case requires two 
 different input datasets which are not available on the first peer and we should access them on other peers. 
 
-%\subsubsection{Assumptions}
-%The main points the same:
-%\begin{enumerate}
-%\item \textbf{The user has neither a prior knowledge where the datasets are stored}
-%\item \textbf{Nor of how many servers are present on the network}
-%\item \textbf{The operation is linear}
-%\end{enumerate}
-
-We assume the data distribution is like the following table:
+We assume the data distribution is like the following table:\\
 
 \begin{tabular}{ l c r }
 \em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
@@ -227,6 +224,53 @@ S0 & --- & Yes \\
 S1 & DS1 & No \\
 S2 & DS2 & No \\
 \end{tabular}\\
+
+In this case user will issue a command to \(S^0\) which involves datasets \(DS^1\) and \(DS^2\) 
+which none of them are available on \(S^0\).
+In this case we need to transfer the operation to other nodes. 
+Since this operation is linear we want to break it so it could run in parallel on \(S^1\) and \(S^2\) on
+resepective datasets.
+And then, when the intermediate outputs are ready, they would reside on \(S^1\) and \(S^2\).
+Then we would need to transfer one of them to the other node to calculate the final result.
+We have to transfer the smaller dataset to have less transfer cost.
+Finally when both intermediate data availabe on one of \(S^1\) or \(S^2\) we run the final operation there.
+
+\iffalse Sample:
+\begin{subequations}
+\begin{equation}
+  \operatorname{min}_{a,b,c} 
+  \frac{1}{2}\mathbf{w}^{T}\mathbf{w} + C \sum_{i=1}^{l}\xi_{i} 
+\end{equation}    
+\begin{equation}
+  y_{i}\left(\mathbf{w}^{T}\phi(x_{i})+b\right)
+\end{equation}
+\end{subequations}
+\fi
+
+The simple algebraic notion for these steps would be like these:
+\begin{subequations}
+\begin{equation}
+%\begin{align*}
+\Sigma = f(DS^1 + DS^2)^{S0}\\
+= f(f(DS^1)^{S1} + f(DS^1)^{S2})
+%&= f(a) + g(b) + g(c)
+%\end{align*}
+\end{equation}
+Then we launch them on other nodes
+\begin{equation}
+{DS}^{S1} = f(DS^1)^{S1}\\
+{DS}^{S2} = f(DS^1)^{S2} 
+\end{equation}
+We move the smaller intermediate dataset to the other node.
+\begin{equation}
+DS^S2 \longrightarrow S^1
+\end{equation}
+\end{subequations}
+
+The transfer scenario would be different in case of mixed operations or non-linear operations.
+
+%The result of this operation will be stored on one of participating peers based on an strategy.
+%For now we consider a random storage algorithm among the peers who produce the result.
 
 \subsection{Scenario 3 - Linear operation with 2+ input sets}
 \label{sc:sc3}
@@ -236,7 +280,7 @@ However we consider the worst case here, where every machine contains only one o
 machine has none of them.
 In reality there would be cases than all the data would be available on the same machine or a number of datasets
 would exist in one remote machine. The worst data distribution for this case would be like this:
-
+\\
 \begin{tabular}{ l c r }
 \em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
 S0 & --- & Yes \\
@@ -247,11 +291,11 @@ S3 & DS3 & No \\
 
 Theoretically there could be more datasets but it is unlikely and often it does not exceed two inputs.
 
+
 \subsection{Scenario 4 - non-Linear operation with one input set}
 With the similar assumptions as before, we have only a different type of operation. With one dataset there is no 
 difference between this scenario and first scenario, where the operation is linear. In case this dataset could
 be broken into smaller parts we should consider the operation type to prevent any unexpected results.
-
 
 \subsection{Scenario 5 - non-Linear operation with two input sets}
 This case is very complicated. We can not solve it like the previous ones, and we need to make extra decisions.
