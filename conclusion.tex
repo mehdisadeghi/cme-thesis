@@ -1,27 +1,32 @@
 \chapter{Conclusion}
 \label{cha:conclusion}
 
-Even though there are many solutions designed for HPC problems, still there are requirements for smaller groups which are not satisfied, such as:
-\begin{itemize}
-\item Making scientific applications user friendly 
-\item Providing \textit{smarter} solutions which get out of users way, i.e. hiding the systems complexity from ordinary users
-\item The system manages data endpoints, not users
-\item Less deployment and maintenance cost
-\item More flexibility to control application at runtime
-\end{itemize}
-During this work we addressed some of these needs:
-\begin{itemize}
-\item The problem was defined and requirements where defined
-\item We went through the state of the art
-\item A solution approach was proposed
-\item A prototype was developed
-\begin{itemize}
-\fontsize{30pt}{31}\selectfont
-\item Based on open technologies
-\item Runs in user space
-\item Open source and freely available on Github
-\end{itemize}
-\end{itemize}
+Even though there are many solutions designed for HPC problems, 
+still there are requirements for smaller groups which are not satisfied.
+Non-experts working with scientific applications require user friendly and simple to drive applications.
+They need \textit{smarter} solutions which get out of their way, i.e. hiding the systems complexity from ordinary users.
+The system has to manages data endpoints and provide a simple interface to access them having their identifier.
+A comprehensive, meanwhile simple, deployment mechanism has to make it trivial for users to install our application and decrease 
+the maintenance cost.
+The need for more control at runtime to make it possible to interact with running jobs is another key point in seeking new solutions.
+
+In this work we tried to answer the above mentioned requirements.
+We discovered the requirements of our client and we analyzed his problem against them.
+We went through similar existing solutions and assessed them whether they fit into our specific needs or not.
+
+We defined the basic pattern of the functionalities that the system has to fulfill. 
+We formulated them as scenarios and then we introduced a simple recursive-like algorithm 
+to break more complicated scenarios into smaller ones and solve them in the system.
+We described our developed prototype which demonstrates the ideas that we introduces as part of our proposal.
+
+In a short flashback, 
+in this work we first defined the problem and requirements and then we went through
+state of the art. We extracted repeating patterns and we proposed a solution to address them.
+We designed a prototype and we named the possible issues and future work. 
+Our designed application features a few key points, it runs in user space, 
+it is based on open source and free technologies, it is easy to deploy\footnote{This can be further improved for fully automated deployment}
+and hides the internal complexities from users.
+
 Our approach is very flexible to be extended and it is easy to build new services on top of the existing framework 
 which provides the distributed operation and storage mechanisms to applications.
 
