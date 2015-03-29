@@ -336,9 +336,11 @@ def doGetSet(msgId, *args):
 s.gotMessage = doGetSet
 \end{lstlisting}
 
-In the above example we have used \textit{twisted} networking library\cite{TwistedMatrix} and one
-Python implementation\cite{KademliaImpl} of \textit{Kademlia} DHT algorithm\cite{KademliaPaper}. 
-This will start a p2p network and will try to bootstrap it with another peer on the give IP address.
+In the above example we have used 
+\textit{twisted networking library}\footnote{Twisted Matrix Project \url{https://twistedmatrix.com/}} and one
+Python implementation\footnote{A DHT in Python 
+Twisted \url{https://github.com/bmuller/kademlia}} of \textit{Kademlia} DHT algorithm\cite{KademliaPaper}. 
+This will start a peer-to-peer network and will try to bootstrap it with another peer on the give IP address.
 Thereafter it will open another endpoint to expose a simple \textit{get/set} method for the rest of
 application for communicating with the network.
 

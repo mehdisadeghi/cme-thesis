@@ -76,7 +76,7 @@ The main part which have not been covered yet is non-linear operations.
 
 \subsection{Network Discovery}
 Currently the peers are configured in the beginning and there is no dynamic peer recognition. This might be done in a number of ways
-such as sending broadcasts or using third party projects such as Zyre \cite{Zyre}.
+such as sending broadcasts or using third party projects such as Zyre \footnote{\url{https://github.com/zeromq/zyre}}
 
 At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
 
@@ -93,7 +93,7 @@ move toward any type of data replication we would need to use this algorithms.
 \subsection{Security}
 There is no user management and secure communication in our initial requirements however this would be required if we want to manage user
 rights or introduce limitations or simply to keep a history of activities for each user. Moreover to secure inter-peer communications 
-we might use X.509 certificates. Further more since we've used ZeroMQ\cite{ZeroMQ} as underlying transport channel we can use its more advanced
+we might use X.509 certificates. Further more since we've used ZeroMQ as underlying transport channel we can use its more advanced
 security features such as Elliptic curve cryptography\cite{Curve} based on Curve25519\cite{Curve25519} to add perfect forward secrecy, 
 arbitrary authentication backends and so on.
 
@@ -108,9 +108,11 @@ and we want to let our application to be able to demonstrate the main problem wh
 deciding about data transfer routes and distributing the information about currently running operations.
 
 \subsection{Web Monitoring}
-Before starting my thesis I have developed a job submission and monitoring web application in order to get to know 
-job scheduling backends and the workflow and user requirements. We called this tool Sqmpy and it is also open source and
-available on Github \cite{sqmpy}. We can use Sqmpy project as a monitoring tool for konsensus network.
+Before starting my thesis we have developed a job submission and monitoring web application in order to get to know 
+job scheduling backends and the workflow and user requirements. 
+We called this tool Sqmpy and it is also open source and available 
+on Github\footnote{A Simple Queue Manager \url{https://github.com/mehdisadeghi/sqmpy}}.
+We can use Sqmpy project as a monitoring tool for konsensus network.
 Providing one peer address it can query the rest of peers and connect or 
 subscribe to their news channel. Having this we can always see which nodes are
 offline and which ones are online. This also gives us a platform to extend
