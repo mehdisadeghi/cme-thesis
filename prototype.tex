@@ -138,7 +138,7 @@ ZeroMQ provides a very basic matching algorithm for this purpose.
 It prefixes a message with a number then a blank space. 
 
 This is how a message will be published:
-\begin{lstlisting}[caption={Message publisher code}]
+\begin{lstlisting}[caption={Publisher sends packed messages}]
 import zmq
 import msgpack
 context = zmq.Context()
@@ -404,7 +404,7 @@ This way it is really trivial to write pre-processing and post-processing for an
 We have implemented our pre and post processing using decorators.
 
 \subsubsection{API Calls}
-Since we have used zerrpc to expose our services, we have two ways of calling them.
+Since we have used zerorpc to expose our services, we have two ways of calling them.
 First is using the command line tool provided along with it which has the same name.
 The second is using zerorpc Python package which lets us to programmatically call
 our exposed services.
@@ -432,7 +432,7 @@ Here we call a service:
 
 This would be how we get the content of operation store after calling aforementioned command:
 
-\begin{lstlisting}[language=sh, caption={Running an operation from command line}]
+\begin{lstlisting}[language=sh, caption={Getting list of operations}]
 \$ zerorpc tcp://127.0.0.1:9998 list operations
 connecting to "tcp://127.0.0.1:9998"
 {'1096486d-ed28-40b6-9254-9b2006e8557d': 

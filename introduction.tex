@@ -4,42 +4,40 @@
 We are accomplishing this work in order to facilitate creating data-intensive and computationally intensive 
 scientific\footnote{So-called e-Science} applications. 
 In this chapter we introduce the problem domain and typical workflow and environment which is in practice today.
-This work is done in a european material science research institute, 
-therefore throughout this thesis we have their needs in 
-mind\footnote{See \textit{Material Informatics}\url{http://en.wikipedia.org/wiki/Materials_informatics}}. 
+This work is done in a European material science research institute, 
+therefore throughout this thesis we emphasize more on their 
+needs\footnote{See \textit{Material Informatics} \url{http://en.wikipedia.org/wiki/Materials_informatics}}. 
+
 We begin with introducing the problem context.
 
 \section{Problem Context}
 European scientific communities launch many experiments everyday, resulting in huge amounts
 of data. Specifically in molecular dynamics and material science fields. 
 There are many different simulation software which are being used to accomplish multiscale 
-modeling \footnote{For more information see Computational Multiscale Modeling of Fluids and Solids Steinhauser, Martin 2008}
+modeling\footnote{For more information see Computational Multiscale Modeling of Fluids and Solids Steinhauser, Martin 2008}
 tasks.
 
 These tasks often involve running multiple simulation programs over pre-existing datasets 
 or datasets which are produced by other simulation software to achieve desired results. 
-These datasets often resemble models of physical systems, i.e. information about atoms, molecules, etc.
-This information would be stored in numeric structures and arrays, 
-however there are other data types such as images, which have their own use cases (depending on the field).
-In material science community it is about particles and their attributes such as coordinates in a given space and velocity.
-%Then there would be applications which will simulate pressure, collision, etc using those datasets 
-%(depending on the field simulations vary).
+These datasets often resemble models of physical systems and contain properties of atoms, molecules, etc.
+This information would be then stored in numeric structures and arrays.
+There are some other data types such as images e.g. brain scans, which have their own use cases.
+In material science community it is about particles and their attributes such as velocity and coordinates of a particle in a given space.
 
 Nowadays this is a common practice in many fields of science, 
-where typical non-expert users have to write scripts in order to run their intended applications,
-log-in to clusters, find all required data sets, move them to a folder
+that non-expert users have to write scripts in order to run their intended applications,
+log-in to clusters, find all required datasets, move them to a folder
 accessible by their script, launch and monitor status of the submitted jobs
 and finally collect output files.
 
-Often there would be more than one data set involved in an operation. 
-Those data sets would be spreaded among multiple machines. 
-In some cases (such as ours) there would be datasets being produced on multiple destinations and
-they would be requested on other machines for some operations.
+Often there would be more than one dataset involved in an operation. 
+Those datasets would be spread among multiple machines. 
+In our problem domain there would be datasets being produced on multiple destinations and
+they would be required on other machines for some operations.
 Then users would have to deal with even more complexity or they would not be able to run
-such operations at all or would probably have a poor performance if they do.
+such operations at all. And if they do, they would probably have a poor performance.
 
-Every community uses different simulations but they share similar process.
-%This type of work routine is a common form of workflow management in above mentioned communities.
+Every community uses different simulations but they share similar processes and practices.
 In this non-managed approach non-experts have to deal with the complexities of high performance computing systems.
 
 The aforementioned workflow is not flexible and is not managed at all. 
@@ -49,31 +47,32 @@ Such experiments are the source of many high performance computing (HPC) problem
 specially workflow management and data transfer.
 
 Our goal is to find a solution that let us to mange this situation, 
-take the complexities a way from users, create a distributed platform and minimize the transferred data.
+take the complexities away from users, 
+create a distributed platform and minimize the transferred data.
 Moreover we want to deliver these promises regardless of the workstation that user works with to be
 able to run a network of computers which collaborate together to deliver the task. 
 This will in turn help us to have more parallelism and avoid single point of failure.
 
 \section{Objectives}
-There are two main objectives in these thesis as the title suggests:
+There are two main objectives in this thesis as the title suggests:
 \begin{itemize}
 \item distributing the workflow of an application, i.e. the state
 \item minimizing the amount of transferred data during an operation
 \end{itemize}
 
-First of all we want to focus on collaboration in a distributed application.
+We want to focus on collaboration in a distributed application.
 This is how multiple computers will manage to finish an operation collectively in a distributed environment.
-We want to find a way to keep the state of the running operation distributed amount all the participants.
+We want to find a way to keep the state of the running operations distributed among the participants.
 
 Next we want to avoid unnecessary data transfer during an operation as much as possible.
-We prefer to have the operation be transferred rather than data. 
+We prefer to transfer the operation rather than the data.
 However this is not possible all the time,
-hence minimizing and smart transfer are mentioned.
+therefore minimized and smart transfer are mentioned.
 
-Both of these objectives are tailored toward the context that this work is done. 
-This means that even thought there are existing workflow management tools and data transfer solutions 
-but those tools do not meet our requirements. 
-This will be discussed in more detail in chapter \ref{cha:requirements}: Requirements.
+Both of these objectives are tailored toward the context that this work is being done. 
+This means that even though there are existing workflow management tools and data transfer solutions 
+but they do not meet our requirements. 
+This will be discussed with more details in chapter~\ref{cha:requirements}.
 
 \section{Terms and Definitions}
 We will use a number of terms through this report. Here are the meaning for each.
@@ -81,15 +80,16 @@ We will use a number of terms through this report. Here are the meaning for each
 Refers to one computer in the network.
 \subparagraph{Dataset}
 Consumed and produced data by scientific applications .e.g. NumPy arrays or HDF5 datasets.
-Data or Data sets also refer to this one.
+Data also refer to this one.
 \subparagraph{Application}
-The prototype which has been developed to show case the proposed solution, see \ref{cha:prototype}.
+The prototype which has been developed to show case the proposed solution, see chapter~\ref{cha:prototype}.
 \subparagraph{Instance}
-An instance of the application running on a node.
+The application (the prototype) which is running on a node.
 \subparagraph{Peer}
-One instance of the network application which is in collaboration with other local or remote instances.
+One instance of our network application which is in collaboration with other local or remote instances.
+This term is same as \textit{instance} except that it emphasizes on collaboration aspects.
 \subparagraph{Operation}
-Some functions, carrying logic of our application, which users want to run on datasets.
+Functions of our application, carrying logic of the underlying business, which users want to run them on datasets.
 \subparagraph{Task}
 Same as the operation with more emphasize on the output rather than the functionality.
 \subparagraph{Service}
@@ -101,54 +101,59 @@ A scientist, researcher or student who uses the system.
 
 \section{Typical Environment}
 While working in an institute, often there are many computers which users connect to them remotely. In a typical
-scientific and research environment users have their own windows or Linux machine and meanwhile they can SSH to other
-Linux machines on the same network with their user credentials. In such environments it is common to have computer clusters
-which users access using SSH. Normally there is a job scheduling software such as Sun Grid Engine (SGE) installed on the clusters
-and users have to submit their jobs using the tools provided by corresponding cluster software.
-Moreover such job schedulers enforce some policies to job submissions.
+scientific and research environment users have their own Windows or Linux machine. 
+Meanwhile they can connect via SSH\footnote{Secure Shell} to other
+Linux machines on the same network with their user credentials. 
+In such environments it is common to have computer clusters
+which users access using SSH. 
+Normally there is a job scheduling software such as Sun Grid Engine (SGE) which is installed on the clusters
+and users have to submit their jobs there, using the tools provided by corresponding cluster software.
+Such job schedulers enforce many policies to job submissions.
 
 There are more common characteristics about these environments which we name a few:
 \begin{itemize}
-\item Users do not have administrator rights and root access to the machines
+\item Users do not have administrator rights and root access on the machines
 \item Using network shared storage is very common
-\item Institutes often use LDAP\footnote{\url{https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol}} 
+\item Institutes often use LDAP\footnote{Lightweight Directory Access Protocol} 
 and users can login to any machine with their credentials
 \end{itemize}
 
 While running multiple scientific programs, they often need to exchange data back and forth in order to accomplish one operation.
-Some operations such as comparison require multiple datasets at the same time which also called All-Pairs problem. \cite{moretti08}. 
-Such operations involve more computation and are more complicated to address. Because those required datasets 
-might not be available on the same machine, hence should be transferred. 
-Having these said, it is cheaper to transfer the operation rather than the data whenever possible. 
+Some operations such as comparison require multiple datasets at the same time which is also called All-Pairs problem~\cite{moretti08}. 
+Such operations demand more computation and are more complicated to address. 
+Because the required datasets 
+might not be available on the same machine, and should be transferred. 
+The key point here is, it is cheaper to transfer the operation rather than the data whenever possible. 
 
-In another words the programs that we need to run over existing datasets are distributed among multiple
+In other words the programs that we need to run over existing datasets are distributed among multiple
 computers, clusters or HPC sites. The nature of our experiments, makes it necessary to launch
-multiple such programs in one run to achieve the desired outcome. This is one reason that we look
+multiple such programs together to achieve the desired outcome. 
+This is one of the main reasons that we look
 for distributed solutions which not only have to distribute state of the program among these machines,
-but have to provide smarter ways to move data between these machines during operation executions.
+but also have to provide smarter ways to move data between these machines during operation executions.
 
 \section{Document Overview}
-This document is organized into \arabic{chapter_count} chapters. 
-The current chapter is for the opening and introducing the context.
+This document is organized in \arabic{chapter_count} chapters. 
+The current chapter is for opening and introducing the context.
 
-In chapter two we explain the requirements. We try to introduce our fields of interest. 
+In chapter two we explain the requirements and we introduce our fields of interest. 
 These requirements will form our orientation during the rest of this work.
 
 In chapter three some related works will be discussed. 
 We will assess each of them against our requirements and interests.
 
 In chapter four different aspects of the problem will be discussed. 
-We will analyse multiple scenarios. This chapter would prepare the basics for the proposal.
+We will analyze multiple scenarios and this chapter would prepare the basics for the proposal.
 
 In chapter five we will explain the proposed solution. 
-We will suggest an approach that could solve the discussed scenarios.
+We will suggest an approach to solve the discussed scenarios.
 
 In chapter six we talk about our designed prototype and its implementation.
 We will talk about the chosen technologies and their advantages.
 
 In chapter seven we discuss about the applicability of the proposed solution, some issues and future work.
 
-And the last chpater is for conclusion.
+And the last chapter is for the conclusion.
 
 
 
