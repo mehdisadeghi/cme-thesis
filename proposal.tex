@@ -174,8 +174,9 @@ This is only for linear operations, since we will not cover non-linear operation
 Nevertheless, an input could be an operation call in case of mixed operations.
 In this case again we will go back to our main pattern i.e. \textit{break and conquer}. 
 We create a meta operation and we store it in distributed operation store. 
-We create sub operations for \textbf{level one} operations and we will store its id 
-in our meta operation as child operation. 
+Then we create sub operations for each input dataset or input operation call 
+and afterwards we will store their operation ids 
+in our meta operation as child operations. 
 The same story will happen subsequently for any sub operations as well. 
 Meaning that those might also create their own sub-operations and the chain continues until we reach to simple operations.
 
@@ -353,9 +354,9 @@ other operations which are already defined in the system.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=4in]{poster/figures/kseq.png}
+  \includegraphics[width=4in]{poster/figures/kseq2.png}
   \caption[Sequence diagram showing arrival of an operation message]
-   {When a peer is notifed about an operation when it has the desired dataset}
+   {When a peer is notified about an operation and it has the desired dataset}
 \end{figure}
 
 \subsection{Realizing queries}
