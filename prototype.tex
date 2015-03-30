@@ -269,11 +269,11 @@ dependencies of a project. It is capable of installing dependencies from remote 
 the Python Package Index (PyPI)\footnote{\url{https://pypi.python.org/pypi}}. Moreover \textit{pip} itself is
 a Python package. It gives us huge benefits with abstracting away the complexity of dependency management. It can
 bundle a package with compiled dependencies, install from Python wheel\footnote{A built-package format for Python}, uninstall,
-upgrade and query available PyPI packages.\footnote{\url{https://pip.pypa.io/en/latest/user_guide.html\#create-an-installation-bundle-with-compiled-dependencies}}
+upgrade and query available PyPI packages\footnote{\url{https://pip.pypa.io/en/latest/user_guide.html}}.
 
 \subsection{Virtual Environment}
 As described in the previous section, Python is the chosen programming language for this project. Along with Python, 
-comes \textit{virtualenv} package\footnote{virtualenv is a tool to create isolated Python environments}. This is a great way of installing
+comes \textit{virtualenv} package\footnote{\textit{virtualenv} is a tool to create isolated Python environments}. This is a great way of installing
 project dependencies into a single directory (which serves as the virtual root file system) and avoid touching operating system managed files and
 directories which normal users do not have access to them. While working inside a \textit{virtaulenv}, all the changes is written to a single directory
 and all binary files, downloaded Python packages goes into that directory. Therefore this is the best way to deploy a Python project in user space.
@@ -388,7 +388,7 @@ def delegate(func):
 # In our code:
 
 @delegate
-def legacy_function(an_arg, an_option=somevalue, a_flag=False):
+def a_function(an_arg, an_option=somevalue, a_flag=False):
     # some life-changing processing here...
 
 \end{lstlisting}
@@ -416,10 +416,12 @@ Here is how we call a service from command line:
 connecting to "tcp://127.0.0.1:9998"
 list             Return a list of datasets or peers
 echo             Echo
-use_case_2       Invokes operation for use case 1 described in the report.
-		    Accepts 'peers', 'datasets' and 'operations as option.
-use_case_1       Invokes operation for use case 1 described in the report. 
-		    Accepts 'peers', 'datasets' and 'operations as option.
+use_case_2       Invokes operation for use case 1 described \\
+					in the report. Accepts 'peers', \\
+					'datasets' and 'operations as option.
+use_case_1       Invokes operation for use case 1 described \\
+					in the report. Accepts 'peers', \\
+					'datasets' and 'operations as option.
 \end{lstlisting}
 
 This is the the normal output when we provide the endpoint of one of our instances. 
@@ -439,7 +441,8 @@ connecting to "tcp://127.0.0.1:9998"
   {'args': ['ds1'],
   'command': 'use_case_1',
   'duration': 5.635747909545898,
-  'result_dataset_id': '3fb9a21c-aee3-4a6a-98b0-ad0890d75686',
+  'result_dataset_id': \\
+  	'3fb9a21c-aee3-4a6a-98b0-ad0890d75686',
   'state': 'done',
   'submit_moment': 1427122073.528059}}
 \end{lstlisting}

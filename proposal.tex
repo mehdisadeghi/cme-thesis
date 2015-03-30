@@ -12,8 +12,8 @@ To make it easier to consume all this text we will make an effort to show a big 
 There would be multiple computers, our application installed on each of them. This machines do not depend on each
 other to operate. Each of them runs the same program instance as others. Each one has the same set of services that
 other instances and users can call. Each instance has a number of datasets. These peers will exchange knowledge of
-existing datasets with each other. Each instance contains atleast two distributed internal structures,
-we call them \textit{distributed stores}, these are similar to distributed key/value stores.
+existing datasets with each other. Each instance contains at least two distributed internal structures,
+we call them \textit{stores}, these are similar to distributed key/value stores.
 One store for operations, and another one for datasets. When an instance receives a service call for an operation, it
 will store some basic information and identification about it inside its operation store. This store automatically will
 inform other peers about these changes, so others will have the same knowledge afterwards.
@@ -22,16 +22,16 @@ Upon an incoming request, an instance would be able to accomplish the task alone
 Otherwise it will do nothing and will simply ignore it. But since the operation store will distribute this information
 seamlessly, any other peer has the opportunity to launch the operation if they have the desired data, if it is not the case
 they will only update their internal store and do nothing. But if they had the data, they would run the desired operation
-and will update the state of the operation to a meaningful one, such as \textit{processing}, and will distribute it
+and would update the state of the operation to a meaningful one, such as \textit{processing}, and would distribute it
 accordingly to inform others about the new state of this operation.
 
 In case of a mixed operation the receiver will break it into smaller operations and will self-launch them accordingly and
 will register a meta operation and will assign the aforementioned smaller operations as sub/child operations. We will
-also register this meta operation into the internal operation storage will then automatically distribute it like any other
-operation. This way we behave the same way with simple or complicated operations and we use the same interface to interact
+also register this meta operation into the internal operation store and it will then automatically distribute it like any other
+operation. This way, we have similar behavior with simple and complicated operations and we use the same interface to interact
 with them.
 
-In case of operations which have a number of child operations there would be a need to aggregate the result of sub operations.
+In case of operations which have child operations there would be a need to aggregate the result of sub operations.
 This would be done in a seamless way as well. We will introduce a \textit{collector} peer which will randomly take control
 and collect the results.
 
@@ -72,15 +72,15 @@ Here is a short definition of operations from design point of view:
 
 \begin{itemize}
 \item{Simple Operation} Any operation that has only one input dataset. We solve these.
-\item{Complex Operations} Operations with more that one input dataset. We turn them into simple operations and we solve them.
+\item{Complex Operations} Operations with more that one input dataset. We turn them into simple operations and then we solve them.
 \item{Mixed Operation} Any operation that has another operation as input. We turn them into simple and complex operations and
-then we solve them.
+then we solve them accordingly.
 \end{itemize}
 
-\subsection{Break and Conquer - Recursive Call}
-This makes the high level algorithm that we using in this work. We break operations into smallest possible operations
+\subsection{Break and conquer - recursive call}
+This is the high level algorithm that we are using in this work. We break operations into smallest possible operations
 and we implement them. Then we build other operations using these small units. For example we solve scenario number one, as
-discussed in chapter \ref{cha:analysis} to run one single operation on a single dataset.
+discussed in chapter~\ref{cha:analysis} to run one single operation on a single dataset.
 In order to run it successfully we need to find the corresponding dataset and in case it is not available locally we have
 to launch the operation on the node which has it. Then when we come to scenario number two, i.e. applying the same operation
 on two datasets we break it into two smaller units, and one \textit{meta operation}.
@@ -89,7 +89,7 @@ After having two smaller operations and one meta operation, we launch the smalle
 scenario number two into two instances of scenario one and one meta operation to observe the overall process. The implementation
 of this process will be presented in the prototype.
 
-\subsection{Non-blocking Calls}
+\subsection{Non-blocking calls}
 We base our design on non-blocking service calls. This means all the calls in our system would be asynchronous.
 When a user calls a service, she would instantly receive an id, instead of being blocked for the real result.
 The rationale here is because of possible long-execution times in our use cases. 
@@ -100,7 +100,7 @@ Any service call regarding running an operation would be non-blocking and will r
 \subsection{Dataset identification}
 When a user or peer wants to submit a request for an operation, they would not provide a real dataset as input.
 They would instead provide the unique id of a dataset existing on our network of collaborative peers.
-The our system, i.e. the peer who has received the request, will look at its internal dataset store to see if it
+Then our system, i.e. the peer who has received the request, will make a look up at its internal dataset store to see if it
 has the dataset locally or not.
 This will happen in the pre-processing step. 
 In any case a signal will be dispatched to other peers about the new operation.
@@ -112,13 +112,13 @@ to every incoming operation. This will happen before doing any real work on the 
 this with \textit{decorators} in Python programming language. 
 From this point of time, 
 the operation will be known and tracked with this id. One can imagine this as a ticket which
-allows monitoring every change made to an operation. 
+allows monitoring and tracking every change made to an operation while that operation exist in our system. 
 Apart from id we will store name of the operation and its input datasets. 
 This will allow us to relaunch this operation in case we need to. 
 The store that keeps this information is distributed among all participating nodes. 
-Any further information such as results will be attached to this store during the process. 
+Any further information such as result dataset ids will be attached to this store during the process. 
 There are concerns running a distributed store that needs further attention and 
-we try to cover them in further discussions and further work.
+we try to cover them in further discussions.
 
 \subsection{Distributed store}
 We will use this term many times in the next sections, therefore we have to explain it.
@@ -204,7 +204,7 @@ In such cases we would select the machine which contains the larger dataset.
 
 
 \section{Realizing Scenarios}
-\subsection{Scenario 1 - Linear operation with one input set}
+\subsection{Scenario 1 - linear operation with one input set}
 We introduced this scenario in last chapter and this was the assumed data and service distribution:
 
 \begin{tabular}{ l c r }
@@ -260,7 +260,7 @@ Next one is a delegate message:
   \end{enumerate}
 \end{enumerate}
 
-\subsection{Scenario 2 - Linear operation with two input sets}
+\subsection{Scenario 2 - linear operation with two input sets}
 First lets have another look at our data distribution and peers as described in analysis chapter:
 
 \begin{tabular}{ l c r }
@@ -354,81 +354,7 @@ other operations which are already defined in the system.
    {When a peer is notifed about an operation when it has the desired dataset}
 \end{figure}
 
-\iffalse
-
-There is an important issue here. 
-We create sub-operations for each operation and we run them in a non-blocking manner.
-This will cause it almost impossible to return the result of operation to the user in one run.
-One might think that we can block and query until the result of sub-operations are ready,
-but this is something that we want to avoid.
-Therefore to solve this issue,
-we introduce an operation id for each user request.
-We inform all the peers via sending messages (signals) about the new operation and it is id and sub-commands. 
-Each peer will update this operation internally based on further received messages.
-We also return the operation id to the user instead of any results. 
-Then user will query for the result of operation, providing the operation id. 
-We change the above steps like this:
-
-\begin{enumerate}
-\item User issues the command to S0, providing DS1, DS2 and a unique name for the result
-\item \textbf{System will generate a unique id for the operation and will store it along with the parameters}
-\item System will check whether the operation is linear
-\item Then it will break the command into sub-commands, each for one of datasets
-\item System will generate unique ids for each sub-command
-\item \textbf{System will notify other peers about the incoming operation with related parameters}
-\item System will then submit the sub-commands along with dataset name and the unique id for the result dataset
-to \textbf{itself}, which will cause a situation like scenario 1
-\item System will next have to collect the results in a non-blocking manner which we will discuss shortly.
-\item System will return the operation id to the user
-\end{enumerate}
-
-In the other hand the other peers which are the same basically, will react to the new operation signal:
-
-\begin{enumerate}
-\item Receive operation update message
-\item Make a local lookup if the operation should be added or updated
-\item Add or update the operation in the local storage
-\end{enumerate}
-
-Having the operation id and local updating storage for operations we now need to find a way to collect the results.
-First of all we need to decide which peer will collect the results. We take the most straight forward for now, the 
-initiator peer, which has the knowledge of existing datasets in the network along with their sizes, will pick the 
-peer which contains the largest dataset as the collector peer. We explicitly decide about the collector node in the
-beginning either by size or randomly amount the data container peers.
-
-It is worthy to mention that the collector peer will then store the result based on the configured storage mechanism 
-which is random storage for now, not necessarily storing on the same node.
-
-Now we have enough information in each peer to collect, process and store the results. The peers (including the collector)
- will react to operation methods like this:
-
-\begin{enumerate}
-\item Receive operation update message
-\item Make a local lookup if the operation should be added or updated
-\item Add or update the operation in the local storage
-\item Am I the collector? If yes do the followings:
-\begin{itemize}
-\item check if the sub-operations are done
-\item If the sub-operations are done, collect their results
-\item Process the results
-\item Based on the storage mechanism store the result
-\item Update the operation with the result dataset id
-\item Change status of operation to "done" (we need a proper state-machine here)
-\item Inform other peers about the update
-\end{itemize}
-\end{enumerate}
-
-Now if user makes a query giving the operation id this would be the result:
-
-\begin{enumerate}
-\item Check operation storage
-\item If the operation is marked done, return the dataset id
-\item If it is not done, return the status.
-\end{enumerate}
-
-\fi
-
-\subsection{Realizing Queries}
+\subsection{Realizing queries}
 Having an operation id at hand a user can query the result of operations. 
 Since each peer has enough information about the running operations it can return list of operations and list of datasets.
 So user can get informed about current operations and existing datasets and query for operation results or further details.
