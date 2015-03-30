@@ -126,13 +126,13 @@ Basically we talk about a simple key/value storage.
 Currently the storage mechanism is not important for us, it could be memory or anything else.
 This stores are like dictionaries, the keys would be the unique identifiers.
 Either id of an operation or id of a dataset. 
-Then we will store further information about that object as the value for that key.
+Then we will store further information about that object as a value for that key.
 We will take advantage of very simple structure to make it easy to be exchanged among peers.
 
 From one side, these stores would be simple repositories to read/write key/value pairs.
 This simplifies dependent parts.
-From another point of view these stores are distributed objects, but not really.
-The keep sending signals about any change in their internals.
+From another point of view these stores are distributed objects, but with a few layers.
+They keep sending signals about any change in their internals.
 These signals will be caught and handled by another component respectively.
 The other component will then signal other peers about certain changes that has been happened in this store.
 Other peers then will catch this message and will unpack the message and will update their own stores.
@@ -143,42 +143,45 @@ the objects which need to use it.
 \subsection{Messaging}
 To maintain a network solution we utilize messaging to have peer-to-peer communication. 
 We define a number of different message types known to the system. 
-Upon arrival of each message type the peer will take corresponding actions.
-There are a few message types that are important during this chapter and we introduce them here.
+Each specific signal will have its own numerical id which will is known to all of the peers like an internal protocol.
+Upon arrival of each message, the peer will recognize the type and will take corresponding actions.
+%There are a few message types that are important during this chapter and we will introduce them soon after this part.
 
 \subsubsection{Delegation call}
-Used when a peer asks other to run an operation instead of it.
+Used when a peer implicitly asks others to run an operation instead of it.
 Other peers will run the requested operation if they have the desired data and will update
-the distributed stores as a consequence.
+the distributed stores as a consequence, otherwise they will only update their operation store and will take no action.
 
 \subsubsection{Operation news}
 This happens when a peer wants to inform other peers about a change in its operation store.
 Other peers will only update their store respectively.
 This message will not cause others to run an operation, 
-but this will cause the collective peer to take further actions if required.
+but this might cause the collective peer to take further actions if required. 
+Collectors aggregate result of sub-operations, they will be introduced further in this chapter.
 
 \subsection{Meta operations}
 Nature of simple operations is simple. 
-An operation either will be handled locally or a dispatched signal will be handled
-by a peer who has the requested data. 
-The status and result dataset id will be stored inside the operation store under the operation's unique id.
+An operation either will be handled locally or a will be handled
+by a peer who has the requested data following a dispatched signal. 
+The status and result dataset id will be stored inside the operation store in correlation with operation's unique id.
 
-As soon as it comes to next scenarios this simplicity vanishes. 
+As soon as it comes to next scenarios this simplicity decreases. 
 Then we have to deal with multiple operations under one initial request from users.
 We have decided to repeat the same structure for operations with one or more datasets.
-Therefore in pre-process we check the number of inputs and we create the same number of
-smaller operations. 
-This is only for linear operations, as we will not cover non-linear operations.
+Therefore in pre-processing step we check the number of inputs and we create the same number of
+smaller operations accordingly. 
+This is only for linear operations, since we will not cover non-linear operations.
 Nevertheless, an input could be an operation call in case of mixed operations.
-In this case again we go back to our main patter, \textit{break and conquer}. 
-We create a meta operation and we store it. 
+In this case again we will go back to our main pattern i.e. \textit{break and conquer}. 
+We create a meta operation and we store it in distributed operation store. 
 We create sub operations for \textbf{level one} operations and we will store its id 
 in our meta operation as child operation. 
-The same story will happen subsequently for any sub operation as well. 
-Meaning that those might also create their own sub-operations and so on.
+The same story will happen subsequently for any sub operations as well. 
+Meaning that those might also create their own sub-operations and the chain continues until we reach to simple operations.
 
 To better understand this structure think of how method calls work in programming languages.
-A programmer can call functions and pass other function calls as input arguments.
+A programmer can call functions and pass other function calls as input 
+arguments\footnote{Method chaining, also known as named parameter idiom \url{http://en.wikipedia.org/wiki/Method_chaining}}.
 The runtime will begin to execute each function call and will use a stack to restore
 the last execution point to continue from there after finishing the nested call.
 We apply the same mechanism but in a distributed and non-blocking way.
@@ -197,7 +200,7 @@ launch the target function, bypassing the pre-process phase.
 In this part the meta operation will be labeled complete and the resulting dataset will be stored.
 If the target function - which carries the desired business calculation - needs any number of datasets,
 they will be copied to local machine to complete the process. 
-Since we expect the resulting datasets have small sizes this would not cause a problem. 
+Since we expect the resulting datasets to be small in size, this would not cause a problem. 
 Moreover in case of linear operations we can optimize the selection of this machine much easier than
 non-linear operations where we need to copy a dataset to another machine. 
 In such cases we would select the machine which contains the larger dataset.
@@ -205,7 +208,7 @@ In such cases we would select the machine which contains the larger dataset.
 
 \section{Realizing Scenarios}
 \subsection{Scenario 1 - linear operation with one input set}
-We introduced this scenario in last chapter and this was the assumed data and service distribution:
+We introduced this scenario in last chapter and this was the assumed dataset and service distribution:
 
 \begin{tabular}{ l c r }
 \em{Server ID} & \em{ Dataset ID} & \em{ Client} \\
@@ -216,12 +219,12 @@ S2 & DS2 & Yes \\
 In this case \(S^2\) receives a request to run an operation such as \(Op^A\) on \(DS^1\).
 However \(DS^1\) is available on the other node.
 Upon getting such a request we will take a number of steps on the receiver (machine which received the command)
-and the container (the one with desired data) machine and on neutral machines which neither have received the
+and the container (the one with the desired dataset) machine and on neutral machines which neither have received the
 request nor have the desired dataset.
 
 On the receiver machine:
 \begin{enumerate}
-\item If operation requires one dataset continue, otherwise go to next scenario.
+\item If operation requires one dataset continue, otherwise go to the next scenario.
 \item Store the operation in distributed operation store and get the id
 \item Return operation id to user
 \item If data store has the dataset locally do these
@@ -242,19 +245,19 @@ On the receiver machine:
 
 From the above steps two types of signals will be published to other peers. 
 Each of them will trigger certain actions. 
-First we show the flow will happen upon receiving an operation update message:
+First we show the flow which will take place upon receiving an operation update message:
 \begin{enumerate}
 \item An operation update signal is received.
 \item Update our internal operation store silently (without distributing this change).
 \end{enumerate}
 
-Next one is a delegate message:
+Next one is a delegated message:
 \begin{enumerate}
 \item A delegate signal is received.
-\item If we have desired dataset do these, otherwise do nothing:
+\item If we have desired dataset take these steps, otherwise do nothing:
   \begin{enumerate}
   \item Run desired operation on the dataset
-  \item Store the result dataset in dataset store \# Currently we choose a random peer to store results there
+  \item Store the result dataset in dataset store \# Currently we choose a random peer to store the results
   \item Add the result dataset id to the operation \# Will be distributed
   \item Update the operation state \# Will be distributed
   \end{enumerate}
@@ -274,7 +277,8 @@ The S0, in this case, is the peer who receives the command and initiates the req
 Each of the other two peers, S1 and S2, has one of the required datasets, but not both of them. 
 
 In order to realize this scenario we apply \textbf{divide and conquer} and \textbf{produce-consume-collect} methods
-as described earlier in this chapter. Then we create one meta operation and two subs. Sub operations will operation exactly as described in previous section
+as described earlier in this chapter. Then we create one meta operation and two sub-operations. 
+Sub operations will operate exactly as described in previous section
 and their results will be reflected in our distributed stores.
 
 As an example we assume that in this case we have two arrays, each consisting of \(10^6\) random numbers. 
@@ -302,7 +306,7 @@ This allows us to design our system in a decentralized way,
 where each peer will inform others (neighbors) about a request using \textbf{publish-subscribe} pattern, 
 where the peer will publish a request and the peer which contains 
 the dataset will react to the published request and will run the operation. 
-All the other peers who do not have the requirements (the dataset for now) will ignore it.
+All the other peers who do not have the dataset will ignore it.
 As described for first scenario, 
 they will store the details of running operations.
 
@@ -310,9 +314,9 @@ they will store the details of running operations.
 For this operation the following steps will take place on the receiving peer:
 On the receiver machine:
 \begin{enumerate}
-\item If operation requires two dataset continue, otherwise go to next scenario.
+\item If operation requires two datasets continue, otherwise go to the next scenario.
 \item Store the operation along with input dataset names in the distributed operation store and get the id
-\item Create sub commands for each dataset and update the operation store
+\item Create one sub operation for each dataset and update the operation store
 \item Setup parent operation id for sub-operations
 \item Randomly choose one of sub-operations as collector peer (with setting an extra parameter)
 \item \textit{Self-launch} the sub operations - This will resemble scenario 1
@@ -363,5 +367,5 @@ When user provides an id we return the operation details, such as sub-operation 
 duration, parent operation id (in case this operation is a child), operation name (the requested service), 
 result dataset id, submit time and etc.
 
-Providing a dataset's id we can return the dataset or \textit{download} and store it in a local file to be observed by user.
+Providing a dataset's id we can return the dataset or \textit{download} and store it in a local file to be observed by the user.
 We discuss more on possible extensions in further works section.
