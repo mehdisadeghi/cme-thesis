@@ -2,22 +2,23 @@
 \label{cha:discussions}
 
 \section{Data Transfer}
-In current design we store files on a random temp folder for each peer.
+In current design we store files on a random temporary folder for each instance.
 But we can take advantage of existing Distributed File Systems (DFS).
 We can then eliminate the complexity of data transfer among peers. 
-DFS has not been considered in our current design but it is an essential part of 
-distributed applications.
+DFS has not been considered in our current design but it is could be an 
+essential part of a distributed data transfer approach.
 
-Currently we store result datasets randomly between peers as there is no
+Currently we store output datasets randomly between peers as there is no
 network accessible storage.
 We also delegate operations to the peers which contain the data, 
-but the data could be availabe via a shared storage.
-This will make the whole effort meaningless, 
-or it could be better to say that we focus on situations that
-machines containg the data do not have access to shared storages.
+but the data could be available via a shared storage.
+In case the peer has access to a remote storage, 
+it should consider it in data transfer scenarios and take advantage of it. 
+In other words, currently we focus on situations that
+machines containing the data do not have access to shared storages.
 Again another possibility comes to mind, 
-we could make a shared cloud or use a cloud storage provider to 
-share data amoung our peers.
+that we could make a shared cloud or use a cloud storage provider to 
+share data among our peers.
 
 These assumptions somehow contradict with our initial requirement,
 where we having large datasets spread on multiple machines (and not on a shared storage accessible by all of them). 
@@ -26,18 +27,18 @@ compare it with having faster local storages and transferring only necessary par
 Even though these data could be moved to a cloud but this is not the case for us.
 
 The only improvement that I can think of here, 
-is changing the storage strategy and use a cloud storage to keep the results
-(one advantage of having a flexible design is right here, 
-where we can change our storage strategy with a change in configuration file).
-This will let us to avoid the expense of transfering datasets back and forth
+is changing the storage strategy and using a cloud storage to keep the results
+(one advantage of having a flexible design is here, 
+where we can change our storage strategy without rewriting our application).
+This will let us to avoid the expense of transferring datasets back and forth
 between our peers and we would enjoy the simplicity of having one \textit{meta-disk}
 to work with. 
-We don't rely on DFS in our desgin, we make the decision 
+We don't rely on DFS in our design, we make the decision 
 on which node we have to run the operation and when it comes to 
 data transfer part we can use a \textit{universal disk} concept to deliver the
 remaining data.
 
-\subsection{Large Dataset Transfer}
+\subsection{Large dataset transfer}
 To transfer large arrays over the network there are a number of considerations. 
 Should the array be stored locally before transfer?
 What if the array is so big that it does not fit into the machines memory? 
@@ -46,17 +47,40 @@ And how the array should be transferred?
 Currently we assume the result dataset to fit into the memory, 
 therefore there is only the question of how to transfer them over the network. 
 To prevent unnecessary copies, we consider streams to send them to other peers. 
-In the demo application this is done with streaming sockets. 
+In the prototype application this is done with streaming sockets. 
 The other peer will be notified and then it will fetch the desired dataset.
 
 We need to develop a mechanism to consider dataset size for transfer. 
 User defined files are normally small and we can safely transfer them but
-system datasets are large and for any transfer some sort of control should happen.
+system datasets are large and for any transfer some sort of control should exist.
 
 \section{Possible Issues}
-\subsection{High Load}
-\subsection{Orphan Operations}
-\subsection{Complexity Growth}
+There are many possible issues regarding this work that are subject to further research and development.
+Here we just mention a number of such issues.
+\subsection{Message delays}
+What will happen if we increase the number of peers in a network and begin to ask multiple
+peers to run different types of scenarios? There would be certainly much more messages
+traveling between peers and delays will happen. Currently we are not confident that the system
+will be operational under such a high load since we have not considered it.
+This is one of the most important issues that we need to address. We have to make the 
+application delay-agnostic, and make it to work in a safe way. We need to be able to 
+recognize when the network is reliable and when it should stop processing further operations and
+to understand when we should gracefully shutdown the network. We prefer to deliberately stop 
+the operations rather than creating unexpected and confusing results. Therefore we need a precise
+distributed state machine that could reliably tell us the current state of the network.
+
+\subsection{Network topology}
+Currently we have not considered different network topologies. For example what will happen
+if we use remote resources which are not available in local network? How we would calculate
+the cost of any type of data transfer between our local network and remote one? 
+\subsection{Orphan operations}
+Currently we leave operations on store, but there would be a mechanism to cleanup the store.
+After a while we would have lots of orphaned operations which are just consuming memory and
+making the application more fragile.
+\subsection{Orphan datasets}
+When have to distinguish between datasets which are permanent and intermediate ones. Otherwise
+the system would be bloated with lots of garbage datasets that it has to carry their information
+around.  
 
 \section{Future Work}
 During this work we have focused on the aspects of the problem which were important in the context 
@@ -64,58 +88,74 @@ domain and we left aside many other small and big problems without considering t
 reason was that we wanted to work on problems which were new and genuine
 because for other aspects there are already many well-defined solutions
 available, so we did not spend our time for them. Moreover one should 
-consider that this project is not solely an implementation but is a 
-research on finding ways to embed distributed solutions into other projects.
+consider that this project is not only an implementation but also a 
+research effort on finding ways to embed distributed solutions into other projects.
 
 In the following sections we talk shortly about the topics which we have
 not covered but this work can be extended to include them as well.
 
-\subsection{Non-linear Operations}
-The main part which have not been covered yet is non-linear operations.
+\subsection{Non-linear operations}
+The main part which have not been covered yet is non-linear operations. 
+There are three types of them as we discussed earlier and one mixed operation type which contains non-linear ones.
+We believe that it is pretty straight forward to handle mixed non-linear operations with the same recursive approach
+that we discussed during our proposal. However we would need first to handle the basic non-linear scenarios and the 
+hardest part would be finding the cheapest data transfer approaches for such operations. 
+
+\subsection{Complexity growth}
+With increasing number of participating peers, the complexity of the system will grow dramatically. 
+We need to calculate the system's complexity in computer science terms.
+We also need to calculate the threshold of our network.
+How much traffic can it support and how it will make sure that the data it has is valid.
+As we mentioned in earlier chapters, one possible solution is adapting consensus algorithms such
+as \textit{The Raft}. Another point that would definitely increase the performance of the system
+would be introducing more heuristics into the system. Where we could find cheaper ways
+to get to the data or break operations.
 
 
-\subsection{Network Discovery}
+\subsection{Network discovery}
 Currently the peers are configured in the beginning and there is no dynamic peer recognition. This might be done in a number of ways
-such as sending broadcasts or using third party projects such as Zyre \footnote{\url{https://github.com/zeromq/zyre}}
-
-At this stage there is no network discovery, because it is not our main problem. It can be done later as an improvement.
+such as sending broadcasts or using third party projects such as Zyre\footnote{\url{https://github.com/zeromq/zyre}}.
+Nevertheless, we can considered the peers information as another distributed store and inform others about our knowledge of peers.
 
 \subsection{Bootstrapping}
-With having address of only one peer we would be able to configure and a new peer and join the network. There should be a mechanism among
+With having address of only one peer we want to be able to configure and a new peer and join the network. There should be a mechanism among
 peers to identify joining and leaving peers. But our context is different than a peer-to-peer applications which peers join and leave 
-frequently. In our case most of peers run a long time and bootstrapping is more a way to get the state of currently running workflows and
+frequently. In our case most of the peers run for a long time and bootstrapping is more a way to get the state of currently running workflows and
 let others know about the new peer.
 
-\subsection{Data Popularity}
+We could apply a simple broadcasting method to discover other peers. Moreover with implementing a heartbeat technique we can
+monitor other peers to find whether they are active or are out of reach. Currently ZeroMQ uses this mechanism in its sockets but
+we need a higher level knowledge to be used in our application. One use case would be simply informing users about the \textit{state}
+of other peers.
+
+\subsection{Data popularity}
 There are algorithms developed to calculate data popularity over time and then replicate them over peers for easier access. If we want to 
-move toward any type of data replication we would need to use this algorithms.
+move toward any type of data replication we would need to use such algorithms.
 
 \subsection{Security}
 There is no user management and secure communication in our initial requirements however this would be required if we want to manage user
 rights or introduce limitations or simply to keep a history of activities for each user. Moreover to secure inter-peer communications 
 we might use X.509 certificates. Further more since we've used ZeroMQ as underlying transport channel we can use its more advanced
-security features such as Elliptic curve cryptography\cite{Curve} based on Curve25519\cite{Curve25519} to add perfect forward secrecy, 
-arbitrary authentication backends and so on.
+security features such as Elliptic curve cryptography~\cite{Curve} based on Curve25519~\cite{Curve25519} to add perfect forward secrecy and 
+arbitrary authentication backends.
 
-\subsection{Fault Tolerance}
-In current work there is no failure recovery mechanism, since it was not part of the requirements. In case of a failure or exception in any 
+\subsection{Fault tolerance}
+In our current work there is no failure recovery mechanism, since it was not part of the requirements. In case of a failure or exception in any 
 collaborating peer not only the failed instance should be able to recover itself into a correct state, moreover the other peers should maintain
 a valid state for on-going distributed workflows and keep their internal state up-to-date.
 
-Like other topics in this section this one is not of our interest too.
-The point is there are existing solutions for these problems 
-and we want to let our application to be able to demonstrate the main problem which would be 
-deciding about data transfer routes and distributing the information about currently running operations.
-
-\subsection{Web Monitoring}
-Before starting my thesis we have developed a job submission and monitoring web application in order to get to know 
+\subsection{Web monitoring}
+Before starting this work we have developed a job submission and monitoring web application in order to get to know 
 job scheduling backends and the workflow and user requirements. 
 We called this tool Sqmpy and it is also open source and available 
 on Github\footnote{A Simple Queue Manager \url{https://github.com/mehdisadeghi/sqmpy}}.
-We can use Sqmpy project as a monitoring tool for konsensus network.
+We can use this project as a monitoring tool for konsensus network.
 Providing one peer address it can query the rest of peers and connect or 
-subscribe to their news channel. Having this we can always see which nodes are
+subscribe to their news channel. It could also serve as a monitoring dashboard to see peers load, running operations,
+datasets and current state.
+Having this we can always see which nodes are
 offline and which ones are online. This also gives us a platform to extend
 monitoring and control features to the web. Currently we have made the 
 required software platform to achieve this. In the Sqmpy project we can simply maintain realtime connections to the browsers and since
 our web framework is written in Python, with minimum cost we can integrate it with konsensus which is written with Python as well.
+However, we can use REST or zerorpc API to communicate between these products.
